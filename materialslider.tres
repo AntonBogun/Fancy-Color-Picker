@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[ext_resource path="res://ShaderSlider.shader" type="Shader" id=1]
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/color = Color( 0.45098, 0.14902, 0.14902, 1 )
+shader_param/vertex1 = null
+shader_param/vertex3 = null
+shader_param/viewport = null
+shader_param/red = 0.0
+shader_param/gre = 0.0
+shader_param/blu = 0.0
+shader_param/zoom = 2.0
+shader_param/mode = 0
+shader_param/slider = 0.0

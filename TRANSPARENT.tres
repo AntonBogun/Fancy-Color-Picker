@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+uniform bool off=false;
+void fragment(){
+	if (!off){
+		COLOR=vec4(0,0,0,0);
+	}else{
+		COLOR=texture(TEXTURE,UV);
+	}
+	
+}"
+
+[resource]
+shader = SubResource( 1 )
+shader_param/off = true
