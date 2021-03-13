@@ -36,3 +36,5 @@ func _process(delta):
 	else:
 		position=Vector2((get_parent().value/255.0)*(get_parent().rect_size.y)+8,0)
 	
+
+

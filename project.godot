@@ -19,6 +19,10 @@ config/name="Color"
 run/main_scene="res://Bruh.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+colr="*res://COLOR.gd"
+
 [input]
 
 mouse_left={

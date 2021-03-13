@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://2dcolor.gd" type="Script" id=1]
 [ext_resource path="res://Material.tres" type="Material" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://materialslider.tres" type="Material" id=4]
 [ext_resource path="res://colorpick.gd" type="Script" id=5]
 [ext_resource path="res://VSlider.gd" type="Script" id=6]
+[ext_resource path="res://Fonts/Roboto/ControlsRoboto.tres" type="DynamicFont" id=7]
 
 [sub_resource type="ShaderMaterial" id=1]
 
@@ -13,11 +14,11 @@
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 0.5, 0.5 )
+zoom = Vector2( 0.05, 0.05 )
 
 [node name="HUE" type="Polygon2D" parent="Camera2D"]
 material = ExtResource( 2 )
-position = Vector2( -126.662, 0.643311 )
+position = Vector2( -128, 0 )
 color = Color( 0, 0, 0, 1 )
 polygon = PoolVector2Array( -128, -128, 128, -128, 128, 128, -128, 128 )
 script = ExtResource( 1 )
@@ -59,3 +60,38 @@ color = Color( 0.243137, 0, 1, 1 )
 polygon = PoolVector2Array( -8, -8, 8, -8, 8, 8, -8, 8 )
 script = ExtResource( 5 )
 Width = 1.0
+
+[node name="ClosestColorLabel" type="RichTextLabel" parent="Camera2D/HUE"]
+margin_left = 111.919
+margin_top = 132.027
+margin_right = 709.919
+margin_bottom = 170.027
+rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/normal_font = ExtResource( 7 )
+text = "Closest color:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorLabel" type="RichTextLabel" parent="Camera2D/HUE"]
+margin_left = 133.0
+margin_top = 84.0
+margin_right = 353.0
+margin_bottom = 167.0
+rect_scale = Vector2( 0.5, 0.5 )
+custom_fonts/normal_font = ExtResource( 7 )
+text = "Current color:
+(255,255,255)"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorShow" type="Polygon2D" parent="Camera2D/HUE"]
+position = Vector2( 111.919, 131.73 )
+scale = Vector2( 0.5, 0.5 )
+polygon = PoolVector2Array( -8, 0, -64, 0, -64, 32, -8, 32 )
+
+[node name="Polygon2D" type="Polygon2D" parent="Camera2D/HUE"]
+color = Color( 0, 0, 0, 0.239216 )
+offset = Vector2( 125, 0 )
+polygon = PoolVector2Array( -128, -128, 0, -128, 0, 0, 1, 0, 1, -128, 30, -128, 30, 30, 0, 30, -128, 30 )
