@@ -6,6 +6,7 @@ extends Polygon2D
 # var b = "text"
 
 var type =0
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	material.set_shader_param("vertex0",polygon[0]+position);
@@ -18,7 +19,8 @@ func _ready():
 	var array3=[1,2,3]
 	var array2=[array3,2]
 	var array1 = [array2,1 ]
-	print(range(6,6))
+	array2.insert(1,2)
+	print(array1[0])
 var i=6
 var rng=RandomNumberGenerator.new()
 
@@ -44,110 +46,65 @@ func getinfluence(col,_pos,type):
 	var slider = _pos[2]
 	var pointarr=[]
 	
-	for size in sizearray:
-		if pointarr.size()==0:
-			var _offset
-			if(size!=1):
-				_offset=(size-1)/2
-			else:
-				_offset=1
-			var ifarr=[]
-			ifarr[0]=pos+Vector2(-_offset,-_offset)
-			ifarr[1]=pos+Vector2(_offset,-_offset)
-			ifarr[2]=pos+Vector2(_offset,_offset)
-			ifarr[3]=pos+Vector2(-_offset,_offset)
-			for i in range(4):
-				ifarr[i+4]=ifarr[i][0]<256 and ifarr[i][0]>-1 and ifarr[i][1]<256 and ifarr[i][1]>-1 
-			
-			if(ifarr[4] and ifarr[5] and ifarr[6] and ifarr[7]):
-				for i in range(4):
-					ifarr[i+4]=colr.colorclosestsearch(ifarr[i][0],ifarr[i][1],slider)==col
-				if(ifarr[4] and ifarr[5] and ifarr[6] and ifarr[7]):
-					
-					pointarr[0]=ifarr[0]
-					pointarr[1]=ifarr[1]
-					pointarr[2]=ifarr[2]
-					pointarr[3]=ifarr[3]
-				else:
-					continue
-			else:
-				continue
-		
-		var i=0
-		while i< pointarr.size():
-			var point = pointarr[i]
-			var nextpoint =pointarr[(i+1)%(pointarr.size())]
-			var dir = (nextpoint-point)
-			var _offset=Vector2(dir.y,-dir.x)
-			if size!=1:
-				var _pointarr=[]
-				_pointarr[0]=point+_offset
-				_pointarr[1]=nextpoint+_offset
-				
-				var coloris=colr.colorclosestsearch(_pointarr[0][0],_pointarr[0][1],slider)==col and colr.colorclosestsearch(_pointarr[1][0],_pointarr[1][1],slider)==col
-				if coloris:
-					
-					if(_pointarr[0] in pointarr):
-						for i1 in range(i+1,pointarr[pointarr.find(_pointarr[0],i+1)]):
-							pointarr.remove(i1)
-					elif(_pointarr[1] in pointarr):
-						for i1 in range(i+1,pointarr[pointarr.find(_pointarr[1],i+1)]):
-							pointarr.remove(i1)
-						pointarr.insert(i+1,pointarr[0])
-					else:
-						pointarr.insert(i+1,_pointarr)
-					
-					if i==0:
-						pointarr.push_back(pointarr.pop_front())
-					
-					
-					
-				else:
-					i+=1
-					continue
-			else:
-				pass
-			
-			#tomorrow: add check for duplicate and delete everything from point+2 to duplicate.insert()
-			
+	
+	
+	#*sizearray - old implementation
+
+
+
+
 
 var mouseraw=Vector2()
 var mousepos=Vector2()
 
 
-
+var r = 128
+var g = 128
+var b = 10
 
 func _process(delta):
 	i-=int(i>0)
 	var pos1=vertconv(polygon[0]+position,get_viewport_rect().size,1/get_node("..").zoom.x)
 	var pos2=vertconv(polygon[2]+position,get_viewport_rect().size,1/get_node("..").zoom.x)
+	var sliderpos1=vertconv($VSlider.rect_position+position,get_viewport_rect().size,1/get_node("..").zoom.x)
+	var sliderpos2=vertconv($VSlider.rect_size*$VSlider.rect_scale+$VSlider.rect_position++position,get_viewport_rect().size,1/get_node("..").zoom.x)
 	var ok = ifinbox(get_viewport().get_mouse_position(),pos1,pos2)
+	var ok2 = ifinbox(get_viewport().get_mouse_position(),sliderpos1,sliderpos2)
 	material.set_shader_param("viewport",get_viewport_rect().size)
 	var slider =$VSlider.value
 	material.set_shader_param("slider",slider)
-	if(ok&&Input.is_action_pressed("mouse_left")):
-		mouseraw=(get_viewport().get_mouse_position()-pos1)*get_node("..").zoom.x
-		mousepos=Vector2(mouseraw.x,256-mouseraw.y)
+	if((ok or ok2)&&Input.is_action_pressed("mouse_left")):
+		if ok2:
+			if type==1:
+				r=slider
+			if type==2:
+				g=slider
+			if type==0:
+				b=slider
+		else:
+			mouseraw=(get_viewport().get_mouse_position()-pos1)*get_node("..").zoom.x
+			mousepos=Vector2(mouseraw.x,256-mouseraw.y)
+			r =mousepos.x*float(type==2)+mousepos.y*float(type==0)+slider*float(type==1);
+			g =mousepos.x*float(type==0)+mousepos.y*float(type==1)+slider*float(type==2);
+			b =mousepos.x*float(type==1)+mousepos.y*float(type==2)+slider*float(type==0);
+		r=floor(r)
+		g=floor(g)
+		b=floor(b)
+		$Colorpick.position=mouseraw-Vector2(128,128)
+		$Colorpick.color=Color(r/256,g/256,b/256,1)
+		$ColorLabel.text="Current color:\n("+str(r)+","+str(g)+","+str(b)+")"
+		$ClosestColorLabel.text="Closest color: "+colr.colorclosestsearch(r,g,b)
+		var _col=colr.colorclosestsearch(r,g,b)
+		var col = colr.colhextopos(_col)
+		#print(str(r)+" "+str(g)+" "+str(b))
 		
-	var r =mousepos.x*float(type==2)+mousepos.y*float(type==0)+slider*float(type==1);
-	var g =mousepos.x*float(type==0)+mousepos.y*float(type==1)+slider*float(type==2);
-	var b =mousepos.x*float(type==1)+mousepos.y*float(type==2)+slider*float(type==0);
-	r=floor(r)
-	g=floor(g)
-	b=floor(b)
-	$Colorpick.position=mouseraw-Vector2(128,128)
-	$Colorpick.color=Color(r/256,g/256,b/256,1)
-	$ColorLabel.text="Current color:\n("+str(r)+","+str(g)+","+str(b)+")"
-	$ClosestColorLabel.text="Closest color: "+colr.colorclosestsearch(r,g,b)
-	var _col=colr.colorclosestsearch(r,g,b)
-	var col = colr.colhextopos(_col)
-	print(str(r)+" "+str(g)+" "+str(b))
-	$ColorShow.color=Color(col[0]/255.0,col[1]/255.0,col[2]/255.0,1)
-	$VSlider/picksmol.color=Color(r/256,g/256,b/256,1)
-	$VSlider.material.set_shader_param("red",r)
-	$VSlider.material.set_shader_param("gre",g)
-	$VSlider.material.set_shader_param("blu",b)
-	#print(ok)
+		$ColorShow.color=Color(col[0]/255.0,col[1]/255.0,col[2]/255.0,1)
+		$VSlider/picksmol.color=Color(r/256,g/256,b/256,1)
+		$VSlider.material.set_shader_param("red",r)
+		$VSlider.material.set_shader_param("gre",g)
+		$VSlider.material.set_shader_param("blu",b)
+		#print(ok)
+	
 	if(i==0):
 		i=6
 		#rng.randomize()
