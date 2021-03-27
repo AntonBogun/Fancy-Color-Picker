@@ -14,7 +14,7 @@
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 0.5, 0.5 )
+zoom = Vector2( 0.32, 0.32 )
 
 [node name="HUE" type="Polygon2D" parent="Camera2D"]
 material = ExtResource( 2 )

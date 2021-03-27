@@ -16,13 +16,21 @@ func _ready():
 	material.set_shader_param("zoom",1/get_node("..").zoom.x);
 	$Button.connect("pressed",self,"_update")
 	
-	var array3=[1,2,3]
-	var array2=[array3,2]
-	var array1 = [array2,1 ]
-	array2.insert(1,2)
-	print(array1[0])
+	print(-1%3)
+	
+	
+	
+	
+	
 var i=6
 var rng=RandomNumberGenerator.new()
+
+func test(_r,_g,_b,size):
+	print("\n --------------------- \n"+str(influence.iff(Vector2(r,g),size,colr.colorclosestsearch(r,g,b),b))+"=iff\n")
+	print(colr.colorclosestsearch(r,g,b)+" at point"+str(Vector3(r,g,b))+"\n")
+	var box = [Vector2(4,4),Vector2(4,-4),Vector2(-4,4),Vector2(-4,-4)]
+	for i in box:
+		print(str(r+i.x)+" "+str(g+i.y)+colr.closestcolorsearch(r+i.x,g+i.y,b))
 
 func _update():
 	type=(type+1)%3
@@ -30,6 +38,8 @@ func _update():
 	$VSlider.material.set_shader_param("mode",type)
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
+
+	
 
 func vertconv(vert,viewpoort,zooom):
 	return Vector2(viewpoort.x/2.0+vert.x*zooom,viewpoort.y/2.0+vert.y*zooom)
@@ -39,16 +49,7 @@ func ifinbox(pos, pos1, pos2):
 	return (pos2.x>pos.x && pos.x>pos1.x && pos2.y>pos.y && pos.y>pos1.y);
 
 
-func getinfluence(col,_pos,type):
-	#col=string,_pos=vector3(int 0-255),type=int 0-2
-	var sizearray=[9,3,1]
-	var pos = Vector2(_pos[0],_pos[1])
-	var slider = _pos[2]
-	var pointarr=[]
-	
-	
-	
-	#*sizearray - old implementation
+
 
 
 
@@ -62,7 +63,7 @@ var r = 128
 var g = 128
 var b = 10
 
-func _process(delta):
+func _process(_delta):
 	i-=int(i>0)
 	var pos1=vertconv(polygon[0]+position,get_viewport_rect().size,1/get_node("..").zoom.x)
 	var pos2=vertconv(polygon[2]+position,get_viewport_rect().size,1/get_node("..").zoom.x)
@@ -104,11 +105,22 @@ func _process(delta):
 		$VSlider.material.set_shader_param("gre",g)
 		$VSlider.material.set_shader_param("blu",b)
 		#print(ok)
+		if(i==0 && Input.is_action_pressed("ui_accept")):
+			i=10
+			#print(test(r,g,b,9))
+			#var arr=influence.arrcreate(Vector2(r,g),3,colr.closestcolorsearch(r,g,b),b)
+			var arr = [[Vector2(0,0),Vector2(3,3),Vector2(3,6),Vector2(0,6),Vector2(-3,3)],true]
+#			print(arr[0])
+			if arr[1]:
+				if arr[0].size()>1:
+					print(influence.divid(arr[0],3))
+				else:
+					print("mbruvuvuv")
+			else:
+				print("bruv")
+			#print(influence.arrcreate(Vector2(r,g),9,colr.colorclosestsearch(r,g,b),b))
+			
 	
-	if(i==0):
-		i=6
-		#rng.randomize()
-		#material.set_shader_param("color",Color(rng.randf(),rng.randf(),rng.randf(),1));
-		
+	
 	
 

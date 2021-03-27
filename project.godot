@@ -22,6 +22,7 @@ config/icon="res://icon.png"
 [autoload]
 
 colr="*res://COLOR.gd"
+influence="*res://Influence.gd"
 
 [input]
 

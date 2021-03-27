@@ -633,6 +633,9 @@ func colhextopos(hx):
 	var pos = Vector3(HexToInt(hx[1]+hx[2]),HexToInt(hx[3]+hx[4]),HexToInt(hx[5]+hx[6]))
 	return pos
 
+func closestcolorsearch(r,g,b):
+	return colorclosestsearch(r,g,b)
+
 func colorclosestsearch(r,g,b):#0-255
 	var closestcol = ""
 	r=int(r)
