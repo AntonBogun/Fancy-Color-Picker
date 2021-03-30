@@ -16,9 +16,9 @@ func _ready():
 	material.set_shader_param("zoom",1/get_node("..").zoom.x);
 	$Button.connect("pressed",self,"_update")
 	
-	print(-1%3)
 	
-	
+	print("huetest")
+	print(7/2)
 	
 	
 	

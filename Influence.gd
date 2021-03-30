@@ -44,7 +44,7 @@ func pointarrtopoly(arr):
 func f(x,type=0,cent=Vector2()):
 	var k
 	if type==1:
-		match (x-cent)/abs((x-cent).x):
+		match (x-cent)/max(abs((x-cent).x),abs((x-cent).y)):
 			Vector2(-1,-1):
 				k=1
 			Vector2(0,-1):
@@ -160,27 +160,42 @@ func f1(finalarr,i,col,slider,_scale=1):
 
 func divid(finalarr,_size):
 	var temparr=[]
-	var size = (_size-1)/2
+	var size = (ceil(float(_size/3))-1)+1
 	for i in range(finalarr.size()):
-		var _x=finalarr[(i-1)%finalarr.size()]
+		var _x=finalarr[mod((i-1),finalarr.size())]
 		var _y=finalarr[(i+1)%finalarr.size()]
 		var cent=finalarr[i]
 		var x = f(_x,1,cent)
-		var y = (f(_y,1,cent)-x)%8
-		var k = (floor((x%2+1)/2)+1)*2-1
+		var diff=floor(float(x/2))*2
+		var y = mod(int(f(_y,1,cent)-diff),8)
+		if y==0:
+			print(str(y)+" sus "+str(f(_y,1,cent)))
+			
+		
+		
+		var k = 2
+		
 		#k=(k%8)*float(k>8)+float(k<=8)*k
 		var first=1
+		
+		
 		while k<y:
-			var _k=f(k+1+(x%2*2))*_size
+			var _k=f(int(k+diff-1)%8+1)*size
 			if(first==1):
 				first=0
-				temparr.append(Vector2(_k.y+cent.x,-_k.x+cent.y))
+				temparr.append(Vector2(_k.y+_k.x+cent.x,-_k.x+_k.y+cent.y))
 			temparr.append(_k+cent)
-			temparr.append(Vector2(-_k.y+cent.x,_k.x+cent.y))
+			temparr.append(Vector2(-_k.y+_k.x+cent.x,_k.x+_k.y+cent.y))
+			#print(str(_k)+" imposter "+str(k)+", sus =" + str(i))
+			if i==2:
+				pass
 			k+=2
-		if i==2:
-			pass
+		if(i==2):
+			
+			continue
+		
 	
 	return temparr
 
-
+func mod(x,y):
+	return (x%y)*int(x>=0)+((x%y) + y)*int(x<0)
