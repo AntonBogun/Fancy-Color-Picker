@@ -6,6 +6,11 @@ extends Polygon2D
 # var b = "text"
 
 var type =0
+func circle(pos):
+	return (pow(pos.x,2)+pow(pos.y,2))<650
+func circle1(pos,size):
+	var circle = funcref(influence,"pogger")
+	return influence.forinbox(pos,size,circle)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -16,10 +21,15 @@ func _ready():
 	material.set_shader_param("zoom",1/get_node("..").zoom.x);
 	$Button.connect("pressed",self,"_update")
 	
-	
-	print("huetest")
-	print(7/2)
-	
+	#print(circle1(Vector2(),9))
+	#print("huetest")
+	#print(7/2)
+	var circle = funcref(self,"circle1")
+	#print(circle1(Vector2(0,-20),9))
+	var v9=influence.expand(influence.new(Vector2(),9,circle)[0],circle,9)
+	#var v3=influence.divid(v9,9)
+	print(v9)
+	#print(influence.pogger1(Vector2(0,0),9))
 	
 	
 var i=6
@@ -62,7 +72,7 @@ var mousepos=Vector2()
 var r = 128
 var g = 128
 var b = 10
-
+var interntype=0
 func _process(_delta):
 	i-=int(i>0)
 	var pos1=vertconv(polygon[0]+position,get_viewport_rect().size,1/get_node("..").zoom.x)
@@ -74,7 +84,8 @@ func _process(_delta):
 	material.set_shader_param("viewport",get_viewport_rect().size)
 	var slider =$VSlider.value
 	material.set_shader_param("slider",slider)
-	if((ok or ok2)&&Input.is_action_pressed("mouse_left")):
+	if((ok or ok2)&&Input.is_action_pressed("mouse_left") or interntype!=type):
+		interntype=type
 		if ok2:
 			if type==1:
 				r=slider
@@ -82,12 +93,17 @@ func _process(_delta):
 				g=slider
 			if type==0:
 				b=slider
-		else:
+		elif(ok):
 			mouseraw=(get_viewport().get_mouse_position()-pos1)*get_node("..").zoom.x
 			mousepos=Vector2(mouseraw.x,256-mouseraw.y)
 			r =mousepos.x*float(type==2)+mousepos.y*float(type==0)+slider*float(type==1);
 			g =mousepos.x*float(type==0)+mousepos.y*float(type==1)+slider*float(type==2);
 			b =mousepos.x*float(type==1)+mousepos.y*float(type==2)+slider*float(type==0);
+		else:
+			var _r=r
+			r=b
+			b=g
+			g=_r
 		r=floor(r)
 		g=floor(g)
 		b=floor(b)
@@ -109,13 +125,10 @@ func _process(_delta):
 			i=10
 			#print(test(r,g,b,9))
 			#var arr=influence.arrcreate(Vector2(r,g),3,colr.closestcolorsearch(r,g,b),b)
-			var arr = [[Vector2(0,0),Vector2(3,3),Vector2(3,6),Vector2(0,6),Vector2(-3,3)],true]
+			var arr = [[Vector2(0,0)],true]
 #			print(arr[0])
 			if arr[1]:
-				if arr[0].size()>1:
-					print(influence.divid(arr[0],3))
-				else:
-					print("mbruvuvuv")
+				print(influence.divid(arr[0],3))
 			else:
 				print("bruv")
 			#print(influence.arrcreate(Vector2(r,g),9,colr.colorclosestsearch(r,g,b),b))
