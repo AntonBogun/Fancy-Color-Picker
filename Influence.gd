@@ -171,6 +171,7 @@ func divid(finalarr,_size):
 			#print(str(_k)+" imposter "+str(k)+", sus =" + str(i))
 			k+=2
 		return temparr
+	
 	for i in range(finalarr.size()):
 		var _x=finalarr[mod((i-1),finalarr.size())]
 		var _y=finalarr[mod((i+1),finalarr.size())]
@@ -184,7 +185,7 @@ func divid(finalarr,_size):
 			yswitch=1
 			diff-=2
 		
-		var k = 4
+		var k = 2
 		#k=(k%8)*float(k>8)+float(k<=8)*k
 		var first=1
 		
@@ -287,74 +288,88 @@ func new(pos,_scale, funcr):
 
 
 func expand(finalarr,funcc,_scale=1):
-	var i = 0
-	var up=1
-	while i<finalarr.size():
-		
-		var _x=finalarr[mod((i-1),finalarr.size())]
-		var _y=finalarr[mod((i+1),finalarr.size())]
-		var cent=finalarr[i]
-		var x = f(_x,1,cent)
-		var y = f(_y,1,cent)
-		
-#		if funcc.call_func(cent+Vector2(0,-1)*_scale,_scale):
-#			finalarr.insert(0,cent+Vector2(0,-1)*_scale)
-#			finalarr.insert(finalarr.size(),finalarr[1])
-#			continue
-#		else:
-#			up=0
-		
-		var arr = []
-		print(str(finalarr)+" bruh "+str(y))
-		
-		if(x%2==1):
-			y=mod(y-x,8)
-			if(y>1):
-				arr.append(x+1)
-			if(y>3):
-				arr.append((x+2)%8+1)
-			if(y>5):
-				arr.append((x+4)%8+1)
-		else:
-			y=mod(y-x,8)+8*int(y-x==0)
-			if(y>1):
-				arr.append((x+1)%8+1)
-			if(y>3):
-				arr.append((x+3)%8+1)
-			if(y>5):
-				arr.append((x+5)%8+1)
-		var temp=0
-		var err=0
-		var _n =0
-		var dead =0
-		var uhoh=0
-		for n in arr:
-			if funcc.call_func(cent+f(n)*_scale,_scale):
-				finalarr.insert(i+temp,cent+f(n)*_scale)
-				if dead==1:
-					finalarr.insert(i+temp,cent)
-					dead=0
-					temp+=1
-					uhoh=1
-				
-				temp+=1
-				
+	
+	#var up=1
+	var done=1
+	var printcount=0
+	while done!=0:
+		done=0
+		var i = 0
+		while i<finalarr.size():
+			
+			var _x=finalarr[mod((i-1),finalarr.size())]
+			var _y=finalarr[mod((i+1),finalarr.size())]
+			var cent=finalarr[i]
+			var x = f(_x,1,cent)
+			var y = f(_y,1,cent)
+			
+	#		if funcc.call_func(cent+Vector2(0,-1)*_scale,_scale):
+	#			finalarr.insert(0,cent+Vector2(0,-1)*_scale)
+	#			finalarr.insert(finalarr.size(),finalarr[1])
+	#			continue
+	#		else:
+	#			up=0
+			
+			var arr = []
+			#print(str(finalarr)+" bruh "+str(y))
+			
+			if(x%2==1):
+				y=mod(y-x,8)
+				if(y>1):
+					arr.append(x+1)
+				if(y>3):
+					arr.append((x+2)%8+1)
+				if(y>5):
+					arr.append((x+4)%8+1)
 			else:
-				if temp==0:
-					temp=1
-					err=1
+				y=mod(y-x,8)+8*int(y-x==0)
+				if(y>2):
+					arr.append((x+1)%8+1)
+				if(y>4):
+					arr.append((x+3)%8+1)
+				if(y>6):
+					arr.append((x+5)%8+1)
+			var temp=0
+			var err=0
+			var _n =0
+			var dead =-1
+			var _i=0
+			for n in arr:
+				if funcc.call_func(cent+f(n)*_scale,_scale):
+					finalarr.insert(i+temp,cent+f(n)*_scale)
+					done=1
+					_i+=1
+					if dead==1:
+						finalarr.insert(i+temp,cent)
+						dead=0
+						temp+=1
+					
+					temp+=1
+					
 				else:
-					err+=1
-				dead=1
+					
+					if temp==0:
+						temp=1
+						err=1
+					else:
+						err+=1
+					dead+=int(abs(dead)!=1)
+				
+				n+=1
+				
+			#print(str(finalarr)+" sus "+str(y)+", i="+str(i)+", err="+str(err)+", arr="+str(arr.size())+", temp="+str(temp))
 			
-			n+=1
-			
-		print(str(finalarr)+" sus "+str(y)+", i="+str(i)+", err="+str(err)+", arr="+str(arr.size())+", temp="+str(temp))
-		
-		if err==0:
-			finalarr.remove(i+temp)
-		if arr.size()!=0:
-			i+=int(err==arr.size())
+			if err==0:
+				finalarr.remove(i+temp)
+				_i-=1
+			i+=1+_i
+		if (finalarr[0]==finalarr[finalarr.size()-1]):
+			finalarr.remove(finalarr.size()-1)
+		print(finalarr)
+		print("count="+str(printcount))
+		printcount+=1
+	#		if arr.size()!=0:
+	#			i+=int(err==arr.size())
 	return finalarr
 
 
