@@ -99,6 +99,6 @@ offset = Vector2( 125, 0 )
 polygon = PoolVector2Array( -128, -128, 0, -128, 0, 0, 1, 0, 1, -128, 30, -128, 30, 30, 0, 30, -128, 30 )
 
 [node name="testlol" type="Polygon2D" parent="."]
-scale = Vector2( 25, 25 )
+scale = Vector2( 5, 5 )
 polygon = PoolVector2Array( 7.4, -8.5, 4.1, -0.4, 12.6, -0.9 )
 script = ExtResource( 8 )

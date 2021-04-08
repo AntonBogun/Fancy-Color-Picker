@@ -178,12 +178,14 @@ func divid(finalarr,_size):
 		var cent=finalarr[i]
 		var x = f(_x,1,cent)
 		var diff=floor(float(x/2))*2
-		var y = mod(int(f(_y,1,cent)-diff),8)
+		var y = mod(int(f(_y,1,cent)-diff),8)+int(f(_y,1,cent)==diff)*8
+		if cent==Vector2(6,-15):
+			pass
 		#print(str(x)+" sus "+str(y)+" bruh "+str(f(_y,1,cent)))
 		var yswitch=0
-		if y==0:
-			yswitch=1
-			diff-=2
+#		if y==0:
+#			yswitch=1
+#			diff-=2
 		
 		var k = 2
 		#k=(k%8)*float(k>8)+float(k<=8)*k
@@ -207,12 +209,62 @@ func divid(finalarr,_size):
 	
 	return temparr
 
+
+func outline(finalarr,_size):
+	var temparr=[]
+	var size = (_size-1)/2
+	var first =1
+	if finalarr.size()==1:
+		var k = 2
+		
+		var cent = finalarr[0]
+		while k<9:
+			var _k=f(int(k))*size
+			_k=Vector2(abs(float(_k.x)+float(_k.x!=0)*0.5)*sign(_k.x),abs(float(_k.y)+float(_k.y!=0)*0.5)*sign(_k.y))
+			if(first==1):
+				first=0
+				temparr.append(Vector2(_k.y+_k.x+cent.x,-_k.x+_k.y+cent.y))
+			temparr.append(_k+cent)
+			temparr.append(Vector2(-_k.y+_k.x+cent.x,_k.x+_k.y+cent.y))
+			#print(str(_k)+" imposter "+str(k)+", sus =" + str(i))
+			k+=2
+		return temparr
+	
+	for i in range(finalarr.size()):
+		var _x=finalarr[mod((i-1),finalarr.size())]
+		var _y=finalarr[mod((i+1),finalarr.size())]
+		var cent=finalarr[i]
+		var x = f(_x,1,cent)
+		var diff=floor(float(x/2))*2
+		var y = mod(int(f(_y,1,cent)-diff),8)+int(f(_y,1,cent)==diff)*8
+#		if cent==Vector2(6,-15):
+#			pass
+		
+		var k = 2
+		
+		while k<y:
+			var _k=f(int(k+diff-1)%8+1)
+			
+			_k=Vector2(float(_k.x),float(_k.y))
+			
+			var _k1=Vector2(float(_k.x!=0)*0.5*sign(_k.x),float(_k.y!=0)*0.5*sign(_k.y))
+			_k=_k*size+_k1
+#			if(first==1):
+#				first=0
+#				temparr.append(Vector2(_k.y+_k.x+float(cent.x),-_k.x+_k.y+float(cent.y)))
+			temparr.append(Vector2(-_k.y+_k.x+float(cent.x),_k.x+_k.y+float(cent.y)) )
+			k+=2
+		
+	
+	return temparr
+
+
 func mod(x,y):
 	return (x%y)*int(x>=0)+((x%y) + y)*int(x<0 and x%y!=0)
 
 func pogger(pos):
-	var a = pow((sin(pos.x*PI/12 + PI/2)-1)*(-20),2)-pow(pos.y,2)
-	var b = pow(pos.y,2)+pow(pos.x,2)-1000
+	var a = pow((sin(pos.x*PI/6 + PI/2)-1)*(-10),2)-pow(pos.y,2)
+	var b = pow(pos.y,2)+pow(pos.x,2)-250
 	return b<a
 
 func pogger1(pos,_scale):
@@ -303,6 +355,10 @@ func expand(finalarr,funcc,_scale=1):
 			var x = f(_x,1,cent)
 			var y = f(_y,1,cent)
 			
+			if i>400:
+				done = 0
+				print("OVERFLOW")
+				break
 	#		if funcc.call_func(cent+Vector2(0,-1)*_scale,_scale):
 	#			finalarr.insert(0,cent+Vector2(0,-1)*_scale)
 	#			finalarr.insert(finalarr.size(),finalarr[1])
@@ -339,24 +395,24 @@ func expand(finalarr,funcc,_scale=1):
 					finalarr.insert(i+temp,cent+f(n)*_scale)
 					done=1
 					_i+=1
+					temp+=1
 					if dead==1:
 						finalarr.insert(i+temp,cent)
 						dead=0
 						temp+=1
 					
-					temp+=1
+					
 					
 				else:
-					
-					if temp==0:
-						temp=1
-						err=1
-					else:
-						err+=1
-					dead+=int(abs(dead)!=1)
+					pass
+					temp+=int(temp==0)
+					err+=1
+					dead+=int(dead!=1)
 				
 				n+=1
-				
+			if dead==1 and err!=arr.size():
+					finalarr.insert(i+temp,cent)
+					temp+=1
 			#print(str(finalarr)+" sus "+str(y)+", i="+str(i)+", err="+str(err)+", arr="+str(arr.size())+", temp="+str(temp))
 			
 			if err==0:
@@ -365,8 +421,8 @@ func expand(finalarr,funcc,_scale=1):
 			i+=1+_i
 		if (finalarr[0]==finalarr[finalarr.size()-1]):
 			finalarr.remove(finalarr.size()-1)
-		print(finalarr)
-		print("count="+str(printcount))
+#		print(finalarr)
+#		print("count="+str(printcount))
 		printcount+=1
 	#		if arr.size()!=0:
 	#			i+=int(err==arr.size())
@@ -380,7 +436,11 @@ func forinbox(pos,_scale,funcc,_args=[]):
 	
 	var off= (_scale-1)/2
 	var err=0
-	var box = [pos+Vector2(off,off),pos+Vector2(-off,-off),pos+Vector2(off,-off),pos+Vector2(-off,off)]
+	var box = []
+	if off>0:
+		box = [pos+Vector2(off,off),pos+Vector2(-off,-off),pos+Vector2(off,-off),pos+Vector2(-off,off)]
+	else:
+		box = [pos]
 #	if pos.x+off<256 && pos.x-off>-1 && pos.y+off<256 && pos.x-off>-1:
 #
 #	else:

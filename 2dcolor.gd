@@ -24,19 +24,24 @@ func _ready():
 	#print(circle1(Vector2(),9))
 	#print("huetest")
 	#print(7/2)
-	var bruharray=[Vector2(-30, -6),Vector2(-30, -9),Vector2(-30, -12),Vector2(-27, -12),Vector2(-24, -12),Vector2(-21, -12),Vector2(-18, -12),Vector2(-15, -12),Vector2(-12, -15),Vector2(-12, -18),Vector2(-12, -21),Vector2(-9, -21),Vector2(-6, -21),Vector2(-3, -21),Vector2(0, -21),Vector2(3, -21),Vector2(6, -21),Vector2(9, -21),Vector2(12, -21),Vector2(12, -18),Vector2(12, -15),Vector2(15, -12),Vector2(18, -12),Vector2(21, -12),Vector2(24, -12),Vector2(27, -12),Vector2(30, -12),Vector2(30, -9),Vector2(30, -6),Vector2(33, -3),Vector2(36, -3),Vector2(39, -3),Vector2(39, 0),Vector2(39, 3),Vector2(36, 3),Vector2(33, 3),Vector2(30, 6),Vector2(30, 9),Vector2(30, 12),Vector2(27, 12),Vector2(24, 12),Vector2(21, 12),Vector2(18, 12),Vector2(15, 12),Vector2(12, 15),Vector2(12, 18),Vector2(12, 21),Vector2(9, 21),Vector2(6, 21),Vector2(3, 21),Vector2(0, 21),Vector2(-3, 21),Vector2(-6, 21),Vector2(-9, 21),Vector2(-12, 21),Vector2(-12, 18),Vector2(-12, 15),Vector2(-15, 12),Vector2(-18, 12),Vector2(-21, 12),Vector2(-24, 12),Vector2(-27, 12),Vector2(-30, 12),Vector2(-30, 9),Vector2(-30, 6),Vector2(-33, 3),Vector2(-36, 3),Vector2(-39, 3),Vector2(-39, 0),Vector2(-39, -3),Vector2(-36, -3),Vector2(-33, -3)]
 	var circle = funcref(self,"circle1")
 	#print(circle1(Vector2(0,-20),9))
-	#var v9=influence.expand(influence.new(Vector2(),9,circle)[0],circle,9)
+	var v9=influence.expand(influence.new(Vector2(),9,circle)[0],circle,9)
 	#var v9=influence.expand(bruharray,circle,9)
-	#var v3=influence.divid(v9,9)
-	#v3=influence.expand(v3,circle,3)
+	var v3=influence.divid(v9,9)
+	v3=influence.expand(v3,circle,3)
+	var v1=influence.divid(v3,3)
+	v1=influence.expand(v1,circle,1)
+	#print(influence.outline(v1,1))
+	var test=[Vector2(0,0),Vector2(1,1)]
+	test[0]=Vector2(test[0].x+0.5,test[0].y+0.5)
+	print(test)
 	#var strin="["
 #	for n in v3:
 #		strin+="Vector2"+str(n)+","
 #	strin[strin.length()-1]=""
 #	strin+="]"
-	var v3=influence.expand(bruharray,circle,3)
+	#var v3=influence.expand(bruharray,circle,3)
 	#print(influence.pogger1(Vector2(0,0),9))
 	
 	
