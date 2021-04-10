@@ -669,4 +669,8 @@ func colorclosestsearch(r,g,b):#0-255
 			
 	return closestcol
 
+func colorif(pos,array): #funcref
+	var iff=true
+	if pos.x>255 or pos.x<0:
+		iff= false
 

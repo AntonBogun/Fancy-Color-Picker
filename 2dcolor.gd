@@ -6,11 +6,14 @@ extends Polygon2D
 # var b = "text"
 
 var type =0
-func circle(pos):
-	return (pow(pos.x,2)+pow(pos.y,2))<650
+
 func circle1(pos,size):
 	var circle = funcref(influence,"pogger")
 	return influence.forinbox(pos,size,circle)
+
+func colorif(pos,size,col):
+	var colorif=funcref(colr,"color")
+	influence.expand(influence.new(Vector2(),9,colorif)[0],colorif,9)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -24,18 +27,16 @@ func _ready():
 	#print(circle1(Vector2(),9))
 	#print("huetest")
 	#print(7/2)
-	var circle = funcref(self,"circle1")
-	#print(circle1(Vector2(0,-20),9))
-	var v9=influence.expand(influence.new(Vector2(),9,circle)[0],circle,9)
-	#var v9=influence.expand(bruharray,circle,9)
-	var v3=influence.divid(v9,9)
-	v3=influence.expand(v3,circle,3)
-	var v1=influence.divid(v3,3)
-	v1=influence.expand(v1,circle,1)
-	#print(influence.outline(v1,1))
-	var test=[Vector2(0,0),Vector2(1,1)]
-	test[0]=Vector2(test[0].x+0.5,test[0].y+0.5)
-	print(test)
+#	var circle = funcref(self,"circle1")
+#	#print(circle1(Vector2(0,-20),9))
+#	var v9=influence.expand(influence.new(Vector2(),9,circle)[0],circle,9)
+#	#var v9=influence.expand(bruharray,circle,9)
+#	var v3=influence.divid(v9,9)
+#	v3=influence.expand(v3,circle,3)
+#	var v1=influence.divid(v3,3)
+#	v1=influence.expand(v1,circle,1)
+#	print(influence.outline(v1,1))
+	
 	#var strin="["
 #	for n in v3:
 #		strin+="Vector2"+str(n)+","
