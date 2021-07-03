@@ -8,21 +8,26 @@ extends Polygon2D
 var type =0
 
 func circle1(pos,size):
+	#no way in hell this works
 	var circle = funcref(influence,"pogger")
 	return influence.forinbox(pos,size,circle)
 
 func colorif(pos,size,col):
+	#lmao i got fucked over by this
 	var colorif=funcref(colr,"color")
 	influence.expand(influence.new(Vector2(),9,colorif)[0],colorif,9)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	#thats how you pass info to a shader
 	material.set_shader_param("vertex0",polygon[0]+position);
 	material.set_shader_param("vertex1",polygon[1]+position);
 	material.set_shader_param("vertex2",polygon[2]+position);
 	material.set_shader_param("vertex3",polygon[3]+position);
 	material.set_shader_param("zoom",1/get_node("..").zoom.x);
 	$Button.connect("pressed",self,"_update")
+	
+	#testing:::
 	
 	#print(circle1(Vector2(),9))
 	#print("huetest")
@@ -57,6 +62,7 @@ func test(_r,_g,_b,size):
 		print(str(r+i.x)+" "+str(g+i.y)+colr.closestcolorsearch(r+i.x,g+i.y,b))
 
 func _update():
+	#function to update shader (mode)
 	type=(type+1)%3
 	material.set_shader_param("mode",type)
 	$VSlider.material.set_shader_param("mode",type)
@@ -66,6 +72,9 @@ func _update():
 	
 
 func vertconv(vert,viewpoort,zooom):
+	#converts point in on the grid to point in viewport
+	#adds viewport/2 because the center is in the center (so view/2)
+	#then multiplies vert by zoom (for obvious reasons)
 	return Vector2(viewpoort.x/2.0+vert.x*zooom,viewpoort.y/2.0+vert.y*zooom)
 
 
@@ -95,9 +104,13 @@ func _process(_delta):
 	var sliderpos2=vertconv($VSlider.rect_size*$VSlider.rect_scale+$VSlider.rect_position++position,get_viewport_rect().size,1/get_node("..").zoom.x)
 	var ok = ifinbox(get_viewport().get_mouse_position(),pos1,pos2)
 	var ok2 = ifinbox(get_viewport().get_mouse_position(),sliderpos1,sliderpos2)
+	
+	#provides shader with viewport info
 	material.set_shader_param("viewport",get_viewport_rect().size)
 	var slider =$VSlider.value
+	#and with slider
 	material.set_shader_param("slider",slider)
+	
 	if((ok or ok2)&&Input.is_action_pressed("mouse_left") or interntype!=type):
 		interntype=type
 		if ok2:

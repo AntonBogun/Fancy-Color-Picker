@@ -1,5 +1,6 @@
 extends Node
 
+#COLLAPSE THIS FOR YOUR SANITY
 func color(r,g,b):
 	var green000 = ["#000000 Black","#010203 Rich black (FOGRA39)","#010B13 Rich black (FOGRA29)","#100C08 Smoky black","#16161D Eigengrau","#1B1811 Black chocolate","#1B1B1B Eerie black"]
 	var green001 = []
@@ -585,12 +586,16 @@ func color(r,g,b):
 	var green777 = ["#E0FFFF Light cyan","#E1F8E7 Cosmic Latte","#E2F2E4 Frosted Mint","#E5E4E2 Platinum","#E5F2E7 Polar","#E6E6FA Lavender (web)","#E6F2EA Bubbles","#E7E5E8 White Lilac","#E7F2E9 Dew","#E8F3E8 Aqua Spring","#E9ECF1 Solitude","#E9EEEB Lily White","#EBF7E4 Panache","#EDE7E0 Desert Storm","#EDEAE0 Alabaster","#EEF3E5 Saltpan","#EFE6E6 Whisper","#F0F8FF Alice blue","#F0FFF0 Honeydew","#F0FFFF Azure (X11/web color)","#F2F0E6 Alabaster","#F4EAE4 Sauvignon","#F4EFE0 Bianca","#F4F0E6 Romance","#F4F0EC Isabelline","#F4F6EC Twilight Blue","#F5E6EA Amour","#F5EFEB Hint Of Red","#F5F5F5 White Smoke","#F5FFFA Mint cream","#F8E4E3 Tutu","#F8F4FF Magnolia","#F8F8FF Ghost white","#F9E8E2 Wisp Pink","#FAE6FA Pale purple (Pantone)","#FAF0E6 Linen","#FBEEE8 Rose White","#FDE9E0 Chablis","#FDF5E6 Old lace","#FEFEFA Baby powder","#FFE4E1 Misty rose","#FFF0F5 Lavender blush","#FFF5EE Seashell","#FFF8E7 Cosmic latte","#FFFAF0 Floral white","#FFFAFA Snow","#FFFFE0 Light yellow","#FFFFF0 Ivory","#FFFFFF White"]
 	var red77 = [green770,green771,green772,green773,green774,green775,green776,green777]
 	var blue7 = [red70,red71,red72,red73,red74,red75,red76,red77]
-	var all = [blue0,blue1,blue2,blue3,blue4,blue5,blue6,blue7,]
+	var all = [blue0,blue1,blue2,blue3,blue4,blue5,blue6,blue7]
 	return all[b][r][g]
-
-
+#yeah, like that
+#btw it was done using a cool c# program which i made to output with syntax that
+#you can paste into here and it should work
+#big brian
 
 func StringInvert(string):
+	#inverts string?
+	#honestly idk why this isnt a built in func but its not
 	var s=str(string)
 	var temp = "a"
 	var l = s.length()-1
@@ -602,6 +607,7 @@ func StringInvert(string):
 	return string
 
 func HexToInt (hx):
+	#understandable
 	var hex=StringInvert(str(hx).to_upper())
 	var final = 0
 	var i=0
@@ -610,6 +616,7 @@ func HexToInt (hx):
 			"1","2","3","4","5","6","7","8","9","0":
 				final+=int(cha)*pow(16,i)
 			"A","B","C","D","E","F":
+				#cheeky ngl
 				final+=(ord(cha)-55)*pow(16,i)
 			_:
 				return 0
@@ -617,6 +624,7 @@ func HexToInt (hx):
 	return final
 
 func HexToColor(C):
+	#uhhh, i guess it does hex to color?
 	var Col = str(C).to_upper()
 	var color = Array()
 	if Col.length()!=6:
@@ -628,15 +636,22 @@ func HexToColor(C):
 
 
 func colhextopos(hx):
+	#yeah if you used hextocolor with this and come here, well, The More You Know ☆
+	#(use with colorclosestsearch or smth)
+	#oh right, as for when to use - this is literally a Color() without the alpha, from hex
 	if hx=="":
 		return Vector3(255,255,255)
+	#oh and yes, it assumes that hex format is #xxxxxx
 	var pos = Vector3(HexToInt(hx[1]+hx[2]),HexToInt(hx[3]+hx[4]),HexToInt(hx[5]+hx[6]))
 	return pos
 
 func closestcolorsearch(r,g,b):
+	#yes, that did happen
 	return colorclosestsearch(r,g,b)
 
 func colorclosestsearch(r,g,b):#0-255
+	#find closest color based on "chunks"
+	#doesnt use sqrt, i was smort even back then
 	var closestcol = ""
 	r=int(r)
 	g=int(g)
