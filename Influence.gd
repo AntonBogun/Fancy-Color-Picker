@@ -1,7 +1,8 @@
 extends Node
 
-
+#DEPRECATED - use new()
 func arrcreate(pos,_scale,col,slider):
+	#OLD (no funcref)
 	#create array
 	var arr = []
 	#check if pos is correct
@@ -33,10 +34,10 @@ func arrcreate(pos,_scale,col,slider):
 	if arr.size()==5:
 		arr.remove(5)
 	return [arr, true]
+#DEPRECATED - use new()
 
 
-
-
+# Point relative to point
 func f(x,type=0,cent=Vector2()):
 	# Point relative to point
 	var k
@@ -44,6 +45,7 @@ func f(x,type=0,cent=Vector2()):
 	#diff.x+1=a
 	#diff.y+1=b
 	#abs(a+b+1-(2*a+abs(b-2)*2+2+2*b)*int(b==2)+int(b==1)*(6*b*b-15*b+6))
+	#NVM literally makes no difference/is worse, so not gonna change it
 	if type==1:
 		match (x-cent)/max(abs((x-cent).x),abs((x-cent).y)):
 			Vector2(-1,-1):
@@ -64,6 +66,7 @@ func f(x,type=0,cent=Vector2()):
 				k=8
 			_:
 				k=0
+			
 	else:
 		match x:
 			1:
@@ -87,27 +90,9 @@ func f(x,type=0,cent=Vector2()):
 	return k
 
 
-func iff(point, _scale,col,slider):
-	#check a box, yes if all are yes
-	if _scale>1:
-		var off= (_scale-1)/2
-		var err=0
-		var box = [point+Vector2(off,off),point+Vector2(-off,-off),point+Vector2(off,-off),point+Vector2(-off,off)]
-		if point.x+off<256 && point.x-off>-1 && point.y+off<256 && point.x-off>-1:
-			for vec in box:
-				if colr.colorclosestsearch(vec.x,vec.y,slider)==col:
-					continue
-				else:
-					err=1
-					break
-		else:
-			err=1
-		
-		return !bool(err)
-		
 
 
-
+#DEPRECATED - use expand()
 func f1(finalarr,i,col,slider,_scale=1):
 	#i-1,i,i+1 = prev, curr and next points
 	var _x=finalarr[(i-1)%finalarr.size()]
@@ -168,6 +153,8 @@ func f1(finalarr,i,col,slider,_scale=1):
 		return [finalarr,err==arr.size()]
 	else:
 		return [finalarr,false]
+#DEPRECATED - use expand()
+
 
 func divid(finalarr,_size):
 	#divides the point array into a smaller scale (9:3:1)
@@ -196,31 +183,14 @@ func divid(finalarr,_size):
 		var _y=finalarr[mod((i+1),finalarr.size())]
 		var cent=finalarr[i]
 		var x = f(_x,1,cent)
-		var diff=floor(float(x/2))*2
-		#just x-x%2? idk why it has to be so dumb
-		#this thing below is clearly high level sorcery
-		#after some inspecting i guess it like tries to do something cool
-		#oh i completely forgot this has to basically do outlines
-		#the logic for it was insane iirc, so i have no idea how this even functions
-		#just trust it
-		#ehh i have basic theory - it just takes y as the limit for k
-		#and to do that it needs to perform this operation, as it gets the accurate
-		#limit for the y.
-		#specifics are probably more details but i cant be bothered and it doesnt really matter
-		var y = mod(int(f(_y,1,cent)-diff),8)+int(f(_y,1,cent)==diff)*8
-#		if cent==Vector2(6,-15):
-#			pass
-#		print(str(x)+" sus "+str(y)+" bruh "+str(f(_y,1,cent)))
-#		var yswitch=0
-#		if y==0:
-#			yswitch=1
-#			diff-=2
+		var diff=x-x%2
+		var y = mod(int(f(_y,1,cent)-diff-1),8)+1
 		
 		var k = 2
 		#k=(k%8)*float(k>8)+float(k<=8)*k
 		var first=1
 		
-		while k<y or ( k!=10):
+		while k<y:
 			var _k=f(int(k+diff-1)%8+1)*size
 			if(first==1):
 				first=0
@@ -231,15 +201,16 @@ func divid(finalarr,_size):
 			if i==2:
 				pass
 			k+=2
-		if(i==2):
 			
-			continue
+			
+			
+		
 		
 	
 	return temparr
 
 
-func outline(finalarr,_size):
+func outline(finalarr,_size=1):
 	#oh right this actually does the corners for the point array... not entirely
 	#sure this is even useful
 	#wait right you can use this to your advantage when making a cool corner skip thing
@@ -311,28 +282,18 @@ func pogger(pos):
 	var b = pow(pos.y,2)+pow(pos.x,2)-250
 	return b<a
 
-func pogger1(pos,_scale):
-	#different pattern i guess? 
-	var x= pos.x
-	var y = pos.y
-	#return pow(pos.x,2)+pow(pos.y,2)<45
-	
-	var off= (_scale-1)/2
-	var err=0
-	var box = [pos+Vector2(off,off),pos+Vector2(-off,-off),pos+Vector2(off,-off),pos+Vector2(-off,off)]
-#	if pos.x+off<256 && pos.x-off>-1 && pos.y+off<256 && pos.x-off>-1:
-#
-#	else:
-#		err=1
-	for vec in box:
-		if (x<5 and x>-5 and y<5 and y>-5):
-			continue
-		else:
-			err=1
-			break
-	return !bool(err)
+func pogger1(pos):
+	#convex area
+	#desmos
+	#x^{2}+y^{2}-\left(20\sin\left(\frac{y-15}{10}\right)\right)^{2}<400
+	var x=pos.x
+	var y=pos.y
+	var iff=pow(x,2)+pow(y,2)-pow(20*sin((y-15)/10),2)<400
+	return iff
 
+#callfuncv = bad
 func new(pos,_scale, funcr):
+	#this probably is arrcreate() 2 ElBoog
 	var arr = []
 	var scale = (_scale-1)/2
 	if funcr.call_func(pos,_scale):
@@ -343,9 +304,7 @@ func new(pos,_scale, funcr):
 	var i = 0
 	var cent = arr[0]
 	var temp = 0
-	#important magic here::
-	#dude wtf are you talkign about i have literally no idea
-	#god not the call_funcs... this is so bad
+	#does a + shaped check
 	while i<4:
 		if funcr.call_func(pos+f(i*2+2)*_scale,_scale):
 			arr.insert(n,pos+f(i*2+2)*_scale)
@@ -361,29 +320,11 @@ func new(pos,_scale, funcr):
 		
 		
 		i+=1
-#
-#		if funcr.call_func(pos+f(i*2+2)*_scale,_scale):
-#			print("yes")
-#			arr.insert(n,pos+f(i*2+2)*_scale)
-#			i+=1
-#			n+=1
-#			if n<arr.size():
-#				if !funcr.call_func(pos+f(i*2+2)*_scale,_scale) and arr[n]!=cent:
-#					if (arr.size()!=2):
-#						arr.insert(n,cent)
-#					i+=1
-#					n+=1
-#		else:
-#			print("nope")
-#			n+=int(n<arr.size())#+int(i==n)
-#			i+=1
-	
-	
 	if arr.size()==5:
 		arr.remove(4)
 	elif(arr[arr.size()-1]==cent and arr[0]==cent and arr.size()>1):
 		arr.remove(arr.size()-1)
-	return [arr, true]
+	return arr
 
 
 func expand(finalarr,funcc,_scale=1):
@@ -393,11 +334,12 @@ func expand(finalarr,funcc,_scale=1):
 	var done=1
 	var printcount=0
 	var completed=0
+	#0 = default state, loop exists when done=0
 	while done!=0:
 		done=0
 		var i = completed
 		while i<finalarr.size():
-			
+			#get relative positions of x and y
 			var _x=finalarr[mod((i-1),finalarr.size())]
 			var _y=finalarr[mod((i+1),finalarr.size())]
 			var cent=finalarr[i]
@@ -406,25 +348,13 @@ func expand(finalarr,funcc,_scale=1):
 			
 			if i>400:
 				done = 0
-				#400 isnt actually that much, but it probably should never get that big
-				#with colors
-				#wait this is actual loops... yeahhhhhhhhh thats before i realized you can
-				#just skip all points you have already gone through to make the amount of stuff
-				#to check much smaller
-				#400 makes more sense now
-				#nvm looks like its not loops, but just point amount? then i was corrent
-				#but my point also is correct, so yeahh
+				#400 is the max amount of points.
 				print("OVERFLOW")
 				break
-	#		if funcc.call_func(cent+Vector2(0,-1)*_scale,_scale):
-	#			finalarr.insert(0,cent+Vector2(0,-1)*_scale)
-	#			finalarr.insert(finalarr.size(),finalarr[1])
-	#			continue
-	#		else:
-	#			up=0
 			
+			#figure out which points to check
 			var arr = []
-			#print(str(finalarr)+" bruh "+str(y))
+			
 			
 			if(x%2==1):
 				y=mod(y-x,8)
@@ -442,12 +372,15 @@ func expand(finalarr,funcc,_scale=1):
 					arr.append((x+3)%8+1)
 				if(y>6):
 					arr.append((x+5)%8+1)
+			#all of the stuff needed for proper point insertion
 			var temp=0
 			var err=0
 			var _n =0
 			var dead =-1
 			var _i=0
 			for n in arr:
+				#the check itself
+				
 				if funcc.call_func(cent+f(n)*_scale,_scale):
 					finalarr.insert(i+temp,cent+f(n)*_scale)
 					done=1
@@ -461,26 +394,28 @@ func expand(finalarr,funcc,_scale=1):
 					
 					
 				else:
-					pass
+					
 					temp+=int(temp==0)
 					err+=1
 					dead+=int(dead!=1)
 				
-				n+=1
+				
+			
 			if dead==1 and err!=arr.size():
 					finalarr.insert(i+temp,cent)
 					temp+=1
-			#print(str(finalarr)+" sus "+str(y)+", i="+str(i)+", err="+str(err)+", arr="+str(arr.size())+", temp="+str(temp))
-			
 			if err==0:
 				finalarr.remove(i+temp)
 				_i-=1
-			#completed = completed+int(arr.size()==0 and i==completed)
+			#CRUICIAL for making it run much faster
+			completed = completed+int(err!=0 and arr.size()==0 and i==completed)
 			i+=1+_i
 			
 			
 			
-		if (finalarr[0]==finalarr[finalarr.size()-1]):
+		
+		
+		if (finalarr[0]==finalarr[finalarr.size()-1]) and finalarr.size()!=1:
 			finalarr.remove(finalarr.size()-1)
 #		print(finalarr)
 #		print("count="+str(printcount))
@@ -519,3 +454,50 @@ func forinbox(pos,_scale,funcc,_args=[]):
 			err=1
 			break
 	return !bool(err)
+
+#OLD (no funcref), new = forinbox()
+func iff(point, _scale,col,slider):
+	#check a box, yes if all are yes
+	if _scale>1:
+		var off= (_scale-1)/2
+		var err=0
+		var box = [point+Vector2(off,off),point+Vector2(-off,-off),point+Vector2(off,-off),point+Vector2(-off,off)]
+		if point.x+off<256 && point.x-off>-1 && point.y+off<256 && point.x-off>-1:
+			for vec in box:
+				if colr.colorclosestsearch(vec.x,vec.y,slider)==col:
+					continue
+				else:
+					err=1
+					break
+		else:
+			err=1
+		
+		return !bool(err)
+		
+
+func neatify(arr):
+	var arr2=[]
+	for i in arr.size():
+		var _x=arr[mod((i-1),arr.size())]
+		var _y=arr[mod((i+1),arr.size())]
+		var cent=arr[i]
+		var x = f(_x,1,cent)
+		var y = f(_y,1,cent)
+		#if Dot(x,y)!=0:
+		
+		if mod(y-x,8)!=2:
+			arr2.append(cent)
+	arr.clear()
+	for i in arr2.size():
+		var _x=arr2[mod((i-1),arr2.size())]
+		var _y=arr2[mod((i+1),arr2.size())]
+		var cent=arr2[i]
+		var x = cent-_x
+		var y = cent-_y
+		if int(Dot(x,y))!=-1:
+			arr.append(cent)
+	return arr
+
+func Dot(a,b):
+	
+	return a.dot(b)/sqrt((pow(a.x,2)+pow(a.y,2))*(pow(b.x,2)+pow(b.y,2)))

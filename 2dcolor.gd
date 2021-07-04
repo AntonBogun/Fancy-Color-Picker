@@ -7,15 +7,7 @@ extends Polygon2D
 
 var type =0
 
-func circle1(pos,size):
-	#no way in hell this works
-	var circle = funcref(influence,"pogger")
-	return influence.forinbox(pos,size,circle)
 
-func colorif(pos,size,col):
-	#lmao i got fucked over by this
-	var colorif=funcref(colr,"color")
-	influence.expand(influence.new(Vector2(),9,colorif)[0],colorif,9)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,20 +19,6 @@ func _ready():
 	material.set_shader_param("zoom",1/get_node("..").zoom.x);
 	$Button.connect("pressed",self,"_update")
 	
-	#testing:::
-	
-	#print(circle1(Vector2(),9))
-	#print("huetest")
-	#print(7/2)
-#	var circle = funcref(self,"circle1")
-#	#print(circle1(Vector2(0,-20),9))
-#	var v9=influence.expand(influence.new(Vector2(),9,circle)[0],circle,9)
-#	#var v9=influence.expand(bruharray,circle,9)
-#	var v3=influence.divid(v9,9)
-#	v3=influence.expand(v3,circle,3)
-#	var v1=influence.divid(v3,3)
-#	v1=influence.expand(v1,circle,1)
-#	print(influence.outline(v1,1))
 	
 	#var strin="["
 #	for n in v3:
@@ -54,12 +32,7 @@ func _ready():
 var i=6
 var rng=RandomNumberGenerator.new()
 
-func test(_r,_g,_b,size):
-	print("\n --------------------- \n"+str(influence.iff(Vector2(r,g),size,colr.colorclosestsearch(r,g,b),b))+"=iff\n")
-	print(colr.colorclosestsearch(r,g,b)+" at point"+str(Vector3(r,g,b))+"\n")
-	var box = [Vector2(4,4),Vector2(4,-4),Vector2(-4,4),Vector2(-4,-4)]
-	for i in box:
-		print(str(r+i.x)+" "+str(g+i.y)+colr.closestcolorsearch(r+i.x,g+i.y,b))
+
 
 func _update():
 	#function to update shader (mode)
@@ -96,23 +69,31 @@ var r = 128
 var g = 128
 var b = 10
 var interntype=0
-func _process(_delta):
+var slider=40
+
+func _physics_process(_delta):
 	i-=int(i>0)
+	#positions on viewport
 	var pos1=vertconv(polygon[0]+position,get_viewport_rect().size,1/get_node("..").zoom.x)
 	var pos2=vertconv(polygon[2]+position,get_viewport_rect().size,1/get_node("..").zoom.x)
-	var sliderpos1=vertconv($VSlider.rect_position+position,get_viewport_rect().size,1/get_node("..").zoom.x)
-	var sliderpos2=vertconv($VSlider.rect_size*$VSlider.rect_scale+$VSlider.rect_position++position,get_viewport_rect().size,1/get_node("..").zoom.x)
+	#get positions on slider - pointless
+	#var sliderpos1=vertconv($VSlider.rect_position+position,get_viewport_rect().size,1/get_node("..").zoom.x)
+	#var sliderpos2=vertconv($VSlider.rect_size*$VSlider.rect_scale+$VSlider.rect_position++position,get_viewport_rect().size,1/get_node("..").zoom.x)
 	var ok = ifinbox(get_viewport().get_mouse_position(),pos1,pos2)
-	var ok2 = ifinbox(get_viewport().get_mouse_position(),sliderpos1,sliderpos2)
+	#var ok2 = ifinbox(get_viewport().get_mouse_position(),sliderpos1,sliderpos2)
 	
 	#provides shader with viewport info
 	material.set_shader_param("viewport",get_viewport_rect().size)
-	var slider =$VSlider.value
-	#and with slider
+	#if change in color
+	var ok2 =(slider!=$VSlider.value)
+	slider =$VSlider.value
+	#and with slider info
 	material.set_shader_param("slider",slider)
 	
+	#if change detected (run color find algorithm)
 	if((ok or ok2)&&Input.is_action_pressed("mouse_left") or interntype!=type):
 		interntype=type
+		#if change in slider - run slider to rgb conversion depending on type
 		if ok2:
 			if type==1:
 				r=slider
@@ -121,12 +102,14 @@ func _process(_delta):
 			if type==0:
 				b=slider
 		elif(ok):
+			#if mouse in box - run position to color conversion
 			mouseraw=(get_viewport().get_mouse_position()-pos1)*get_node("..").zoom.x
 			mousepos=Vector2(mouseraw.x,256-mouseraw.y)
 			r =mousepos.x*float(type==2)+mousepos.y*float(type==0)+slider*float(type==1);
 			g =mousepos.x*float(type==0)+mousepos.y*float(type==1)+slider*float(type==2);
 			b =mousepos.x*float(type==1)+mousepos.y*float(type==2)+slider*float(type==0);
 		else:
+			#change includes button press
 			var _r=r
 			r=b
 			b=g
@@ -134,33 +117,36 @@ func _process(_delta):
 		r=floor(r)
 		g=floor(g)
 		b=floor(b)
+		#move the color picker+set color+ display current closest color
 		$Colorpick.position=mouseraw-Vector2(128,128)
 		$Colorpick.color=Color(r/256,g/256,b/256,1)
 		$ColorLabel.text="Current color:\n("+str(r)+","+str(g)+","+str(b)+")"
 		$ClosestColorLabel.text="Closest color: "+colr.colorclosestsearch(r,g,b)
+		#give slider's shader info
 		var _col=colr.colorclosestsearch(r,g,b)
 		var col = colr.colhextopos(_col)
-		#print(str(r)+" "+str(g)+" "+str(b))
-		
 		$ColorShow.color=Color(col[0]/255.0,col[1]/255.0,col[2]/255.0,1)
 		$VSlider/picksmol.color=Color(r/256,g/256,b/256,1)
 		$VSlider.material.set_shader_param("red",r)
 		$VSlider.material.set_shader_param("gre",g)
 		$VSlider.material.set_shader_param("blu",b)
-		#print(ok)
-		if(i==0 && Input.is_action_pressed("ui_accept")):
+		
+		
+		if(i==0 && ok &&Input.is_action_pressed("mouse_left")):
 			i=10
-			#print(test(r,g,b,9))
-			#var arr=influence.arrcreate(Vector2(r,g),3,colr.closestcolorsearch(r,g,b),b)
-			var arr = [[Vector2(0,0)],true]
-#			print(arr[0])
-			if arr[1]:
-				print(influence.divid(arr[0],3))
-			else:
-				print("bruv")
-			#print(influence.arrcreate(Vector2(r,g),9,colr.colorclosestsearch(r,g,b),b))
+			mousepos
+			#-1.do when Slider or type changed value
+			#0. repeat 1-4 for every 32 pixels
+			#1.Find color at point
+			#2.new() until size=1
+			#3.loop divid(3n)>expand(n) until n=1
+			#4.outline() and neatify()
+			#5.use fail revenge system to do 3 (without divid, and starting at 1) and 4 for all fails
+			
+			
+			
 			
 	
-	
+	#print(OS.get_ticks_usec()) #how to get time passed
 	
 

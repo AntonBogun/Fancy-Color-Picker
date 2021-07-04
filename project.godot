@@ -23,6 +23,10 @@ config/icon="res://icon.png"
 colr="*res://COLOR.gd"
 influence="*res://Influence.gd"
 
+[global]
+
+vsync=false
+
 [input]
 
 mouse_left={

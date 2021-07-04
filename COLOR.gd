@@ -661,7 +661,7 @@ func colorclosestsearch(r,g,b):#0-255
 	var sector = [floor(r/32),floor(g/32),floor(b/32)]
 	for col in color(sector[0],sector[1],sector[2]):
 		var dist = pos.distance_squared_to(colhextopos(col))
-		if closest>dist:	
+		if closest>dist:
 			closest = dist
 			closestcol=col
 	if closest>pow(min(min(r%32,g%32),b%32),2):
@@ -678,7 +678,7 @@ func colorclosestsearch(r,g,b):#0-255
 						continue
 					for col in color(sector[0]+i1,sector[1]+i2,sector[2]+i3):
 						var dist = pos.distance_squared_to(colhextopos(col))
-						if closest>dist:	
+						if closest>dist:
 							closest = dist
 							closestcol=col
 			
