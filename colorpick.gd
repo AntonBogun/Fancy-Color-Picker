@@ -1,17 +1,6 @@
 extends Polygon2D
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 export(Color) var OutLine = Color(0,0,0) setget set_color
 export(float) var Width = 2.0 setget set_width
 

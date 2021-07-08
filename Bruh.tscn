@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://2dcolor.gd" type="Script" id=1]
 [ext_resource path="res://Material.tres" type="Material" id=2]
@@ -8,8 +8,29 @@
 [ext_resource path="res://VSlider.gd" type="Script" id=6]
 [ext_resource path="res://Fonts/Roboto/ControlsRoboto.tres" type="DynamicFont" id=7]
 [ext_resource path="res://testloldeletelater.gd" type="Script" id=8]
+[ext_resource path="res://icon.png" type="Texture" id=9]
 
 [sub_resource type="ShaderMaterial" id=1]
+
+[sub_resource type="Shader" id=2]
+code = "shader_type canvas_item;
+uniform float saturation = -1;
+uniform float lightness = 0;
+void fragment(){
+	COLOR=texture(TEXTURE,UV);
+	float avrg=(COLOR.r+COLOR.g+COLOR.b)/3.0;
+	COLOR.r=COLOR.r+(avrg-COLOR.r)*-min(saturation,0)+max(saturation,0)*float((COLOR.r-avrg)>0.0);
+	COLOR.g=COLOR.g+(avrg-COLOR.g)*-min(saturation,0)+max(saturation,0)*float((COLOR.g-avrg)>0.0);
+	COLOR.b=COLOR.b+(avrg-COLOR.b)*-min(saturation,0)+max(saturation,0)*float((COLOR.b-avrg)>0.0);
+	COLOR.r=COLOR.r*(1.0+min(lightness,0))+(1.0-COLOR.r)*max(lightness,0);
+	COLOR.g=COLOR.g*(1.0+min(lightness,0))+(1.0-COLOR.g)*max(lightness,0);
+	COLOR.b=COLOR.b*(1.0+min(lightness,0))+(1.0-COLOR.b)*max(lightness,0);
+}"
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
+shader_param/saturation = -1.0
+shader_param/lightness = 0.0
 
 [node name="Node2D" type="Node2D"]
 
@@ -44,9 +65,9 @@ __meta__ = {
 [node name="VSlider" type="VSlider" parent="Camera2D/HUE"]
 material = ExtResource( 4 )
 margin_left = 256.0
-margin_top = -128.0
+margin_top = -128.667
 margin_right = 272.0
-margin_bottom = 128.0
+margin_bottom = 127.333
 rect_scale = Vector2( 2, 1 )
 max_value = 255.0
 value = 5.0
@@ -99,7 +120,13 @@ scale = Vector2( 0.5, 0.5 )
 polygon = PoolVector2Array( -8, 0, -64, 0, -64, 32, -8, 32 )
 
 [node name="Polygon2D" type="Polygon2D" parent="Camera2D/HUE"]
-visible = false
+position = Vector2( -128, 128 )
+scale = Vector2( 1, -1 )
 color = Color( 0, 0, 0, 0.239216 )
-offset = Vector2( 125, 0 )
 polygon = PoolVector2Array( -128, -128, 0, -128, 0, 0, 1, 0, 1, -128, 30, -128, 30, 30, 0, 30, -128, 30 )
+script = ExtResource( 8 )
+
+[node name="Sprite" type="Sprite" parent="Camera2D/HUE"]
+material = SubResource( 3 )
+position = Vector2( 1110.1, -17.2554 )
+texture = ExtResource( 9 )

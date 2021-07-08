@@ -270,46 +270,53 @@ func mod(x,y):
 	#not the bs one like you normally see where it can get negative (just generally not ideal)
 	return (x%y)*int(x>=0)+((x%y) + y)*int(x<0 and x%y!=0)
 
-func pogger(pos):
+func pogger(pos,args):
 	#i uh... i have no idea honestly
 	#ohhh nvm i get it - thats the cool pattern that behaves like a bitch cus
 	#it has empty spaces.. yeah, i would have to add an entire algorithm to exising
 	#algorithm for it to account for empty spaces - suffering
 	
-	#copy paste in desmos
-	#\left(\left(\sin\left(x\cdot\frac{\pi}{6}+\frac{\pi}{2}\right)-1\right)\cdot-10\right)^{2}-y^{2}>y^{2}+x^{2}-250
-	var a = pow((sin(pos.x*PI/6 + PI/2)-1)*(-10),2)-pow(pos.y,2)
-	var b = pow(pos.y,2)+pow(pos.x,2)-250
-	return b<a
-
-func pogger1(pos):
-	#convex area
-	#desmos
-	#x^{2}+y^{2}-\left(20\sin\left(\frac{y-15}{10}\right)\right)^{2}<400
-	var x=pos.x
-	var y=pos.y
-	var iff=pow(x,2)+pow(y,2)-pow(20*sin((y-15)/10),2)<400
-	return iff
+	
+	match args[0]:
+		0:  #copy paste in desmos
+			#non-convex, causes issues with divid
+			#\left(\left(\sin\left(x\cdot\frac{\pi}{6}+\frac{\pi}{2}\right)-1\right)\cdot-10\right)^{2}-y^{2}>y^{2}+x^{2}-250
+			var a = pow((sin(pos.x*PI/6 + PI/2)-1)*(-10),2)-pow(pos.y,2)
+			var b = pow(pos.y,2)+pow(pos.x,2)-250
+			return b<a
+		1:
+			#non-convex, doesnt cause issues due to lesser precision required to skip over
+			#x^{2}-y^{2}>-17+\frac{\left|x^{3}\right|}{20}
+			var a = pow(pos.x,2)-pow(pos.y,2)
+			var b = -17+abs(pow(pos.x,3))/20
+			return b<a
+		2:
+			#convex
+			#x^{2}+y^{2}-\left(20\sin\left(\frac{y-15}{10}\right)\right)^{2}<400
+			var x=pos.x
+			var y=pos.y
+			var iff=pow(x,2)+pow(y,2)-pow(20*sin((y-15)/10),2)<400
+			return iff
 
 #callfuncv = bad
-func new(pos,_scale, funcr):
+func new(pos,_scale, funcr,args=[]):
 	#this probably is arrcreate() 2 ElBoog
 	var arr = []
-	var scale = (_scale-1)/2
-	if funcr.call_func(pos,_scale):
+	if funcr.call_func(pos,_scale,args):
 		arr.append(pos)
 	else:
-		return [null,false]
+		return [null]
 	var n = 0
 	var i = 0
 	var cent = arr[0]
 	var temp = 0
 	#does a + shaped check
 	while i<4:
-		if funcr.call_func(pos+f(i*2+2)*_scale,_scale):
+		if funcr.call_func(pos+f(i*2+2)*_scale,_scale,args):
 			arr.insert(n,pos+f(i*2+2)*_scale)
+	#		
 			if i+1<4:
-				if temp==1 and !funcr.call_func(pos+f(i*2+4)*_scale,_scale):
+				if temp==1 and !funcr.call_func(pos+f(i*2+4)*_scale,_scale,args):
 					temp=0
 					arr.insert(n+1,cent)
 					n+=1
@@ -327,12 +334,16 @@ func new(pos,_scale, funcr):
 	return arr
 
 
-func expand(finalarr,funcc,_scale=1):
+#funcc in this context can be either the if() itself, or a forinbox(if()) in order to not allow
+#issues when increasing precision with divid()
+
+#funcc call - intended forinbox(pos,scale,args)
+func expand(finalarr,funcc,_scale=1,args=[]):
 	#the actual expand function, or from my understanding f1() 2, electric boogel
 	#oh right it doesnt function inside a loop as a child, this does its own loop
 	#var up=1
 	var done=1
-	var printcount=0
+	#var printcount=0
 	var completed=0
 	#0 = default state, loop exists when done=0
 	while done!=0:
@@ -346,7 +357,7 @@ func expand(finalarr,funcc,_scale=1):
 			var x = f(_x,1,cent)
 			var y = f(_y,1,cent)
 			
-			if i>400:
+			if i>10000:
 				done = 0
 				#400 is the max amount of points.
 				print("OVERFLOW")
@@ -381,7 +392,7 @@ func expand(finalarr,funcc,_scale=1):
 			for n in arr:
 				#the check itself
 				
-				if funcc.call_func(cent+f(n)*_scale,_scale):
+				if funcc.call_func(cent+f(n)*_scale,_scale,args):
 					finalarr.insert(i+temp,cent+f(n)*_scale)
 					done=1
 					_i+=1
@@ -408,7 +419,7 @@ func expand(finalarr,funcc,_scale=1):
 				finalarr.remove(i+temp)
 				_i-=1
 			#CRUICIAL for making it run much faster
-			completed = completed+int(err!=0 and arr.size()==0 and i==completed)
+			completed = completed+int(err==arr.size() and arr.size()!=0 and i==completed)
 			i+=1+_i
 			
 			
@@ -419,19 +430,16 @@ func expand(finalarr,funcc,_scale=1):
 			finalarr.remove(finalarr.size()-1)
 #		print(finalarr)
 #		print("count="+str(printcount))
-		printcount+=1
+		#printcount+=1
 	#		if arr.size()!=0:
 	#			i+=int(err==arr.size())
 	return finalarr
 
 
+#calls funcc:
+#(pos,args)
 func forinbox(pos,_scale,funcc,_args=[]):
-	#wtf is this
-	#bruh this really is iff() but that works with any function???
-	#god funcrefing is so tedious
-	var x= pos.x
-	var y = pos.y
-	#return pow(pos.x,2)+pow(pos.y,2)<45
+	#works ig
 	
 	var off= (_scale-1)/2
 	var err=0
@@ -440,19 +448,16 @@ func forinbox(pos,_scale,funcc,_args=[]):
 		box = [pos+Vector2(off,off),pos+Vector2(-off,-off),pos+Vector2(off,-off),pos+Vector2(-off,off)]
 	else:
 		box = [pos]
-#	if pos.x+off<256 && pos.x-off>-1 && pos.y+off<256 && pos.x-off>-1:
-#
-#	else:
-#		err=1
 	for vec in box:
 		
 		
-		if (funcc.call_func(vec)):
+		if (funcc.call_func(vec,_args)):
 			continue
 		else:
 			
 			err=1
 			break
+	
 	return !bool(err)
 
 #OLD (no funcref), new = forinbox()

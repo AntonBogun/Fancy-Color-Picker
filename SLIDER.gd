@@ -1,22 +1,11 @@
 extends Polygon2D
 
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
 export(Color) var OutLine = Color(0,0,0) setget set_color
 export(float) var Width = 2.0 setget set_width
 
+#outline stuff
 func _draw():
 	var poly = get_polygon()
 	for i in range(1 , poly.size()):
@@ -30,6 +19,7 @@ func set_color(color):
 func set_width(new_width):
 	Width = new_width
 	update()
+# warning-ignore:unused_argument
 func _process(delta):
 	if(get_parent() is VSlider):
 		position=Vector2(8,(1-get_parent().value/255.0)*(get_parent().rect_size.y-16)+8)

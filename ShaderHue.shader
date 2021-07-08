@@ -40,7 +40,7 @@ vec2 vertconv(vec2 vert, vec2 viewpoort, float zooom){
 }
 bool ifinbox(vec2 pos, vec2 pos1, vec2 pos2){
 	//just check if a position is inside a box
-	return (pos2.r>pos.r && pos.r>pos1.r && pos2.g>pos.g && pos.g>pos1.g);
+	return (pos2.r>=pos.r && pos.r>=pos1.r && pos2.g>=pos.g && pos.g>=pos1.g);
 }
 
 

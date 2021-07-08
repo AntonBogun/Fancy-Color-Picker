@@ -623,6 +623,13 @@ func HexToInt (hx):
 		i+=1
 	return final
 
+func ColorNameToColor(C):
+	if C.length()>7:
+		C=C[1]+C[2]+C[3]+C[4]+C[5]+C[6]
+	else:
+		return Color()
+	return HexToColor(C)
+
 func HexToColor(C):
 	#uhhh, i guess it does hex to color?
 	var Col = str(C).to_upper()
@@ -653,9 +660,10 @@ func colorclosestsearch(r,g,b):#0-255
 	#find closest color based on "chunks"
 	#doesnt use sqrt, i was smort even back then
 	var closestcol = ""
-	r=int(r)
-	g=int(g)
-	b=int(b)
+	r=min(max(int(r),0),255)
+	g=min(max(int(g),0),255)
+	b=min(max(int(b),0),255)
+	
 	var pos = Vector3(r,g,b)
 	var closest = 7200
 	var sector = [floor(r/32),floor(g/32),floor(b/32)]
@@ -664,14 +672,19 @@ func colorclosestsearch(r,g,b):#0-255
 		if closest>dist:
 			closest = dist
 			closestcol=col
+	
+#	var matrix=[]
+#	for i1 in range (-1,1):
+#
+	
 	if closest>pow(min(min(r%32,g%32),b%32),2):
-		for i1 in range(-1,2):
+		for i1 in range(-1,1):
 			if (0>sector[0]+i1 or sector[0]+i1>7):
 				continue
-			for i2 in range(-1,2):
+			for i2 in range(-1,1):
 				if (0>sector[1]+i2 or sector[1]+i2>7):
 					continue
-				for i3 in range(-1,2):
+				for i3 in range(-1,1):
 					if (0>sector[2]+i3 or sector[2]+i3>7):
 						continue
 					if (i1==0 and i2==0 and i3==0):
@@ -683,9 +696,4 @@ func colorclosestsearch(r,g,b):#0-255
 							closestcol=col
 			
 	return closestcol
-
-func colorif(pos,array): #funcref
-	var iff=true
-	if pos.x>255 or pos.x<0:
-		iff= false
 

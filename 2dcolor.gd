@@ -17,8 +17,8 @@ func _ready():
 	material.set_shader_param("vertex2",polygon[2]+position);
 	material.set_shader_param("vertex3",polygon[3]+position);
 	material.set_shader_param("zoom",1/get_node("..").zoom.x);
+# warning-ignore:return_value_discarded
 	$Button.connect("pressed",self,"_update")
-	
 	
 	#var strin="["
 #	for n in v3:
@@ -50,12 +50,25 @@ func vertconv(vert,viewpoort,zooom):
 	#then multiplies vert by zoom (for obvious reasons)
 	return Vector2(viewpoort.x/2.0+vert.x*zooom,viewpoort.y/2.0+vert.y*zooom)
 
-
+#lower left
+#top right
+#(in cartesian, in bad computer scale top left, bottom right 
 func ifinbox(pos, pos1, pos2):
-	return (pos2.x>pos.x && pos.x>pos1.x && pos2.y>pos.y && pos.y>pos1.y);
+	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y);
 
+func colorsize(pos,size,args):
+	var colorif = funcref(self,"colorif")
+	return influence.forinbox(pos,size,colorif,args)
 
-
+func colorif(pos,args):
+	var _slider = args[0]
+	var prevname=args[1]
+	#var type = args[2]
+	#colorarray = smh and search for change, then add and shit and yeah
+	var iff=colr.colorclosestsearch(pos.x,pos.y,_slider)==prevname
+	var inbox=ifinbox(Vector2(int(pos.x),int(pos.y)),Vector2(),Vector2(255,255))
+	#bruh
+	return inbox and iff
 
 
 
@@ -71,7 +84,9 @@ var b = 10
 var interntype=0
 var slider=40
 
-func _physics_process(_delta):
+
+
+func _process(_delta):
 	i-=int(i>0)
 	#positions on viewport
 	var pos1=vertconv(polygon[0]+position,get_viewport_rect().size,1/get_node("..").zoom.x)
@@ -131,10 +146,41 @@ func _physics_process(_delta):
 		$VSlider.material.set_shader_param("gre",g)
 		$VSlider.material.set_shader_param("blu",b)
 		
+		if(i==0 && ok &&Input.is_action_pressed("mouse_left"))and false:
+			$Polygon2D.test()
 		
-		if(i==0 && ok &&Input.is_action_pressed("mouse_left")):
-			i=10
-			mousepos
+		
+		
+#		if(i==0 && ok &&Input.is_action_pressed("mouse_left")):
+#			i=10
+#			var x=int(mousepos.y)
+#			var y=int(mousepos.x)
+#
+#			var name =colr.colorclosestsearch(x,y,slider)
+#			var colorsize = funcref(self,"colorsize")
+#			var arr=[]
+#			var col_i=0.0
+#
+#			for _col_i in 2:
+#
+#				col_i=float(pow(3,2-_col_i))
+#				arr = influence.new(Vector2(x,y),col_i,colorsize,[slider,name])
+#
+#				if arr[0]==null:
+#					pass
+#				else:
+#					break
+#
+#			while col_i>2:
+#				arr=influence.expand(arr,colorsize,col_i,[slider,name])
+#				if col_i>4:
+#					arr=influence.divid(arr,col_i)
+#				col_i=col_i/3
+#			$Polygon2D.color=colr.ColorNameToColor(name)
+#			$Polygon2D.polygon=arr
+			
+#
+#				pass
 			#-1.do when Slider or type changed value
 			#0. repeat 1-4 for every 32 pixels
 			#1.Find color at point
@@ -148,5 +194,3 @@ func _physics_process(_delta):
 			
 	
 	#print(OS.get_ticks_usec()) #how to get time passed
-	
-
