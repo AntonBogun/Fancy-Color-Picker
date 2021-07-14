@@ -11,6 +11,23 @@ func circle1(pos,size,args):
 	return influence.forinbox(pos,size,circle,args)
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
+	
+	#print(OS.get_ticks_usec()) #how to get time passed
+	
+	
+#	var start = OS.get_ticks_usec()
+#	for _i in 8:
+#		var i=(_i-2+8)%8+1
+#		var k = Vector2(int(round(cos(float(i-2)/4*PI))),int(round(sin(float(i-2)/4*PI))))
+#		print(int(round(-atan2(k.x,k.y)/PI*4)+8-3)%8+1)
+#	var bruh = OS.get_ticks_usec()-start
+#	print (bruh)
+#	start = OS.get_ticks_usec()
+#	for _i in 1000000:
+#		var k =int(_i==3)
+#	var end = OS.get_ticks_usec()
+#	print (end-start)
 	pass
 func ifinbox(pos, pos1, pos2):
 	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y);

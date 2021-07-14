@@ -268,7 +268,8 @@ func outline(finalarr,_size=1):
 func mod(x,y):
 	#oooo thats a poggers % like the one you see in desmos
 	#not the bs one like you normally see where it can get negative (just generally not ideal)
-	return (x%y)*int(x>=0)+((x%y) + y)*int(x<0 and x%y!=0)
+	#(x%y)*int(x>=0)+((x%y) + y)*int(x<0 and x%y!=0) - earlier function, complete garbage
+	return (x+y)%y
 
 func pogger(pos,args):
 	#i uh... i have no idea honestly

@@ -124,9 +124,12 @@ position = Vector2( -128, 128 )
 scale = Vector2( 1, -1 )
 color = Color( 0, 0, 0, 0.239216 )
 polygon = PoolVector2Array( -128, -128, 0, -128, 0, 0, 1, 0, 1, -128, 30, -128, 30, 30, 0, 30, -128, 30 )
-script = ExtResource( 8 )
 
 [node name="Sprite" type="Sprite" parent="Camera2D/HUE"]
 material = SubResource( 3 )
 position = Vector2( 1110.1, -17.2554 )
 texture = ExtResource( 9 )
+
+[node name="Popup" type="Popup" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0

@@ -65,7 +65,7 @@ func colorif(pos,args):
 	var prevname=args[1]
 	#var type = args[2]
 	#colorarray = smh and search for change, then add and shit and yeah
-	var iff=colr.colorclosestsearch(pos.x,pos.y,_slider)==prevname
+	var iff=colr.ColorClosestSearch(pos.x,pos.y,_slider)==prevname
 	var inbox=ifinbox(Vector2(int(pos.x),int(pos.y)),Vector2(),Vector2(255,255))
 	#bruh
 	return inbox and iff
@@ -83,7 +83,7 @@ var g = 128
 var b = 10
 var interntype=0
 var slider=40
-
+var prevmouse=Vector2()
 
 
 func _process(_delta):
@@ -94,20 +94,24 @@ func _process(_delta):
 	#get positions on slider - pointless
 	#var sliderpos1=vertconv($VSlider.rect_position+position,get_viewport_rect().size,1/get_node("..").zoom.x)
 	#var sliderpos2=vertconv($VSlider.rect_size*$VSlider.rect_scale+$VSlider.rect_position++position,get_viewport_rect().size,1/get_node("..").zoom.x)
-	var ok = ifinbox(get_viewport().get_mouse_position(),pos1,pos2)
+	
+	#if mouse in box and mouse pos changed
+	var msif = ifinbox(get_viewport().get_mouse_position(),pos1,pos2) and prevmouse!=get_viewport().get_mouse_position()
 	#var ok2 = ifinbox(get_viewport().get_mouse_position(),sliderpos1,sliderpos2)
 	
 	#provides shader with viewport info
 	material.set_shader_param("viewport",get_viewport_rect().size)
-	#if change in color
+	#if change in slider
 	var ok2 =(slider!=$VSlider.value)
+	
 	slider =$VSlider.value
 	#and with slider info
 	material.set_shader_param("slider",slider)
 	
 	#if change detected (run color find algorithm)
-	if((ok or ok2)&&Input.is_action_pressed("mouse_left") or interntype!=type):
+	if((msif or ok2)&&Input.is_action_pressed("mouse_left") or interntype!=type):
 		interntype=type
+		prevmouse=get_viewport().get_mouse_position()
 		#if change in slider - run slider to rgb conversion depending on type
 		if ok2:
 			if type==1:
@@ -116,9 +120,9 @@ func _process(_delta):
 				g=slider
 			if type==0:
 				b=slider
-		elif(ok):
+		elif(msif):
 			#if mouse in box - run position to color conversion
-			mouseraw=(get_viewport().get_mouse_position()-pos1)*get_node("..").zoom.x
+			mouseraw=(prevmouse-pos1)*get_node("..").zoom.x
 			mousepos=Vector2(mouseraw.x,256-mouseraw.y)
 			r =mousepos.x*float(type==2)+mousepos.y*float(type==0)+slider*float(type==1);
 			g =mousepos.x*float(type==0)+mousepos.y*float(type==1)+slider*float(type==2);
@@ -136,17 +140,17 @@ func _process(_delta):
 		$Colorpick.position=mouseraw-Vector2(128,128)
 		$Colorpick.color=Color(r/256,g/256,b/256,1)
 		$ColorLabel.text="Current color:\n("+str(r)+","+str(g)+","+str(b)+")"
-		$ClosestColorLabel.text="Closest color: "+colr.colorclosestsearch(r,g,b)
+		$ClosestColorLabel.text="Closest color: "+colr.ColorClosestSearch(r,g,b)
 		#give slider's shader info
-		var _col=colr.colorclosestsearch(r,g,b)
-		var col = colr.colhextopos(_col)
+		var _col=colr.ColorClosestSearch(r,g,b)
+		var col = colr.ColHexToPos(_col)
 		$ColorShow.color=Color(col[0]/255.0,col[1]/255.0,col[2]/255.0,1)
 		$VSlider/picksmol.color=Color(r/256,g/256,b/256,1)
 		$VSlider.material.set_shader_param("red",r)
 		$VSlider.material.set_shader_param("gre",g)
 		$VSlider.material.set_shader_param("blu",b)
 		
-		if(i==0 && ok &&Input.is_action_pressed("mouse_left"))and false:
+		if(i==0 && msif &&Input.is_action_pressed("mouse_left"))and false:
 			$Polygon2D.test()
 		
 		

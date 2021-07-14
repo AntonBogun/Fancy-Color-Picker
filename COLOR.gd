@@ -642,7 +642,7 @@ func HexToColor(C):
 	return Color8(color[0],color[1],color[2])
 
 
-func colhextopos(hx):
+func ColHexToPos(hx):
 	#yeah if you used hextocolor with this and come here, well, The More You Know ☆
 	#(use with colorclosestsearch or smth)
 	#oh right, as for when to use - this is literally a Color() without the alpha, from hex
@@ -652,11 +652,36 @@ func colhextopos(hx):
 	var pos = Vector3(HexToInt(hx[1]+hx[2]),HexToInt(hx[3]+hx[4]),HexToInt(hx[5]+hx[6]))
 	return pos
 
-func closestcolorsearch(r,g,b):
+func ClosestColorSearch(r,g,b):
 	#yes, that did happen
-	return colorclosestsearch(r,g,b)
+	return ColorClosestSearch(r,g,b)
 
-func colorclosestsearch(r,g,b):#0-255
+class sort:
+	static func sort_dist(a,b):
+		if a[1]<b[1]:
+			return true
+		return false
+
+#delete kills a zone inside, needed for when theres color voids
+func ColorSearchBoxMaker(center,color,size,delete):
+	var r=color[0]
+	var g=color[1]
+	var b=color[2]
+	var sectors=[]
+	for i1 in range(center.x-size,center.x+size):
+		if (0>i1 or i1>7):
+			continue
+		for i2 in range(center.y-size,center.y+size):
+			if (0>i2 or i2>7):
+				continue
+			for i3 in range(center.z-size,center.z+size):
+				var cvoid=!(i1>delete or i1<-delete) and !(i2>delete or i2<-delete) and !(i3>delete or i3<-delete)
+				if (0>i3 or i3>7)or cvoid:
+					continue
+				sectors.append([[i1,i2,i3],DistToBox(Vector3(r,g,b),Vector3(i1*32,i2*32,i3*32),Vector3(i1*32+31,i2*32+31,i3*32+31))])
+	return sectors
+
+func ColorClosestSearch(r,g,b):#0-255
 	#find closest color based on "chunks"
 	#doesnt use sqrt, i was smort even back then
 	var closestcol = ""
@@ -666,34 +691,64 @@ func colorclosestsearch(r,g,b):#0-255
 	
 	var pos = Vector3(r,g,b)
 	var closest = 7200
-	var sector = [floor(r/32),floor(g/32),floor(b/32)]
-	for col in color(sector[0],sector[1],sector[2]):
-		var dist = pos.distance_squared_to(colhextopos(col))
-		if closest>dist:
-			closest = dist
-			closestcol=col
+	var center = Vector3(floor(r/32),floor(g/32),floor(b/32))
+	var sectors =ColorSearchBoxMaker(center,[r,g,b],1,-1)
 	
-#	var matrix=[]
-#	for i1 in range (-1,1):
-#
+	sectors.sort_custom(sort,"sort_dist")
+	for sector in sectors:
+		if closest>sector[1]:
+			for color in color(sector[0][0],sector[0][1],sector[0][2]):
+				var dist = pos.distance_squared_to(ColHexToPos(color))
+				if closest>dist:
+					closest=dist
+					closestcol=color
+		else:
+			break
+	#not the prettiest, but if there's voids beyond 2 size, ill just let them be
+	if closestcol=="":
+		sectors=ColorSearchBoxMaker(center,[r,g,b],2,1)
+		for sector in sectors:
+			if closest>sector[1]:
+				for color in color(sector[0][0],sector[0][1],sector[0][2]):
+					var dist = pos.distance_squared_to(ColHexToPos(color))
+					if closest>dist:
+						closest=dist
+						closestcol=color
+			else:
+				break
 	
-	if closest>pow(min(min(r%32,g%32),b%32),2):
-		for i1 in range(-1,1):
-			if (0>sector[0]+i1 or sector[0]+i1>7):
-				continue
-			for i2 in range(-1,1):
-				if (0>sector[1]+i2 or sector[1]+i2>7):
-					continue
-				for i3 in range(-1,1):
-					if (0>sector[2]+i3 or sector[2]+i3>7):
-						continue
-					if (i1==0 and i2==0 and i3==0):
-						continue
-					for col in color(sector[0]+i1,sector[1]+i2,sector[2]+i3):
-						var dist = pos.distance_squared_to(colhextopos(col))
-						if closest>dist:
-							closest = dist
-							closestcol=col
-			
+	
 	return closestcol
 
+
+
+#pos = position
+#pos1/2=first/second box edges
+#first pos at 0,0; second at +,+
+#all vec3
+func DistToBox(pos,pos1,pos2):
+	var x = max(max(pos1.x-pos.x,pos.x-pos2.x),0)
+	var y = max(max(pos1.y-pos.y,pos.y-pos2.y),0)
+	var z = max(max(pos1.z-pos.z,pos.z-pos2.z),0)
+	return pow(x,2)+pow(y,2)+pow(z,2)
+
+#Vector2(int(round(cos(float(i-2)/4*PI))),int(round(sin(float(i-2)/4*PI))))
+#int(round(-atan2(k.x,k.y)/PI*4)+8-3)%8+1
+func Dir(dir,type=1):
+	if type==1:
+		return Vector2(int(round(cos(float(dir-2)/4*PI))),int(round(sin(float(dir-2)/4*PI))))
+	else:
+		return int(round(-atan2(dir.x,dir.y)/PI*4)+8-3)%8+1
+
+func StarCheck(pos,rule,args,maxrange=100.0):
+	var points=[]
+	for _i in 8:
+		var i =_i+1
+		var leng=maxrange
+		var curr=pos
+		while leng>1:
+			var off=ceil(leng/2)*Dir(i)
+			curr+=off*int(rule.call_func(off,args))
+			leng=ceil(leng/2)
+		points.append[curr]
+	return points
