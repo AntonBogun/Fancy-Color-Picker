@@ -266,16 +266,11 @@ func outline(finalarr,_size=1):
 
 
 func mod(x,y):
-	#oooo thats a poggers % like the one you see in desmos
-	#not the bs one like you normally see where it can get negative (just generally not ideal)
-	#(x%y)*int(x>=0)+((x%y) + y)*int(x<0 and x%y!=0) - earlier function, complete garbage
-	return (x+y)%y
+	#like %, except negatives are treated like positives, offset by y - desmos mod()
+	return (x%y+y)%y
 
 func pogger(pos,args):
-	#i uh... i have no idea honestly
-	#ohhh nvm i get it - thats the cool pattern that behaves like a bitch cus
-	#it has empty spaces.. yeah, i would have to add an entire algorithm to exising
-	#algorithm for it to account for empty spaces - suffering
+	#test function for areas
 	
 	
 	match args[0]:
@@ -505,5 +500,4 @@ func neatify(arr):
 	return arr
 
 func Dot(a,b):
-	
-	return a.dot(b)/sqrt((pow(a.x,2)+pow(a.y,2))*(pow(b.x,2)+pow(b.y,2)))
+	return cos(a.angle_to(b))

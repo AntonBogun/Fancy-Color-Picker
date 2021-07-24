@@ -10,22 +10,28 @@ func circle1(pos,size,args):
 	var circle = funcref(influence,"pogger")
 	return influence.forinbox(pos,size,circle,args)
 # Called when the node enters the scene tree for the first time.
+var rng = RandomNumberGenerator.new()
+
 func _ready():
-	
-	
+	rng.randomize()
+	#print(colr.Dot(Vector2(-1,-1),Vector2(1,-1)))
+	var pog=funcref(influence,"pogger")
+	print(colr.Neatify(colr.TraceShape(Vector2(20,5),pog,[0])))
 	#print(OS.get_ticks_usec()) #how to get time passed
 	
 	
 #	var start = OS.get_ticks_usec()
-#	for _i in 8:
-#		var i=(_i-2+8)%8+1
-#		var k = Vector2(int(round(cos(float(i-2)/4*PI))),int(round(sin(float(i-2)/4*PI))))
-#		print(int(round(-atan2(k.x,k.y)/PI*4)+8-3)%8+1)
+#	for _i in 100000:
+#		var i1=Vector2(rng.randf(),rng.randf())
+#		var i2=Vector2(rng.randf(),rng.randf())
+#		var k=i1.dot(i2)/sqrt((pow(i1.x,2)+pow(i1.y,2))*(pow(i2.x,2)+pow(i2.y,2)))
 #	var bruh = OS.get_ticks_usec()-start
 #	print (bruh)
 #	start = OS.get_ticks_usec()
-#	for _i in 1000000:
-#		var k =int(_i==3)
+#	for _i in 100000:
+#		var i1=Vector2(rng.randf(),rng.randf())
+#		var i2=Vector2(rng.randf(),rng.randf())
+#		var k =cos(i1.angle_to(i2))
 #	var end = OS.get_ticks_usec()
 #	print (end-start)
 	pass

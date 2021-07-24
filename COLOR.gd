@@ -592,9 +592,16 @@ func color(r,g,b):
 #btw it was done using a cool c# program which i made to output with syntax that
 #you can paste into here and it should work
 #big brian
+#also i cant help but notice that the entire editor lags when you type and are
+#near color... suspicious
+
+
+func ___COLOR_FUNCTIONS___():
+	return true
+
+
 
 func StringInvert(string):
-	#inverts string?
 	#honestly idk why this isnt a built in func but its not
 	var s=str(string)
 	var temp = "a"
@@ -606,22 +613,40 @@ func StringInvert(string):
 		l-=1
 	return string
 
+
+
 func HexToInt (hx):
-	#understandable
-	var hex=StringInvert(str(hx).to_upper())
+	#self explanatory
+	var hex=str(hx).to_upper()
 	var final = 0
-	var i=0
-	for cha in hex:
-		match cha:
-			"1","2","3","4","5","6","7","8","9","0":
-				final+=int(cha)*pow(16,i)
-			"A","B","C","D","E","F":
-				#cheeky ngl
-				final+=(ord(cha)-55)*pow(16,i)
-			_:
-				return 0
-		i+=1
+	for i in hex.length():
+		var ch=ord(hex[hex.length()-1-i])
+		
+		#48-58 = 0-9
+		#65-70 = A-F = 10-15
+		final+=((ch-48)*int(ch<58)+(ch-55)*int(ch>64))*pow(16,i)
 	return final
+
+
+
+func IntToHex(i):
+	#also self explanatory
+	var _i=float(i)
+	var step=0
+	var hex=""
+	while i>1:
+		_i=_i/16
+		if _i<1:
+			var k =pow(16,step)
+			var n=int(floor(float(i)/k))
+			i-=n*k
+			_i=float(i)
+			hex+=char(n+48+7*int(n>9))
+			step=0
+			continue
+		step+=1
+	return hex
+
 
 func ColorNameToColor(C):
 	if C.length()>7:
@@ -662,7 +687,17 @@ class sort:
 			return true
 		return false
 
-#delete kills a zone inside, needed for when theres color voids
+
+#explanatory
+func DistToBox(pos,pos1,pos2):
+	var x = max(max(pos1.x-pos.x,pos.x-pos2.x),0)
+	var y = max(max(pos1.y-pos.y,pos.y-pos2.y),0)
+	var z = max(max(pos1.z-pos.z,pos.z-pos2.z),0)
+	return pow(x,2)+pow(y,2)+pow(z,2)
+
+
+#create array of cube of sectors with hole specificed by delete 
+#include dist to sector
 func ColorSearchBoxMaker(center,color,size,delete):
 	var r=color[0]
 	var g=color[1]
@@ -684,71 +719,154 @@ func ColorSearchBoxMaker(center,color,size,delete):
 func ColorClosestSearch(r,g,b):#0-255
 	#find closest color based on "chunks"
 	#doesnt use sqrt, i was smort even back then
-	var closestcol = ""
 	r=min(max(int(r),0),255)
 	g=min(max(int(g),0),255)
 	b=min(max(int(b),0),255)
 	
 	var pos = Vector3(r,g,b)
-	var closest = 7200
+	var closest = pow(128,2)
 	var center = Vector3(floor(r/32),floor(g/32),floor(b/32))
-	var sectors =ColorSearchBoxMaker(center,[r,g,b],1,-1)
-	
-	sectors.sort_custom(sort,"sort_dist")
-	for sector in sectors:
-		if closest>sector[1]:
-			for color in color(sector[0][0],sector[0][1],sector[0][2]):
-				var dist = pos.distance_squared_to(ColHexToPos(color))
-				if closest>dist:
-					closest=dist
-					closestcol=color
-		else:
-			break
-	#not the prettiest, but if there's voids beyond 2 size, ill just let them be
-	if closestcol=="":
-		sectors=ColorSearchBoxMaker(center,[r,g,b],2,1)
+	var sectors =[]
+	var size=1
+	var delete=-1
+	var closestcol=""
+	var end=0
+	#note - does not support equal distance points, a single one will get picked
+	#specifically one that appeared first/one in a sector that comes first
+	for n in 4:
+		sectors=ColorSearchBoxMaker(center,[r,g,b],size,delete)
+		sectors.sort_custom(sort,"sort_dist")
 		for sector in sectors:
 			if closest>sector[1]:
 				for color in color(sector[0][0],sector[0][1],sector[0][2]):
 					var dist = pos.distance_squared_to(ColHexToPos(color))
 					if closest>dist:
-						closest=dist
 						closestcol=color
+						closest=dist
 			else:
+				end=1
 				break
+		if end==1:
+			break
+		size+=1
+		delete=size-1
 	
 	
 	return closestcol
 
+func ___INFLUENCE_FUNCTIONS___():
+	return true
 
-
+func Dot(a,b):
+	return cos(a.angle_to(b))
 #pos = position
 #pos1/2=first/second box edges
 #first pos at 0,0; second at +,+
 #all vec3
-func DistToBox(pos,pos1,pos2):
-	var x = max(max(pos1.x-pos.x,pos.x-pos2.x),0)
-	var y = max(max(pos1.y-pos.y,pos.y-pos2.y),0)
-	var z = max(max(pos1.z-pos.z,pos.z-pos2.z),0)
-	return pow(x,2)+pow(y,2)+pow(z,2)
 
-#Vector2(int(round(cos(float(i-2)/4*PI))),int(round(sin(float(i-2)/4*PI))))
-#int(round(-atan2(k.x,k.y)/PI*4)+8-3)%8+1
-func Dir(dir,type=1):
-	if type==1:
-		return Vector2(int(round(cos(float(dir-2)/4*PI))),int(round(sin(float(dir-2)/4*PI))))
-	else:
-		return int(round(-atan2(dir.x,dir.y)/PI*4)+8-3)%8+1
 
+# convert n to/from direction vector
+#   x->
+# y 1 2 3
+# | 0   4
+# v 7 6 5
+func DirToV(dir):
+	dir=float(dir)
+	return Vector2(int(round(cos((dir/4-1)*PI))),int(round(sin((dir/4-1)*PI))))
+func VToDir(V):
+	return int(round(-atan2(V.x,V.y)/PI*4)+8-2)%8
+
+#send 8 check beams, each beam does "binary" range check, such that it always
+#arrives at the border of the shape
 func StarCheck(pos,rule,args,maxrange=100.0):
 	var points=[]
-	for _i in 8:
-		var i =_i+1
+	for i in 8:
 		var leng=maxrange
 		var curr=pos
 		while leng>1:
-			var off=ceil(leng/2)*Dir(i)
-			curr+=off*int(rule.call_func(off,args))
+			var off=ceil(leng/2)*DirToV(i)
+			curr+=off*int(rule.call_func(curr+off,args))
 			leng=ceil(leng/2)
-		points.append[curr]
+		points.append(curr)
 	return points
+
+#averages points
+func Average(points):
+	var n=points.size()
+	var sum=Vector2()
+	for k in points:
+		sum+=k
+	sum=sum/n
+	return Vector2(round(sum.x),round(sum.y))
+
+#does StarCheck on loop and checks if new Average is approx equal to the last
+#so it finds middle of the shape 
+#(this is actually pretty useless but it *could* allow for near equal frame load
+#split)
+func GetCenter(pos,rule,args,maxrange=100.0,centoff=5.0):
+	var last=Vector2(-1000,-1000)
+	var points=[]
+	var limit=0
+	while last.distance_squared_to(pos)>pow(centoff,2) and limit!=10:
+		points=StarCheck(pos,rule,args,maxrange)
+		pos=Average(points)
+		limit+=1
+	return points
+
+#goes clockwise from point a to b along border of rule (meaning border is on the left)
+func AToB(a,b,rule,args,start=0):
+	var points=[a]
+	var lim=400
+	while points[points.size()-1]!=b and points.size()<lim:
+		var n=points.size()-1
+		while !rule.call_func(points[n]+DirToV(start),args):
+			start+=1
+		points.append(points[n]+DirToV(start))
+		start-=start%2+1
+	points.pop_back()
+	return [points,start]
+
+#combines everything to get the border of the rule-defined shape
+func TraceShape(pos,rule,args):
+	var mainpoints=GetCenter(pos,rule,args)
+	var trace=[]
+	var dir=0
+	for n in 8:
+		var temp=AToB(mainpoints[n],mainpoints[(n+1)%8],rule,args,dir)
+		dir=temp[1]
+		trace.append_array(temp[0])
+	return trace
+
+func Neatify(arr):
+	var arr2=[]
+	for i in arr.size():
+		var _x=arr[(i)%arr.size()]
+		var _y=arr[(i+2)%arr.size()]
+		var cent=arr[(i+1)%arr.size()]
+		var x = cent-_x
+		var y = cent-_y
+		if !is_equal_approx(Dot(x,y),-1):
+			arr2.append(cent)
+	return arr2
+
+func Mod(x,y):
+	return (x%y+y)%y
+
+func Influence(pos,slider):
+	
+	
+	
+	pass
+	
+
+
+
+
+
+
+
+
+
+
+
+
