@@ -599,55 +599,6 @@ func color(r,g,b):
 func ___COLOR_FUNCTIONS___():
 	return true
 
-
-
-func StringInvert(string):
-	#honestly idk why this isnt a built in func but its not
-	var s=str(string)
-	var temp = "a"
-	var l = s.length()-1
-	for i in range(floor(s.length()/2)):
-		temp=string[i]
-		string[i]=string[l]
-		string[l]=temp
-		l-=1
-	return string
-
-
-
-func HexToInt (hx):
-	#self explanatory
-	var hex=str(hx).to_upper()
-	var final = 0
-	for i in hex.length():
-		var ch=ord(hex[hex.length()-1-i])
-		
-		#48-58 = 0-9
-		#65-70 = A-F = 10-15
-		final+=((ch-48)*int(ch<58)+(ch-55)*int(ch>64))*pow(16,i)
-	return final
-
-
-
-func IntToHex(i):
-	#also self explanatory
-	var _i=float(i)
-	var step=0
-	var hex=""
-	while i>1:
-		_i=_i/16
-		if _i<1:
-			var k =pow(16,step)
-			var n=int(floor(float(i)/k))
-			i-=n*k
-			_i=float(i)
-			hex+=char(n+48+7*int(n>9))
-			step=0
-			continue
-		step+=1
-	return hex
-
-
 func ColorNameToColor(C):
 	if C.length()>7:
 		C=C[1]+C[2]+C[3]+C[4]+C[5]+C[6]
@@ -677,51 +628,22 @@ func ColHexToPos(hx):
 	var pos = Vector3(HexToInt(hx[1]+hx[2]),HexToInt(hx[3]+hx[4]),HexToInt(hx[5]+hx[6]))
 	return pos
 
-func ClosestColorSearch(r,g,b):
-	#yes, that did happen
-	return ColorClosestSearch(r,g,b)
-
 class sort:
 	static func sort_dist(a,b):
 		if a[1]<b[1]:
 			return true
 		return false
 
-
-#explanatory
-func DistToBox(pos,pos1,pos2):
-	var x = max(max(pos1.x-pos.x,pos.x-pos2.x),0)
-	var y = max(max(pos1.y-pos.y,pos.y-pos2.y),0)
-	var z = max(max(pos1.z-pos.z,pos.z-pos2.z),0)
-	return pow(x,2)+pow(y,2)+pow(z,2)
-
-
-#create array of cube of sectors with hole specificed by delete 
-#include dist to sector
-func ColorSearchBoxMaker(center,color,size,delete):
-	var r=color[0]
-	var g=color[1]
-	var b=color[2]
-	var sectors=[]
-	for i1 in range(center.x-size,center.x+size):
-		if (0>i1 or i1>7):
-			continue
-		for i2 in range(center.y-size,center.y+size):
-			if (0>i2 or i2>7):
-				continue
-			for i3 in range(center.z-size,center.z+size):
-				var cvoid=!(i1>delete or i1<-delete) and !(i2>delete or i2<-delete) and !(i3>delete or i3<-delete)
-				if (0>i3 or i3>7)or cvoid:
-					continue
-				sectors.append([[i1,i2,i3],DistToBox(Vector3(r,g,b),Vector3(i1*32,i2*32,i3*32),Vector3(i1*32+31,i2*32+31,i3*32+31))])
-	return sectors
+func ClosestColorSearch(r,g,b):
+	#yes, that did happen
+	return ColorClosestSearch(r,g,b)
 
 func ColorClosestSearch(r,g,b):#0-255
 	#find closest color based on "chunks"
 	#doesnt use sqrt, i was smort even back then
-	r=min(max(int(r),0),255)
-	g=min(max(int(g),0),255)
-	b=min(max(int(b),0),255)
+	r=min(max(round(r),0),255)
+	g=min(max(round(g),0),255)
+	b=min(max(round(b),0),255)
 	
 	var pos = Vector3(r,g,b)
 	var closest = pow(128,2)
@@ -750,19 +672,116 @@ func ColorClosestSearch(r,g,b):#0-255
 			break
 		size+=1
 		delete=size-1
-	
-	
 	return closestcol
+
+
+func ___MISC_FUNCTIONS___():
+	return true
+#honestly idk why this isnt a built in func but its not	
+func StringInvert(string):
+	
+	var s=str(string)
+	var temp = "a"
+	var l = s.length()-1
+	for i in range(floor(s.length()/2)):
+		temp=string[i]
+		string[i]=string[l]
+		string[l]=temp
+		l-=1
+	return string
+
+
+#explanatory
+func HexToInt (hx):
+	
+	var hex=str(hx).to_upper()
+	var final = 0
+	for i in hex.length():
+		var ch=ord(hex[hex.length()-1-i])
+		
+		#48-58 = 0-9
+		#65-70 = A-F = 10-15
+		final+=((ch-48)*int(ch<58)+(ch-55)*int(ch>64))*pow(16,i)
+	return final
+
+
+#explanatory
+func IntToHex(i):
+	
+	var _i=float(i)
+	var step=0
+	var hex=""
+	while i>1:
+		_i=_i/16
+		if _i<1:
+			var k =pow(16,step)
+			var n=int(floor(float(i)/k))
+			i-=n*k
+			_i=float(i)
+			hex+=char(n+48+7*int(n>9))
+			step=0
+			continue
+		step+=1
+	return hex
+
+#explanatory
+func DistToBox(pos,pos1,pos2):
+	var x = max(max(pos1.x-pos.x,pos.x-pos2.x),0)
+	var y = max(max(pos1.y-pos.y,pos.y-pos2.y),0)
+	var z = max(max(pos1.z-pos.z,pos.z-pos2.z),0)
+	return pow(x,2)+pow(y,2)+pow(z,2)
+
+#explanatory
+func NewVec2(n):
+	return Vector2(n,n)
+func NewVec3(n):
+	return Vector3(n,n,n)
+
+#pos = position
+#pos1/2=first/second box edges
+#first pos at 0,0; second at +,+
+func Vec2IfInBox(pos, pos1, pos2):
+	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y)
+func Vec2IfInBoxExcluded(pos, pos1, pos2):
+	return (pos2.x>pos.x && pos.x>pos1.x && pos2.y>pos.y && pos.y>pos1.y)
+func Vec3IfInBox(pos, pos1, pos2):
+	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y && pos2.z>=pos.z && pos.z>=pos1.z)
+func Vec3IfInBoxExcluded(pos, pos1, pos2):
+	return (pos2.x>pos.x && pos.x>pos1.x && pos2.y>pos.y && pos.y>pos1.y && pos2.z>pos.z && pos.z>pos1.z)
+
+
+#create array of cube of sectors with hole specificed by delete 
+#include dist to sector
+#NOTE: range() is BAD and you need to do range(x,y+1) or else its gonna be 1 short...
+func ColorSearchBoxMaker(center,color,size,delete):
+	var r=color[0]
+	var g=color[1]
+	var b=color[2]
+	var sectors=[]
+	for i1 in range(center.x-size,center.x+size+1):
+		if (0>i1 or i1>7):
+			continue
+		for i2 in range(center.y-size,center.y+size+1):
+			if (0>i2 or i2>7):
+				continue
+			for i3 in range(center.z-size,center.z+size+1):
+				var cvoid=Vec3IfInBox(Vector3(i1,i2,i3),NewVec3(-delete),NewVec3(delete))
+				if (0>i3 or i3>7)or cvoid:
+					continue
+				sectors.append([[i1,i2,i3],DistToBox(Vector3(r,g,b),Vector3(i1*32,i2*32,i3*32),Vector3(i1*32+31,i2*32+31,i3*32+31))])
+	return sectors
+
+
+#product
+func Dot(a,b):
+	return cos(a.angle_to(b))
+
+func Mod(x,y):
+	return (x%y+y)%y
 
 func ___INFLUENCE_FUNCTIONS___():
 	return true
 
-func Dot(a,b):
-	return cos(a.angle_to(b))
-#pos = position
-#pos1/2=first/second box edges
-#first pos at 0,0; second at +,+
-#all vec3
 
 
 # convert n to/from direction vector
@@ -787,6 +806,9 @@ func StarCheck(pos,rule,args,maxrange=100.0):
 			var off=ceil(leng/2)*DirToV(i)
 			curr+=off*int(rule.call_func(curr+off,args))
 			leng=ceil(leng/2)
+		#check for edge-case of bumping into the edge, which allows AToB() to skip over the point 
+		if(i%2==1 && rule.call_func(curr+DirToV(i+1),args) && rule.call_func(curr+DirToV(i-1),args)):
+			curr+=DirToV(i+1)
 		points.append(curr)
 	return points
 
@@ -849,15 +871,15 @@ func Neatify(arr):
 			arr2.append(cent)
 	return arr2
 
-func Mod(x,y):
-	return (x%y+y)%y
+func ColorIf(pos,args):
+	var slider = args[0]
+	var col=args[1]
+	return Vec3IfInBox(Vector3(pos.x,pos.y,slider),NewVec3(0),NewVec3(255)) and ColorClosestSearch(pos.x,pos.y,slider)==col
 
-func Influence(pos,slider):
-	
-	
-	
-	pass
-	
+func ColorInfluence(pos,slider):
+	var col = ColorClosestSearch(pos.x,pos.y,slider)
+	var rule = funcref(self,"ColorIf")
+	return Neatify(TraceShape(pos,rule,[slider,col]))
 
 
 

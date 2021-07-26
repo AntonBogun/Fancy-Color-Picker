@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://2dcolor.gd" type="Script" id=1]
 [ext_resource path="res://Material.tres" type="Material" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Fonts/Roboto/ControlsRoboto.tres" type="DynamicFont" id=7]
 [ext_resource path="res://testloldeletelater.gd" type="Script" id=8]
 [ext_resource path="res://icon.png" type="Texture" id=9]
+[ext_resource path="res://ColorInfluence.gd" type="Script" id=10]
 
 [sub_resource type="ShaderMaterial" id=1]
 
@@ -53,10 +54,10 @@ script = ExtResource( 8 )
 
 [node name="Button" type="Button" parent="Camera2D/HUE"]
 material = SubResource( 1 )
-margin_left = -79.5
-margin_top = 128.5
-margin_right = 73.5
-margin_bottom = 156.5
+margin_left = 300.0
+margin_top = 80.0
+margin_right = 390.0
+margin_bottom = 126.0
 text = "Change type"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -65,9 +66,9 @@ __meta__ = {
 [node name="VSlider" type="VSlider" parent="Camera2D/HUE"]
 material = ExtResource( 4 )
 margin_left = 256.0
-margin_top = -128.667
+margin_top = -128.0
 margin_right = 272.0
-margin_bottom = 127.333
+margin_bottom = 128.0
 rect_scale = Vector2( 2, 1 )
 max_value = 255.0
 value = 5.0
@@ -90,10 +91,10 @@ script = ExtResource( 5 )
 Width = 1.0
 
 [node name="ClosestColorLabel" type="RichTextLabel" parent="Camera2D/HUE"]
-margin_left = 111.919
-margin_top = 132.027
-margin_right = 709.919
-margin_bottom = 170.027
+margin_left = -90.0
+margin_top = 130.0
+margin_right = 868.0
+margin_bottom = 168.0
 rect_scale = Vector2( 0.5, 0.5 )
 custom_fonts/normal_font = ExtResource( 7 )
 text = "Closest color:"
@@ -115,7 +116,7 @@ __meta__ = {
 }
 
 [node name="ColorShow" type="Polygon2D" parent="Camera2D/HUE"]
-position = Vector2( 111.919, 131.73 )
+position = Vector2( -90, 130 )
 scale = Vector2( 0.5, 0.5 )
 polygon = PoolVector2Array( -8, 0, -64, 0, -64, 32, -8, 32 )
 
@@ -124,6 +125,7 @@ position = Vector2( -128, 128 )
 scale = Vector2( 1, -1 )
 color = Color( 0, 0, 0, 0.239216 )
 polygon = PoolVector2Array( 0, 0, 256, 0, 0, 30, -128, 30 )
+script = ExtResource( 10 )
 
 [node name="Sprite" type="Sprite" parent="Camera2D/HUE"]
 material = SubResource( 3 )

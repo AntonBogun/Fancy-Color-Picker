@@ -54,23 +54,11 @@ func vertconv(vert,viewpoort,zooom):
 #pos2=max,max
 #(bottom left, top right in cartesian; in bad computer scale top left, bottom right 
 func ifinbox(pos, pos1, pos2):
-	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y);
+	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y)
 func forceinbox(pos,pos1,pos2):
 	return Vector2(min(max(pos.x,pos1.x),pos2.x),min(max(pos.y,pos1.y),pos2.y))
 
-func colorsize(pos,size,args):
-	var colorif = funcref(self,"colorif")
-	return influence.forinbox(pos,size,colorif,args)
 
-func colorif(pos,args):
-	var _slider = args[0]
-	var prevname=args[1]
-	#var type = args[2]
-	#colorarray = smh and search for change, then add and shit and yeah
-	var iff=colr.ColorClosestSearch(pos.x,pos.y,_slider)==prevname
-	var inbox=ifinbox(Vector2(int(pos.x),int(pos.y)),Vector2(),Vector2(255,255))
-	#bruh
-	return inbox and iff
 
 
 
@@ -88,6 +76,9 @@ var prevmouseorigin=Vector2()
 var prevmouse=Vector2()
 var mouseraw=Vector2()
 var mousepos=Vector2()
+
+func ToInt(flot):
+	return int(round(flot))
 
 func _process(_delta):
 	i-=int(i>0)
@@ -154,9 +145,9 @@ func _process(_delta):
 			r=b
 			b=g
 			g=_r
-		r=floor(r)
-		g=floor(g)
-		b=floor(b)
+		r=round(r)
+		g=round(g)
+		b=round(b)
 		#move the color picker+set color+ display current closest color
 		$Colorpick.position=Vector2(mousepos.x,255-mousepos.y)-Vector2(128,128)
 		$Colorpick.color=Color(r/255,g/255,b/255,1)
@@ -171,51 +162,28 @@ func _process(_delta):
 		$VSlider.material.set_shader_param("gre",g)
 		$VSlider.material.set_shader_param("blu",b)
 		
-		if(i==0 && msif &&Input.is_action_pressed("mouse_left"))and false:
-			$Polygon2D.test()
 		
 		
 		
-#		if(i==0 && ok &&Input.is_action_pressed("mouse_left")):
-#			i=10
-#			var x=int(mousepos.y)
-#			var y=int(mousepos.x)
-#
-#			var name =colr.colorclosestsearch(x,y,slider)
-#			var colorsize = funcref(self,"colorsize")
-#			var arr=[]
-#			var col_i=0.0
-#
-#			for _col_i in 2:
-#
-#				col_i=float(pow(3,2-_col_i))
-#				arr = influence.new(Vector2(x,y),col_i,colorsize,[slider,name])
-#
-#				if arr[0]==null:
-#					pass
-#				else:
-#					break
-#
-#			while col_i>2:
-#				arr=influence.expand(arr,colorsize,col_i,[slider,name])
-#				if col_i>4:
-#					arr=influence.divid(arr,col_i)
-#				col_i=col_i/3
-#			$Polygon2D.color=colr.ColorNameToColor(name)
-#			$Polygon2D.polygon=arr
-			
-#
-#				pass
-			#-1.do when Slider or type changed value
-			#0. repeat 1-4 for every 32 pixels
-			#1.Find color at point
-			#2.new() until size=1
-			#3.loop divid(3n)>expand(n) until n=1
-			#4.outline() and neatify()
-			#5.use fail revenge system to do 3 (without divid, and starting at 1) and 4 for all fails
-			
-			
-			
-			
-	
+		if(i==0 && msif &&Input.is_action_pressed("mouse_left")):
+			i=30
+			var _x=round(r)
+			var _y=round(g)
+			var _slider=round(b)
+			var name = colr.ColorClosestSearch(_x,_y,_slider)
+			var arr=colr.ColorInfluence(Vector2(_x,_y),_slider)
+			$Polygon2D.color=Color(0,0,1,1)#colr.ColorNameToColor(name)
+#			var _arr =[]
+#			for n in floor(arr.size()/2):
+#				_arr.append(arr[n])
+#			print(_arr)
+#			_arr.clear()
+#			for n in ceil(arr.size()/2):
+#				_arr.append(arr[n+floor(arr.size()/2)])
+			print(arr)
+#			_arr.clear()
+			for pos in arr.size():
+				
+				arr[pos]=Vector2(arr[pos].y,arr[pos].x)
+			$Polygon2D.polygon=arr
 	#print(OS.get_ticks_usec()) #how to get time passed

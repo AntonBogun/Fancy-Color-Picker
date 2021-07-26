@@ -15,8 +15,11 @@ var rng = RandomNumberGenerator.new()
 func _ready():
 	rng.randomize()
 	#print(colr.Dot(Vector2(-1,-1),Vector2(1,-1)))
-	var pog=funcref(influence,"pogger")
-	print(colr.Neatify(colr.TraceShape(Vector2(20,5),pog,[0])))
+	#var pog=funcref(influence,"pogger")
+	#print(colr.Neatify(colr.TraceShape(Vector2(20,5),pog,[0])))
+	#print(colr.ColorInfluence(Vector2(175,225),5))
+	#print(range(1,3))
+	
 	#print(OS.get_ticks_usec()) #how to get time passed
 	
 	
@@ -47,10 +50,10 @@ func colorif(pos,args):
 	var prevname=args[1]
 	#var type = args[2]
 	#colorarray = smh and search for change, then add and shit and yeah
-	var iff=colr.colorclosestsearch(pos.x,pos.y,_slider)==prevname
-	var inbox=ifinbox(Vector2(int(pos.x),int(pos.y)),Vector2(),Vector2(255,255))
+	#var iff=colr.colorclosestsearch(pos.x,pos.y,_slider)==prevname
+	#var inbox=ifinbox(Vector2(int(pos.x),int(pos.y)),Vector2(),Vector2(255,255))
 	#bruh
-	return inbox and iff
+	#return inbox and iff
 
 
 func test():

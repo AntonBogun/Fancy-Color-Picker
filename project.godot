@@ -23,6 +23,11 @@ config/icon="res://icon.png"
 colr="*res://COLOR.gd"
 influence="*res://Influence.gd"
 
+[display]
+
+window/size/width=1344
+window/size/height=756
+
 [global]
 
 vsync=false
