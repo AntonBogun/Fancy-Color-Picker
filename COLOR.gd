@@ -1,7 +1,6 @@
 extends Node
-
-#COLLAPSE THIS FOR YOUR SANITY
-func color(r,g,b):
+var all
+func _init():
 	var green000 = ["#000000 Black","#010203 Rich black (FOGRA39)","#010B13 Rich black (FOGRA29)","#100C08 Smoky black","#16161D Eigengrau","#1B1811 Black chocolate","#1B1B1B Eerie black"]
 	var green001 = []
 	var green002 = ["#195905 Lincoln green"]
@@ -586,14 +585,16 @@ func color(r,g,b):
 	var green777 = ["#E0FFFF Light cyan","#E1F8E7 Cosmic Latte","#E2F2E4 Frosted Mint","#E5E4E2 Platinum","#E5F2E7 Polar","#E6E6FA Lavender (web)","#E6F2EA Bubbles","#E7E5E8 White Lilac","#E7F2E9 Dew","#E8F3E8 Aqua Spring","#E9ECF1 Solitude","#E9EEEB Lily White","#EBF7E4 Panache","#EDE7E0 Desert Storm","#EDEAE0 Alabaster","#EEF3E5 Saltpan","#EFE6E6 Whisper","#F0F8FF Alice blue","#F0FFF0 Honeydew","#F0FFFF Azure (X11/web color)","#F2F0E6 Alabaster","#F4EAE4 Sauvignon","#F4EFE0 Bianca","#F4F0E6 Romance","#F4F0EC Isabelline","#F4F6EC Twilight Blue","#F5E6EA Amour","#F5EFEB Hint Of Red","#F5F5F5 White Smoke","#F5FFFA Mint cream","#F8E4E3 Tutu","#F8F4FF Magnolia","#F8F8FF Ghost white","#F9E8E2 Wisp Pink","#FAE6FA Pale purple (Pantone)","#FAF0E6 Linen","#FBEEE8 Rose White","#FDE9E0 Chablis","#FDF5E6 Old lace","#FEFEFA Baby powder","#FFE4E1 Misty rose","#FFF0F5 Lavender blush","#FFF5EE Seashell","#FFF8E7 Cosmic latte","#FFFAF0 Floral white","#FFFAFA Snow","#FFFFE0 Light yellow","#FFFFF0 Ivory","#FFFFFF White"]
 	var red77 = [green770,green771,green772,green773,green774,green775,green776,green777]
 	var blue7 = [red70,red71,red72,red73,red74,red75,red76,red77]
-	var all = [blue0,blue1,blue2,blue3,blue4,blue5,blue6,blue7]
+	all = [blue0,blue1,blue2,blue3,blue4,blue5,blue6,blue7]
+func color(r,g,b):
 	return all[b][r][g]
-#yeah, like that
+#LMAO at first i had vars inside the func, which means they get initialized every time
+#now its like 10 times faster
 #btw it was done using a cool c# program which i made to output with syntax that
 #you can paste into here and it should work
 #big brian
 #also i cant help but notice that the entire editor lags when you type and are
-#near color... suspicious
+#near init... suspicious
 
 
 func ___COLOR_FUNCTIONS___():
@@ -614,18 +615,15 @@ func HexToColor(C):
 		return Color()
 	for i in range(3):
 		var clor=str(Col[i*2],Col[i*2+1])
-		color.append(HexToInt(clor))
+		color.append(("0x"+clor).hex_to_int())
 	return Color8(color[0],color[1],color[2])
 
-
+#Use with color names
 func ColHexToPos(hx):
-	#yeah if you used hextocolor with this and come here, well, The More You Know ☆
-	#(use with colorclosestsearch or smth)
-	#oh right, as for when to use - this is literally a Color() without the alpha, from hex
 	if hx=="":
 		return Vector3(255,255,255)
-	#oh and yes, it assumes that hex format is #xxxxxx
-	var pos = Vector3(HexToInt(hx[1]+hx[2]),HexToInt(hx[3]+hx[4]),HexToInt(hx[5]+hx[6]))
+	#god damn there was a hex_to_int() all this time, and it is much faster
+	var pos = Vector3(("0x"+hx[1]+hx[2]).hex_to_int(),("0x"+hx[3]+hx[4]).hex_to_int(),("0x"+hx[5]+hx[6]).hex_to_int())
 	return pos
 
 class sort:
@@ -691,7 +689,7 @@ func StringInvert(string):
 	return string
 
 
-#explanatory
+#BAD because there is .hex_to_int()
 func HexToInt (hx):
 	
 	var hex=str(hx).to_upper()
@@ -715,6 +713,7 @@ func IntToHex(i):
 		_i=_i/16
 		if _i<1:
 			var k =pow(16,step)
+			#essentially stepify(i,k)
 			var n=int(floor(float(i)/k))
 			i-=n*k
 			_i=float(i)
@@ -776,8 +775,10 @@ func ColorSearchBoxMaker(center,color,size,delete):
 func Dot(a,b):
 	return cos(a.angle_to(b))
 
-func Mod(x,y):
-	return (x%y+y)%y
+#fposmod(), posmod() - all the same
+#
+#func Mod(x,y):
+#	return (x%y+y)%y
 
 func ___INFLUENCE_FUNCTIONS___():
 	return true
@@ -829,14 +830,15 @@ func GetCenter(pos,rule,args,maxrange=100.0,centoff=5.0):
 	var last=Vector2(-1000,-1000)
 	var points=[]
 	var limit=0
-	while last.distance_squared_to(pos)>pow(centoff,2) and limit!=10:
+	while (last.distance_squared_to(pos)>pow(centoff,2)and limit<10)or !limit>3: #change limits
+		last=pos
 		points=StarCheck(pos,rule,args,maxrange)
 		pos=Average(points)
 		limit+=1
 	return points
 
 #goes clockwise from point a to b along border of rule (meaning border is on the left)
-func AToB(a,b,rule,args,start=0):
+func AToB(a,b,rule,args=[],start=0):
 	var points=[a]
 	var lim=400
 	while points[points.size()-1]!=b and points.size()<lim:
@@ -849,7 +851,7 @@ func AToB(a,b,rule,args,start=0):
 	return [points,start]
 
 #combines everything to get the border of the rule-defined shape
-func TraceShape(pos,rule,args):
+func TraceShape(pos,rule,args=[]):
 	var mainpoints=GetCenter(pos,rule,args)
 	var trace=[]
 	var dir=0
@@ -871,16 +873,63 @@ func Neatify(arr):
 			arr2.append(cent)
 	return arr2
 
-func ColorIf(pos,args):
+func ColorIf(pos,args=[]):
 	var slider = args[0]
 	var col=args[1]
-	return Vec3IfInBox(Vector3(pos.x,pos.y,slider),NewVec3(0),NewVec3(255)) and ColorClosestSearch(pos.x,pos.y,slider)==col
+	var isinbox=Vec3IfInBox(Vector3(pos.x,pos.y,slider),NewVec3(0),NewVec3(255))
+	
+	if isinbox:
+		var tempcol=ColorClosestSearch(pos.x,pos.y,slider)
+		if !tempcol==col and args.size()>=3:
+			var inst=instance_from_id(args[2])
+			var index=inst.cols.find(tempcol)
+			if index==-1:
+				inst.cols.append(tempcol)
+				inst.colsinfo.append([Vector3(pos.x,pos.y,slider),Vector3()])
+			else:
+				inst.colsinfo[index][1]=Vector3(pos.x,pos.y,slider)
+			return false
+		else:
+			return true
+	return false
+	
 
-func ColorInfluence(pos,slider):
+func ColorInfluence(pos,slider,args=[]):
 	var col = ColorClosestSearch(pos.x,pos.y,slider)
 	var rule = funcref(self,"ColorIf")
-	return Neatify(TraceShape(pos,rule,[slider,col]))
+	return Neatify(TraceShape(pos,rule,[slider,col]+args))
 
+func SliderIf(pos,slider,col):
+	return ColorClosestSearch(pos.x,pos.y,slider)==col
+#god what a mess
+func SliderOrganize(arr):
+	var newarr=[]
+	for col in arr:
+		newarr.append([col[0],[col[1][0]]])
+		for n in range(1,col[1].size()-1):
+			if col[1][n-1]+col[1][n+1]!=col[1][n]:
+				newarr[newarr.size()-1][1].append(n)
+		newarr[newarr.size()-1][1].append(col[1][col[1].size()-1])
+	return newarr
+
+func SliderInfluence(pos):
+	var cols=[]
+	for i in 256:
+		var col=ColorClosestSearch(pos.x,pos.y,i)
+		var index=cols.find(col)
+		if index!=-1:
+			cols[index][1].append(i)
+		else:
+			cols.append([col,[i]])
+	return cols
+
+func CreatePolygon(arr,off=5):
+	var newarr=[]
+	newarr.append(Vector2(-off,arr[0]))
+	newarr.append(Vector2(off,arr[0]))
+	newarr.append(Vector2(-off,arr[1]))
+	newarr.append(Vector2(off,arr[1]))
+	return newarr
 
 
 

@@ -42,7 +42,7 @@ func _update():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
 
-	
+
 
 func vertconv(vert,viewpoort,zooom):
 	#converts point in on the grid to point in viewport
@@ -55,6 +55,7 @@ func vertconv(vert,viewpoort,zooom):
 #(bottom left, top right in cartesian; in bad computer scale top left, bottom right 
 func ifinbox(pos, pos1, pos2):
 	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y)
+#essentially Vec2(clamp(),clamp())
 func forceinbox(pos,pos1,pos2):
 	return Vector2(min(max(pos.x,pos1.x),pos2.x),min(max(pos.y,pos1.y),pos2.y))
 
@@ -77,6 +78,10 @@ var prevmouse=Vector2()
 var mouseraw=Vector2()
 var mousepos=Vector2()
 
+var colorthread
+var id=get_instance_id()
+var cols=[]
+var colsinfo=[]
 func ToInt(flot):
 	return int(round(flot))
 
@@ -170,8 +175,9 @@ func _process(_delta):
 			var _x=round(r)
 			var _y=round(g)
 			var _slider=round(b)
+			
 			var name = colr.ColorClosestSearch(_x,_y,_slider)
-			var arr=colr.ColorInfluence(Vector2(_x,_y),_slider)
+			var arr=colr.ColorInfluence(Vector2(_x,_y),_slider,[id])
 			$Polygon2D.color=Color(0,0,1,1)#colr.ColorNameToColor(name)
 #			var _arr =[]
 #			for n in floor(arr.size()/2):
@@ -180,10 +186,11 @@ func _process(_delta):
 #			_arr.clear()
 #			for n in ceil(arr.size()/2):
 #				_arr.append(arr[n+floor(arr.size()/2)])
-			print(arr)
 #			_arr.clear()
 			for pos in arr.size():
 				
 				arr[pos]=Vector2(arr[pos].y,arr[pos].x)
+			print(cols)
+			print(colsinfo)
 			$Polygon2D.polygon=arr
 	#print(OS.get_ticks_usec()) #how to get time passed
