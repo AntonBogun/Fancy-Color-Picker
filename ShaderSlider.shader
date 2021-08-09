@@ -3,14 +3,12 @@ uniform vec4 color : hint_color;
 uniform vec2 vertex1;
 uniform vec2 vertex3;
 uniform vec2 viewport;
-uniform float red=0;
-uniform float gre=0;
-uniform float blu=0;
+uniform float red=128.0;
+uniform float gre=0.0;
+uniform float blu=128.0;
 uniform float zoom = 2.0;
 uniform int mode = 0;
-uniform float slider=0;
 //BS AFTER THIS LINE BRUHHHHHHH
-
 
 float f(float x){
 	return max(min(abs((x/2.0-round(x/2.0)+0.5)*2.0-1.0)*3.0-1.0,1.0),0.0);
@@ -47,14 +45,14 @@ void fragment() {
     //}else{
       //  COLOR = curr_color;
     ///}
-	if (ifinbox(pos,vertconv(vertex3,viewport,zoom),vertconv(vertex1,viewport,zoom))){
+	//if (ifinbox(pos,vertconv(vertex3,viewport,zoom),vertconv(vertex1,viewport,zoom))){
 		vec2 posrel = pos-vertconv(vertex3,viewport,zoom);
-		float r =red*zoom*float(mode!=1)+posrel.g*float(mode==1);
-		float g =gre*zoom*float(mode!=2)+posrel.g*float(mode==2);
+		float r =red*zoom*float(mode!=2)+posrel.g*float(mode==2);
+		float g =gre*zoom*float(mode!=1)+posrel.g*float(mode==1);
 		float b =blu*zoom*float(mode!=0)+posrel.g*float(mode==0);
 		COLOR= vec4(r/zoom/255.0,g/zoom/255.0,b/zoom/255.0,1);
-	}else{
-		COLOR= color;
-	}
+	//}else{
+	//	COLOR= color;
+	//}
 	
 }

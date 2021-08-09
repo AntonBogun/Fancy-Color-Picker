@@ -235,12 +235,12 @@ func outline(finalarr,_size=1):
 		return temparr
 	
 	for i in range(finalarr.size()):
-		var _x=finalarr[mod((i-1),finalarr.size())]
-		var _y=finalarr[mod((i+1),finalarr.size())]
+		var _x=finalarr[posmod((i-1),finalarr.size())]
+		var _y=finalarr[posmod((i+1),finalarr.size())]
 		var cent=finalarr[i]
 		var x = f(_x,1,cent)
 		var diff=floor(float(x/2))*2
-		var y = mod(int(f(_y,1,cent)-diff),8)+int(f(_y,1,cent)==diff)*8
+		var y = posmod(int(f(_y,1,cent)-diff),8)+int(f(_y,1,cent)==diff)*8
 #		if cent==Vector2(6,-15):
 #			pass
 		

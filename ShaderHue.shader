@@ -8,7 +8,7 @@ uniform vec2 vertex0;
 uniform vec2 viewport;
 uniform float zoom = 2.0;
 uniform int mode = 0;
-uniform float slider=0;
+uniform float slider=0.5;
 //ps: cant name a variable here and variable in a function the same
 
 
@@ -47,7 +47,7 @@ bool ifinbox(vec2 pos, vec2 pos1, vec2 pos2){
 void fragment() {
 	vec2 pos=FRAGCOORD.rg;
     vec4 curr_color = texture(TEXTURE,UV); // Get current color of pixel (useless tbh)
-	vec4 col=colfunc(TIME/4.0-f1(pos,20));
+	//vec4 col=colfunc(TIME/4.0-f1(pos,20));
 	
     ///if (curr_color.w!=float(0)){
        // COLOR = color
@@ -56,14 +56,14 @@ void fragment() {
     ///}
 	
 	
-	if (ifinbox(pos,vertconv(vertex3,viewport,zoom),vertconv(vertex1,viewport,zoom))){
+	//if (ifinbox(pos,vertconv(vertex3,viewport,zoom),vertconv(vertex1,viewport,zoom))){
 		vec2 posrel = pos-vertconv(vertex3,viewport,zoom);
-		float r =posrel.r*float(mode==2)+posrel.g*float(mode==0)+slider*float(mode==1)*zoom;
-		float g =posrel.r*float(mode==0)+posrel.g*float(mode==1)+slider*float(mode==2)*zoom;
-		float b =posrel.r*float(mode==1)+posrel.g*float(mode==2)+slider*float(mode==0)*zoom;
+		float r =posrel.r*float(mode==1)+posrel.g*float(mode==0)+slider*float(mode==2)*zoom;
+		float g =posrel.r*float(mode==0)+posrel.g*float(mode==2)+slider*float(mode==1)*zoom;
+		float b =posrel.r*float(mode==2)+posrel.g*float(mode==1)+slider*float(mode==0)*zoom;
 		COLOR= vec4(r/zoom/255.0,g/zoom/255.0,b/zoom/255.0,1);
-	}else{
-		COLOR= color;
-	}
+//	}else{
+//		COLOR= color;
+	//}
 	
 }

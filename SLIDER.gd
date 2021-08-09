@@ -1,5 +1,5 @@
 extends Polygon2D
-
+tool
 
 
 export(Color) var OutLine = Color(0,0,0) setget set_color
@@ -21,10 +21,11 @@ func set_width(new_width):
 	update()
 # warning-ignore:unused_argument
 func _process(delta):
-	if(get_parent() is VSlider):
-		position=Vector2(8,(1-get_parent().value/255.0)*(get_parent().rect_size.y-16)+8)
-	else:
-		position=Vector2((get_parent().value/255.0)*(get_parent().rect_size.y)+8,0)
+	if not Engine.editor_hint:
+		if(get_parent() is VSlider):
+			position=Vector2(8,(1-get_parent().value/255.0)*(get_parent().rect_size.y-16)+8)
+		else:
+			position=Vector2((get_parent().value/255.0)*(get_parent().rect_size.y)+8,0)
 	
 
 

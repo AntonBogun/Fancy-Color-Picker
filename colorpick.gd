@@ -1,8 +1,9 @@
 extends Polygon2D
+tool
 
 
 export(Color) var OutLine = Color(0,0,0) setget set_color
-export(float) var Width = 2.0 setget set_width
+export(float) var Width = 1.0 setget set_width
 
 func _draw():
 	var poly = get_polygon()
