@@ -101,16 +101,17 @@ func _process(_delta):
 	#if change detected (run color find algorithm)
 	if((msif or ok2)&&Input.is_action_pressed("mouse_left") or interntype!=type):
 		
-		r =round(mousepos.x*float(type==1)+mousepos.y*float(type==0)+slider*float(type==2))
-		g =round(mousepos.x*float(type==0)+mousepos.y*float(type==2)+slider*float(type==1))
-		b =round(mousepos.x*float(type==2)+mousepos.y*float(type==1)+slider*float(type==0))
+		r =int(round(mousepos.x*float(type==1)+mousepos.y*float(type==0)+slider*float(type==2)))
+		g =int(round(mousepos.x*float(type==0)+mousepos.y*float(type==2)+slider*float(type==1)))
+		b =int(round(mousepos.x*float(type==2)+mousepos.y*float(type==1)+slider*float(type==0)))
 		interntype=type
 		
 		
 		var col:Color=Color8(r,g,b)
-		var colname:String=colr.ColorClosestSearch(r,g,b)
-		var colfound:Color= colr.ColorNameToColor(colname)
-		UpdateChildren(mousepos,col,colfound,colname)
+		var colinfo:int=colr.InfoClosestSearch(r,g,b)
+		var colfound:Color= colr.InfoToCol(colinfo)
+		var colname:String=colr.InfoToName(colinfo)
+		UpdateChildren(mousepos,col,colfound,colinfo,colname)
 		
 #		$Colorpick.position=Vector2(mousepos.x,255-mousepos.y)-Vector2(128,128)
 #		$Colorpick.color=Color(r/255,g/255,b/255,1)
@@ -122,11 +123,12 @@ func _process(_delta):
 #		$VSlider.material.set_shader_param("gre",g)
 #		$VSlider.material.set_shader_param("blu",b)
 
-func UpdateChildren(pos:Vector2,col,colfound:Color,colname:String)->void:
+func UpdateChildren(pos:Vector2,col:Color,colfound:Color,colinfo:int,colname:String)->void:
 	($Colorpick as Polygon2D).position=Vector2(pos.x,255-pos.y)-Vector2(128,128)
 	($Colorpick as Polygon2D).color=col
 	($ColorLabel as RichTextLabel).text="Current color:\n("+str(col.r8)+","+str(col.g8)+","+str(col.b8)+")"
-	($ClosestColorLabel as RichTextLabel).text="Closest color: "+colname
+	var info="(%d,%d,%d) [%d,%d,%d] "%[colfound.r8,colfound.g8,colfound.b8,colfound.r8/32,colfound.g8/32,colfound.b8/32]
+	($ClosestColorLabel as RichTextLabel).text="Closest color: "+info+colname
 	($ColorShow as Polygon2D).color=colfound
 	($VSlider/picksmol as Polygon2D).color=col
 	($VSlider as VSlider).material.set_shader_param("red",col.r8)

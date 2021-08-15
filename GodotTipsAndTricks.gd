@@ -13,7 +13,7 @@ func circle1(pos,size,args):
 # Called when the node enters the scene tree for the first time.
 var rng = RandomNumberGenerator.new()
 
-
+func info():
 #Plan:
 #3d view + cross-section
 #1. make 3d cube in 2d
@@ -46,7 +46,15 @@ var rng = RandomNumberGenerator.new()
 #signal nameofsignal(args)
 #node_with_signal.connect("signalname",node_with_func,"func")
 #emit_signal("signame",args)
-
+#
+#bitwise:
+#0b01
+#0xff
+#| or
+#& and
+#^ xor
+#~ not
+#<< move >>
 
 
 
@@ -115,7 +123,7 @@ var rng = RandomNumberGenerator.new()
 #RichTextLabel: Advanced control over text. Use in custom controls.
 #Most use comes out of BBCode 
 
-
+	return true
 
 func _ready():
 	
@@ -136,9 +144,23 @@ func _ready():
 	#print(colr.ArrToStr(arr))
 	#print(colr.HighestBit(9<<24))
 	#print(colr.IntToHex(8<<24))
-	print(char(65)+char(92))
-	#colr.editcols()
+	
+	#var regex:=RegEx.new()
+	#regex.compile("[#\"][A-Fa-f0-9]{6}")
+	#print(regex.search("ssss \"bb1234 #231321").get_start())
+	var bruh = "	bruhhhhh 	    "
+	bruh =bruh.dedent().rstrip(" 	")
+	#colr.editfile("res://Colors.txt")
+	#print(colr.InfoToCol(93027714))
+	var m=[Vector2(133,116),Vector2(133,117),Vector2(134,117),Vector2(135,118),Vector2(135,119),Vector2(136,119),Vector2(137,119),Vector2(136,118),Vector2(137,117),Vector2(136,117),Vector2(136,116),Vector2(135,116),Vector2(134,116)]
+	m.invert()
+	#print(colr.IntToHex(colr.Vec2ToInfo(Vector2(148,132),128)))
+	#print(colr.TraceShape(0x846e80,0,0xd766d7c)[0])
+	colr.AreaCheck(132,110,128,2)
 	rng.randomize()
+	
+	#132, 110,128
+	
 	#print(colr.Dot(Vector2(-1,-1),Vector2(1,-1)))
 	#var pog=funcref(influence,"pogger")
 	#print(colr.Neatify(colr.TraceShape(Vector2(20,5),pog,[0])))
@@ -146,20 +168,19 @@ func _ready():
 	#print(range(1,3))
 
 	#print(OS.get_ticks_usec()) #how to get time passed
-
-
+#
 #	var start = OS.get_ticks_usec()
 #	for _i in 100000:
-#		_i=colr.HighestBit(_i)
+#		_i=colr.IntToHex(_i)
 #
 #	var bruh = OS.get_ticks_usec()-start
 #	print (bruh)
 #	start = OS.get_ticks_usec()
 #	for _i in 100000:
-#		_i=colr.LogHighestBit(_i)
+#		_i=colr.BuiltinIntToHex(133)
 #	var end = OS.get_ticks_usec()
 #	print (end-start)
-#	pass
+	pass
 func ifinbox(pos, pos1, pos2):
 	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y);
 
@@ -221,6 +242,31 @@ func test():
 func Dot(a,b):
 	return a.dot(b)/(a.length()*b.length())
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+
+# DECONTAMINATION
+#
+#func FitNumber(n,leng,minzer=-1):
+#	minzer=max(-1,minzer)
+#	var minzero=(leng-str(floor(n)).length())*int(minzer==-1)+(minzer)*int(minzer!=-1)
+#	if str(n).length()<leng:
+#		minzero=str(n).length()-str(floor(n)).length()
+#	var e=str(floor(n)).length()
+#	if leng>=e:
+#		if str(n).length()>leng and minzer==-1:
+#			#minzer not defined, n larger than leng
+#			return ("%0."+str(leng-e-1*int(leng!=e))+"f")%n
+#		elif minzer==-1:
+#			#minzer not defined, n smaller than leng
+#			return ("%0."+str(minzero-1)+"f")%n
+#		else:
+#			#minzer defined
+#			return ("%0."+str(min(minzer,leng-str(floor(n)).length()-1) )+"f")%n
+#	var E = str(e-1).length()+2
+#	var n2=n/pow(10,e-1)
+#	var final = str((("%0."+str(max(leng-E-1,0))+"f")%n2)+"E"+str(e-1))
+#	if minzero>=0:
+#		return ("%0."+str(int(minzero))+"f")%n
+#	else:
+#		return final
+#
+

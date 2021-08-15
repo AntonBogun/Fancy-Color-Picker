@@ -1,7 +1,7 @@
 extends Node2D
 
 var thread:Thread
-
+#export var debug:bool=false
 
 var torun:Semaphore
 var mutex:Mutex
@@ -119,14 +119,14 @@ func ThreadLogic()->bool:
 	var _die:bool
 	var _slider:int
 	var _type:int
-	var _inputarr:Array
+	var _input:int
 	var _bad:=true
 	mutex.lock()
 	_die=!status[0]
 	_start=globalinfo[0][0].empty()
-	_inputarr=typearr
+	_input=((int(typearr[0])<<16)|(int(typearr[1])<<8)|int(typearr[2]))
 	_type=enterinfo[2]
-	_slider=_inputarr[2]
+	#_input=colr.InfoShift(_input,_type)
 	mutex.unlock()
 	if _die:
 		#print_debug("Debug: Thread exited")
@@ -134,9 +134,6 @@ func ThreadLogic()->bool:
 	var _yx:Vector2
 	if _start:
 		#print_debug("Debug: Enter Start Pos")
-		mutex.lock()
-		_yx=Vector2(_inputarr[0],_inputarr[1])
-		mutex.unlock()
 		_bad=false
 	else:
 		#print_debug("Debug: Enter Pick Pos")
@@ -144,7 +141,7 @@ func ThreadLogic()->bool:
 		#print(globalinfo[0][1])
 		for n in globalinfo[1][0].size():
 			if !globalinfo[1][0][0] in globalinfo[0][0]:
-				_yx=globalinfo[1][1][0]
+				_input=colr.Vec2ToInfo(globalinfo[1][1][0],_input)
 				globalinfo[1][0].remove(0)
 				globalinfo[1][1].remove(0)
 				_bad=false
@@ -156,8 +153,8 @@ func ThreadLogic()->bool:
 #		print(globalinfo[0][1])
 #		print(_pos)
 	if !_bad:
-		var result:Array=colr.ColorInfluence(_yx,_slider,_type) #issue
-		if result[0]==null:
+		var result:Array=colr.ColorInfluence(_input,_type) #issue
+		if result.size()==1:
 			return true
 	#print_debug("Debug: Picked Color")
 		mutex.lock()
@@ -187,8 +184,12 @@ func _process(_delta:float)->void:
 					var poly:Polygon2D=Polygon2D.new()
 					$Polygons.add_child(poly)
 					#poly.set_owner($Polygons)
-					poly.color=colr.ColorNameToColor(processinfo[0][0][prevsize+n])
+					var col:Color=colr.InfoToCol(processinfo[0][0][prevsize+n])
+					poly.color=Color(0,0,1,1)#col
 					poly.polygon=processinfo[0][1][prevsize+n]
+					#print(poly.color.a8)
+					#print(str(poly.polygon))
+					#print(poly.z_index)
 					poly.set_script(load("res://colorpick.gd")) #change later for dedicated
 					poly.update() #outline script
 			prevsize=currsize
@@ -229,14 +230,23 @@ func _StartButton() -> void: #starts/pauses
 #			status[1]=true
 #	mutex.unlock()
 #	UpdateStatus()
-#	return
 	#DEBUG SECTION
+#	ClearPolys()
+#	ChangeArgs(Vector2(enterinfo[3].r,enterinfo[3].g),enterinfo[3].b,enterinfo[3].type)
+#	prevsize=0
 	status[0]=true
 	status[1]=true
 	ThreadDebug()
+	#print(str(globalinfo[0][1][globalinfo[0][1].size()-1]))
+#
 
 #0 - Online, 1 - Running, 2 - Finished, 3 - Visible, 4 - Slider not offset
 func _ResetButton() -> void: #Reset/Return to slider
+	ClearPolys()
+	ChangeArgs(Vector2(enterinfo[3].r,enterinfo[3].g),enterinfo[3].b,enterinfo[3].type)
+	prevsize=0
+	return
+	#debugend 
 	mutex.lock()
 	if status[0]:
 		if !status[1] and status[4]:
