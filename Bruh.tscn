@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://2dcolor.gd" type="Script" id=1]
 [ext_resource path="res://Material.tres" type="Material" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://tooltest.gd" type="Script" id=10]
 [ext_resource path="res://ColorAreaManager.gd" type="Script" id=11]
 [ext_resource path="res://Fonts/Roboto/Roboto.tres" type="DynamicFontData" id=12]
+[ext_resource path="res://polytest.gd" type="Script" id=13]
 
 [sub_resource type="ShaderMaterial" id=1]
 
@@ -62,7 +63,7 @@ script = ExtResource( 8 )
 
 [node name="tooltest" type="Polygon2D" parent="Camera2D/2dcolor"]
 position = Vector2( 16.8111, -195.878 )
-color = Color( 1, 1, 0.87, 1 )
+color = Color( 0.8, 0.8, 1, 1 )
 polygon = PoolVector2Array( 132.5, 113.5, 132.5, 112.5, 133, 112.5, 133.5, 112, 133.5, 111.5, 134.5, 111.5, 134.5, 111.5, 135.5, 111.5, 135.5, 112, 136, 112.5, 136.5, 112.5, 136.5, 112.5, 138.5, 112.5, 138.5, 113, 139, 113.5, 139.5, 113.5, 139.5, 113.5, 140.5, 113.5, 140.5, 114, 141, 114.5, 141.5, 114.5, 141.5, 114.5, 142.5, 114.5, 142.5, 115, 143, 115.5, 143.5, 115.5, 144, 116.5, 144.5, 116.5, 144.5, 117.5, 144.5, 119, 145, 119.5, 145.5, 119.5, 145.5, 120.5, 145.5, 128.5, 144.5, 128.5, 144.5, 128, 144, 127.5, 143.5, 127.5, 143.5, 127.5, 142.5, 127.5, 142.5, 127, 142, 126.5, 141.5, 126.5, 141.5, 126.5, 140.5, 126.5, 140.5, 126, 140, 125.5, 139.5, 125.5, 139.5, 125.5, 138.5, 125.5, 138.5, 125, 138, 124.5, 137.5, 124.5, 137.5, 124.5, 136.5, 124.5, 136.5, 124, 136, 123.5, 135.5, 123.5, 135.5, 123.5, 134.5, 123.5, 134.5, 123, 134, 122.5, 133.5, 122.5, 133.5, 122.5, 132.5, 122.5, 132.5, 121, 132, 120.5, 131.5, 120.5, 131.5, 119.5, 131.5, 115.5, 132, 115.5 )
 script = ExtResource( 10 )
 
@@ -147,6 +148,7 @@ script = ExtResource( 11 )
 [node name="Polygons" type="Node2D" parent="Camera2D/2dcolor/ColorAreaManager"]
 position = Vector2( 0, 255 )
 rotation = -1.5708
+script = ExtResource( 13 )
 
 [node name="StartButton" type="Button" parent="Camera2D/2dcolor/ColorAreaManager"]
 margin_left = 428.0

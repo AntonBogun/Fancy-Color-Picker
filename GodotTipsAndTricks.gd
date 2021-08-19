@@ -155,8 +155,13 @@ func _ready():
 	var m=[Vector2(133,116),Vector2(133,117),Vector2(134,117),Vector2(135,118),Vector2(135,119),Vector2(136,119),Vector2(137,119),Vector2(136,118),Vector2(137,117),Vector2(136,117),Vector2(136,116),Vector2(135,116),Vector2(134,116)]
 	m.invert()
 	#print(colr.IntToHex(colr.Vec2ToInfo(Vector2(148,132),128)))
-	#print(colr.TraceShape(0x846e80,0,0xd766d7c)[0])
-	colr.AreaCheck(132,110,128,2)
+	#print(.length(),("└│├")) # TO DO LATER - GOOD ARRAY PRINTER
+	colr.AreaCheck(43, 55, 57,3)
+	#colr.AllCheck(230,138,128,400)
+	#print(colr.ColorInfluence(0xda4980,0)[0][1])
+	print(colr.TraceShape(0x253639,0,0x32a3439))
+	
+	#227,221,57 (157, 172, 57)
 	rng.randomize()
 	
 	#132, 110,128
@@ -180,7 +185,7 @@ func _ready():
 #		_i=colr.BuiltinIntToHex(133)
 #	var end = OS.get_ticks_usec()
 #	print (end-start)
-	pass
+	
 func ifinbox(pos, pos1, pos2):
 	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y);
 

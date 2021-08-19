@@ -1652,8 +1652,6 @@ func editfile(path:String)->void:
 	var regex:=RegEx.new()
 # warning-ignore:return_value_discarded
 	regex.compile("[#\"][A-Fa-f0-9]{6}")
-# warning-ignore:unused_variable
-	var debug=0
 	while !file.eof_reached():
 		var line:=file.get_line()
 		var start:int=ord(line[0])
@@ -1673,11 +1671,9 @@ func editfile(path:String)->void:
 		else:
 			cols.append(line)
 			line=file.get_line()
-			debug+=1
 			coli.append(line.substr(1,6).to_lower())
 		if cols.size()!=0:
 			cols[cols.size()-1]=cols[cols.size()-1].dedent().to_lower().replace("'","").rstrip(" 	")
-		debug+=1
 	file.close()
 	#					Making array
 	var arr=[]
@@ -1865,10 +1861,9 @@ class sort:
 func ClosestInfoSearch(r:int,g:int,b:int)->int:
 	return SectorChecker(r,g,b)
 
-#Dependencies: ColorSearchBoxMaker! sort_dist! ColHexToPos!
-#find closest color based on "chunks"
+#contains old code
 func InfoClosestSearch(r:int,g:int,b:int)->int:#0-255
-	return SectorChecker(r,g,b)
+	
 	#fun seeing so much of old stuff being commented away yes?
 #	assert(r>=0&&g>=0&&b>=0)
 #	return "0"
@@ -1907,6 +1902,7 @@ func InfoClosestSearch(r:int,g:int,b:int)->int:#0-255
 #		size+=1
 #		delete=size-1
 #	return closestcol
+	return SectorChecker(r,g,b)
 
 
 func ___MISC_FUNCTIONS___():
@@ -2024,7 +2020,7 @@ func SectorChecker(p1:int,p2:int,p3:int)->int:
 	var c2=int(p2/32)
 # warning-ignore:integer_division
 	var c3=int(p3/32)
-	for size in 6: #6 means radius of 9, 9^3=729 sectors (theres no way theres nothing inside)
+	for size in 6: #6 means diameter of 9^3=729 sectors (theres no way theres nothing inside)
 		var delete:int=size-1
 		for r in range(int(max(c1-size,0)),int(min(c1+size,7))+1):
 			for g in range(int(max(c2-size,0)),int(min(c2+size,7))+1):
@@ -2036,13 +2032,13 @@ func SectorChecker(p1:int,p2:int,p3:int)->int:
 				for b in range(int(max(c3-size,0)),int(min(c3+size,7))-deladjust+1):
 					#skips b over delete zone
 					b+=int(b>=c3-delete)*skip*(delete*2+1+int(min(c3-delete,0))+7-int(max(c3+delete,7)))
-					#if array empty or further than dist, skip
+					#if array is further than dist, skip
 					var boxdist:=DistToBox(p1,p2,p3,r*32,g*32,b*32,r*32+32,g*32+32,b*32+32)
 					for n in all[r][g][b][0].size()*int(!boxdist>dist):
 						#if point closer, update dist and info
 						var point:int=all[r][g][b][0][n]
 						var tempdist:int=DistFromInfo(p1,p2,p3,point)
-						info=info*int(dist<=tempdist)+point*int(dist>tempdist) #point of error
+						info=info*int(dist<=tempdist)+point*int(dist>tempdist) #point of previous error (fixed)
 						dist=int(min(dist,tempdist))			#when they were equal info would become 0
 		if pow(DistFromInside(p1,p2,p3,c1,c2,c3,size),2)>dist:
 			break
@@ -2063,7 +2059,8 @@ func DistFromInside(p1:int,p2:int,p3:int,c1:int,c2:int,c3:int,size:int):
 	p1%=32 
 	p2%=32
 	p3%=32 #it gets distance to the nearest border, but ignores borders that are beyond/adjacent to sector limit
-	var result:int=int(min(min(min(min(min(p1+0xffffff*int(c1-size<=0),31-p1+0xffffff*int(c1+size>=7)),p2+0xffffff*int(c2-size<=0)),31-p2+0xffffff*int(c2+size>=7)),p3+0xffffff*int(c3-size<=0)),31-p3+0xffffff*int(c3+size>=7)))+size*32
+	var result:int=int(
+		min(min(min(min(min(p1+0xffffff*int(c1-size<=0),31-p1+0xffffff*int(c1+size>=7)),p2+0xffffff*int(c2-size<=0)),31-p2+0xffffff*int(c2+size>=7)),p3+0xffffff*int(c3-size<=0)),31-p3+0xffffff*int(c3+size>=7)))+size*32
 	return result
 
 #normal dist to but only ints, presumably better than vector3 because no memory allocation
@@ -2074,21 +2071,9 @@ func DistTo(p1:int,p2:int,p3:int,t1:int,t2:int,t3:int)->int:
 func DistFromInfo(p1:int,p2:int,p3:int,info:int)->int: 
 	return DistTo(p1,p2,p3,(info>>16)&0xff,(info>>8)&0xff,info&0xff)
 
-
-
-
-
-
-
-
 #product
 func Dot(a,b):
 	return cos(a.angle_to(b))
-
-#fposmod(), posmod() - all the same
-#
-#func Mod(x,y):
-#	return (x%y+y)%y
 
 func Arr3ToV(arr:Array)->Vector3:
 	return Vector3(arr[0],arr[1],arr[2])
@@ -2097,8 +2082,6 @@ func Arr2ToV(arr:Array)->Vector2:
 
 func ___INFLUENCE_FUNCTIONS___():
 	return true
-
-
 
 # convert n to/from direction vector
 #   x->
@@ -2159,18 +2142,19 @@ func GetCenter(pos,rule,args,maxrange=100.0,centoff=5.0):
 #Dependencies: GetEdge! AToB! 
 
 func TraceShape(pos,type,col)->Array:
-	var points:Array=GetEdge(pos,type,col)#issues here usually
-	if points.size()==1:
+	var result:Array=GetEdge(pos,type,col)
+	if result.size()==1:
 		return [0]
-	var start:int=VToDir(points[1]-points[0])
+	var start:int=VToDir(result[1]-result[0])
 	start-=start%2+1
-	var temp:Array=AToB(points[1],points[0],pos,type,col,start)
+	var temp:Array=AToB(result[1],result[0],pos,type,col,result[2],start)
 	return temp
 
 
 func GetEdge(pos:int,type:int,col:int,maxrange:float=100.0)->Array:
-	var posdebug=InfoToCol(pos)
-	posdebug=Vector3(posdebug.r8,posdebug.g8,posdebug.b8)
+	#var posdebug=InfoToCol(pos)
+	#posdebug=Vector3(posdebug.r8,posdebug.g8,posdebug.b8)
+	var edgecol:int=0
 	var leng:=maxrange
 	var curr:=InfoToVec2(pos)
 	while leng>1:
@@ -2181,23 +2165,34 @@ func GetEdge(pos:int,type:int,col:int,maxrange:float=100.0)->Array:
 	var start:=2
 	var sanity:int=0 #WARNING: if sanity is on instead of while true:
 		#all issues will be skipped
-		#however, that is required for singles?
+		#however, that is required for singles
 	while sanity<8:
-		var result=ColorGet(Vec2ToInfo(curr+DirToV(start),pos),type) #issues here usually
-		if result==col: #temp: 52,240,176, type 1 = 240,176,52, col = #F7A233 Lightning Yellow
+		var result=ColorGet(Vec2ToInfo(curr+DirToV(start),pos),type) 
+		if result==col: 
 			break
+		edgecol=result
 		start+=1
 		sanity+=1
 	if sanity==8:
-		print("Warning: GetEdge failed at 0x%x"%pos)
+		print("Warning: GetEdge failed at 0x%x, wanted color 0x%x"%[pos,col])
+		#breakpoint
 		return [0]
-	return [curr,curr+DirToV(start)]
+	return [curr,curr+DirToV(start),edgecol]
 
 #goes clockwise from point a to b along border of rule (meaning border is on the left)
 #Dependencies: DirToV! (ColorIf!-like as rule)
 
-func AToB(a:Vector2,b:Vector2,pos:int,type:int,col:int,start:int=0)->Array:
+#explanation along with getedge and traceshape - getedge goes into top (2) direction
+#until it hits edge (point 0). Then, it does a single circle check (starting at 2)
+#until it finds valid point (point 1). It returns both points and last edgecol
+#traceshape gets vector of point 0 to 1 and subtracts 1+dir%2, which results in
+#next non-repeat (unchecked) dir. The last edgecol, then, shows the color at dir-1,
+#allowing for the cornerinvalid checker to startup.
+#AtoB, then, goes in a clockwise (0>7) direction until it hits point 0
+# and the next point is already in array.
+func AToB(a:Vector2,b:Vector2,pos:int,type:int,col:int,edgecol:int,start:int=0)->Array:
 	var points:Array=[a]
+	var invalidcorners:=Array()
 	var lim:=600
 	var edgecols:=Array()
 	var edgeinfo:=Array()
@@ -2205,50 +2200,122 @@ func AToB(a:Vector2,b:Vector2,pos:int,type:int,col:int,start:int=0)->Array:
 	var prevcol:=-0xffff
 	var currpoint:Vector2=NewVec2(-1000)
 	var currcol:=-0xffff
-	var currvalid:=false
-	var prevvalid:=false #avoids bad when hit corner
+	var unrepeat:=false
+	#var currvalid:=false
+	#var prevvalid:=false #avoids bad when hit corner
+	#jokes on you, unsigned integers un-bad themselves
+	var cornerinvalid:=0
+	var loops:int=0
 	while points.size()<lim:
 		var n:int=points.size()-1
+		cornerinvalid=0
+		loops=0
+		unrepeat=false
+		#if n ==13:
+		#	pass
 		while true:
 			var _result:int=ColorGet(Vec2ToInfo(points[n]+DirToV(start),pos),type)
-			if _result!=-0xffffffff:
-				if !_result==col:
-					currvalid=true
-				else:
-					break
+			#if _result!=-0xffffffff:
+			if _result==col:
+				break
 			else:
-				currvalid=false
+				unrepeat=true
+			#else:
+			#	cornerinvalid=cornerinvalid|(1<<loops/2) #the horror of unsigned integers
+			#	currvalid=false
+			if _result!=edgecol:
+				cornerinvalid=cornerinvalid|(1<<loops/2)
+			edgecol=_result
 			start+=1
+			loops+=1
 #		while !rule.call_func(points[n]+DirToV(start),args)[0]:
 #			start+=1
+		cornerinvalid%=1<<((loops)>>1)
 		currcol=ColorGet(Vec2ToInfo(points[n]+DirToV(start-1),pos),type)
 		currpoint=points[n]+DirToV(start-1)
-		if currvalid and prevvalid and !currcol in edgecols:
+		if unrepeat and !currcol in edgecols: 
 			if currcol==prevcol and currpoint.distance_to(prevpoint)<1.5:
 				edgecols.append(currcol)
 				edgeinfo.append(currpoint)
 		prevcol=currcol
 		prevpoint=currpoint
-		prevvalid=currvalid
+		#prevvalid=currvalid
+		if cornerinvalid>0:
+			invalidcorners.append((points.size()-1)<<3|cornerinvalid)
 		if points[points.size()-1]==b and points[n]+DirToV(start) in points:
 			break
 		points.append(points[n]+DirToV(start))
 		start-=start%2+1
+		
 	if points.size()>=lim:
 		return [0]
 
-	return [points,[edgecols,edgeinfo]]
+	return [[points,invalidcorners],[edgecols,edgeinfo]]
 
-#Dependencies: VToDir!
 
-func Neatify(arr:Array)->Array:
+
+func Outline(finalarr:Array)->Array:
+	#Damn, every ~month of coding and you notice how trash your old code was...
+	var temparr:=Array()
+	var cornercount:=0
+	var cornerinfo:=-69
+	if finalarr[1].size()!=0:
+		cornerinfo=finalarr[1][0]
+	var cornerfind:=cornerinfo>>3
+	var cornerarr:=Array()
+	if finalarr[0].size()==1:
+		var k:int=0
+		while k<7:
+			var _k:Vector2=DirToV(k-1)*0.5+finalarr[0][0]
+			temparr.append(_k)
+			_k=DirToV(k)*0.5+finalarr[0][0]
+			temparr.append(_k)
+			k+=2
+		return temparr
+	for i in range(finalarr[0].size()):
+		var _x:Vector2=finalarr[0][posmod((i-1),finalarr[0].size())]
+		var _y:Vector2=finalarr[0][posmod((i+1),finalarr[0].size())]
+		var cent:Vector2=finalarr[0][i]
+		var x :int= VToDir(_x-cent)
+		var diff:int=(x-x%2+2)%8
+		var y :int= VToDir(_y-cent)
+		#a-b-1^a%2
+		var lim:int=posmod(y-x-1,8)+1-(1^x%2)>>1<<1
+		var k := 0
+		while k<lim: #if x=0, y=4, k does 1,2
+			if k>0 and i==cornerfind:
+				if cornerinfo>>(k/2-1)&1==1:
+					cornerarr.append(temparr.size())
+			var _k:Vector2=DirToV(k+diff-1)*0.5+cent
+			temparr.append(_k)
+			_k=DirToV(k+diff)*0.5+cent
+			temparr.append(_k)
+			k+=2
+		if i==cornerfind:
+			cornercount+=1
+			cornerinfo=finalarr[1][cornercount%finalarr[1].size()]
+			cornerfind=cornerinfo>>3
+	return [temparr,cornerarr]
+
+func Neatify(totalarr:Array)->Array:
+	var arr:Array=totalarr[0]
+	var skip:Array=totalarr[1]
+	var skipcount:int=0
+	var skipnum:=-69
+	if skip.size()!=0:
+		skipnum=skip[0]
 	var arr2:=Array()
 	for i in arr.size():
-		var _c0:Vector2=arr[(i)%arr.size()]
-		var _c1:Vector2=arr[(i+1)%arr.size()]
-		var _c2:Vector2=arr[(i+2)%arr.size()]
-		var _c3:Vector2=arr[(i+3)%arr.size()]
-		var _c4:Vector2=arr[(i+4)%arr.size()]
+		if i==skipnum:
+			skipcount+=1
+			skipnum=skip[skipcount%skip.size()]
+			arr2.append(arr[i])
+			continue
+		var _c0:Vector2=arr[posmod(i-2,arr.size())]
+		var _c1:Vector2=arr[posmod(i-1,arr.size())]
+		var _c2:Vector2=arr[i]
+		var _c3:Vector2=arr[posmod(i+1,arr.size())]
+		var _c4:Vector2=arr[posmod(i+2,arr.size())]
 		var if0 :bool= 4==posmod(VToDir(_c3-_c2)-VToDir(_c3-_c4),8) #is flat?
 		var if1 :bool= 4==posmod(VToDir(_c1-_c0)-VToDir(_c1-_c2),8)
 		if (!if0 or!if1) and _c2!=_c1: #is corner on back or front and not same?
@@ -2257,39 +2324,9 @@ func Neatify(arr:Array)->Array:
 
 
 
-
-func Outline(finalarr:Array)->Array:
-	#Damn, every ~month of coding and you notice how trash your old code was...
-	var temparr:=Array()
-	if finalarr.size()==1:
-		var k:int=0
-		while k<7:
-			var _k:Vector2=DirToV(k-1)*0.5+finalarr[0]
-			temparr.append(_k)
-			_k=DirToV(k)*0.5+finalarr[0]
-			temparr.append(_k)
-			k+=2
-		return temparr
-	for i in range(finalarr.size()):
-		var _x:Vector2=finalarr[posmod((i-1),finalarr.size())]
-		var _y:Vector2=finalarr[posmod((i+1),finalarr.size())]
-		var cent:Vector2=finalarr[i]
-		var x :int= VToDir(_x-cent)
-		var diff:int=(x-x%2+2)%8
-		var y :int= VToDir(_y-cent)
-		var lim:int=posmod(y+y%2-diff,8)
-		var k := 0
-		while k<lim: #if x=0, y=4, k does 1,2
-			var _k:Vector2=DirToV(k+diff-1)*0.5+cent
-			temparr.append(_k)
-			_k=DirToV(k+diff)*0.5+cent
-			temparr.append(_k)
-			k+=2
-	return temparr
-
 func AreaCheck(r:int,g:int,b:int,size:int)->void:
 	var cols:=Array()
-	var toprint:String
+	var toprint:=""
 	for n2 in 1+size*2:
 		n2=-n2+size
 		for n1 in 1+size*2:
@@ -2314,10 +2351,31 @@ func AreaCheck(r:int,g:int,b:int,size:int)->void:
 			toprint=""
 		else:
 			toprint+=", "
+	if cols.size()%2==1:
+		print(toprint)
+
+func AllCheck(r:int,g:int,b:int,leng:int)->void:
+	var found:=Array()
+	for n1 in 8:
+		for n2 in 8:
+			for n3 in 8:
+				for col in colorsector(n1,n2,n3)[0]:
+					var dist:int=DistFromInfo(r,g,b,col)
+					if dist<=leng:
+						found.append("%d %s"%[dist,InfoToName(col)])
+	found.sort()
+	for n in found.size():
+		print(found[n])
+
 
 #0=rgb, 1=brg, -1=gbr
 func InfoShift(i:int,n:int)->int:
-	return (((i>>(posmod(n+2,3)*8))&0xff)<<16|((i>>(posmod(n+1,3)*8))&0xff)<<8|((i>>(posmod(n,3)*8))&0xff))
+	return (((i>>(posmod(n+2,3)*8))&0xff)<<16
+	|
+	((i>>(posmod(n+1,3)*8))&0xff)<<8
+	|
+	((i>>(posmod(n,3)*8))&0xff))
+	#I still dont trust doing this, so i wont.
 
 func Vec2ToInfo(vec:Vector2,col:int)->int:
 	return (((int(vec.x)<<16)&0xff0000)|((int(vec.y)<<8)&0xff00)|(col&0xff))
@@ -2325,13 +2383,13 @@ func InfoToVec2(col:int)->Vector2:
 	return Vector2((int(col)>>16)&0xff,(int(col)>>8)&0xff)
 func ColorGet(pos:int,type:int)->int:
 	pos=InfoShift(pos,-type)
-	var isinbox:bool=DistToBox((pos>>16)&0xff,(pos>>8)&0xff,pos&0xff,0,0,0,255,255,255)==0
+	#var isinbox:bool=DistToBox((pos>>16)&0xff,(pos>>8)&0xff,pos&0xff,0,0,0,255,255,255)==0
 	#Vec3IfInBox(Vector3(arr[0],arr[1],arr[2]),NewVec3(0),NewVec3(255))
 	
-	if isinbox:
-		var tempcol:int=InfoClosestSearch((pos>>16)&0xff,(pos>>8)&0xff,pos&0xff)
-		return tempcol
-	return -0xffffffff
+	#if isinbox:
+	var tempcol:int=InfoClosestSearch((pos>>16)&0xff,(pos>>8)&0xff,pos&0xff)
+	return tempcol
+	#return -0xffffffff
 	
 
 #Dependencies: ColorClosestSearch! Neatify! TraceShape! ColorIf!
@@ -2353,7 +2411,7 @@ func ColorInfluence(pos:int,type:int)->Array:
 	if traced.size()==1:
 		return [0]
 	#Output: [ready],[to check]
-	#ready = [col,poly]
+	#ready = [col,[poly]]
 	#to check = [cols],[pos's]
 	
 #	var _arr:=Array()

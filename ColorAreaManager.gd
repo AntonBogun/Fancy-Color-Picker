@@ -185,7 +185,7 @@ func _process(_delta:float)->void:
 					$Polygons.add_child(poly)
 					#poly.set_owner($Polygons)
 					var col:Color=colr.InfoToCol(processinfo[0][0][prevsize+n])
-					poly.color=Color(0,0,1,1)#col
+					poly.color=col#Color(0,0,1,1)
 					poly.polygon=processinfo[0][1][prevsize+n]
 					#print(poly.color.a8)
 					#print(str(poly.polygon))
@@ -216,36 +216,36 @@ func _process(_delta:float)->void:
 
 #0 - Online, 1 - Running, 2 - Finished, 3 - Visible, 4 - Slider not offset
 func _StartButton() -> void: #starts/pauses
-#	mutex.lock()
-#	if !status[2]:
-#		if !status[0]:
-#			ThreadStart()
-#			status[0]=true
-#			status[1]=false
-#		elif status[1]:
-#			Pause()
-#			status[1]=false
-#		else:
-#			Unpause()
-#			status[1]=true
-#	mutex.unlock()
-#	UpdateStatus()
+	mutex.lock()
+	if !status[2]:
+		if !status[0]:
+			ThreadStart()
+			status[0]=true
+			status[1]=false
+		elif status[1]:
+			Pause()
+			status[1]=false
+		else:
+			Unpause()
+			status[1]=true
+	mutex.unlock()
+	UpdateStatus()
 	#DEBUG SECTION
 #	ClearPolys()
 #	ChangeArgs(Vector2(enterinfo[3].r,enterinfo[3].g),enterinfo[3].b,enterinfo[3].type)
 #	prevsize=0
-	status[0]=true
-	status[1]=true
-	ThreadDebug()
+#	status[0]=true
+#	status[1]=true
+#	ThreadDebug()
 	#print(str(globalinfo[0][1][globalinfo[0][1].size()-1]))
 #
 
 #0 - Online, 1 - Running, 2 - Finished, 3 - Visible, 4 - Slider not offset
 func _ResetButton() -> void: #Reset/Return to slider
-	ClearPolys()
-	ChangeArgs(Vector2(enterinfo[3].r,enterinfo[3].g),enterinfo[3].b,enterinfo[3].type)
-	prevsize=0
-	return
+#	ClearPolys()
+#	ChangeArgs(Vector2(enterinfo[3].r,enterinfo[3].g),enterinfo[3].b,enterinfo[3].type)
+#	prevsize=0
+#	return
 	#debugend 
 	mutex.lock()
 	if status[0]:
@@ -261,6 +261,8 @@ func _ResetButton() -> void: #Reset/Return to slider
 	UpdateStatus()
 	return
 func _VisibleButton() -> void: #Toggle visible
+	print($Polygons.get_children()[0].polygon)
+	return
 	mutex.lock()
 	status[3]=!status[3]
 	($Polygons as Node2D).visible=status[3]
@@ -300,6 +302,8 @@ func UpdateStatus() -> void: #text
 			text+="Slider Offset"
 			($ResetButton as Button).text="Reset Slider"
 		else:
+			if status[1]:
+				($ResetButton as Button).disabled=true
 			($ResetButton as Button).text="Reset"
 	else:
 		($ResetButton as Button).disabled=true
