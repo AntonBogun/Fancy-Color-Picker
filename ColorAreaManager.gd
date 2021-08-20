@@ -261,8 +261,8 @@ func _ResetButton() -> void: #Reset/Return to slider
 	UpdateStatus()
 	return
 func _VisibleButton() -> void: #Toggle visible
-	print($Polygons.get_children()[0].polygon)
-	return
+#	print($Polygons.get_children()[0].polygon)
+#	return
 	mutex.lock()
 	status[3]=!status[3]
 	($Polygons as Node2D).visible=status[3]

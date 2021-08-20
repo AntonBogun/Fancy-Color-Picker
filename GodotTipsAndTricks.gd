@@ -163,7 +163,7 @@ func _ready():
 	
 	#227,221,57 (157, 172, 57)
 	rng.randomize()
-	
+	#(73,63,92,1) !!!
 	#132, 110,128
 	
 	#print(colr.Dot(Vector2(-1,-1),Vector2(1,-1)))
