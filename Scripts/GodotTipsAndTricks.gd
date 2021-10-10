@@ -11,7 +11,7 @@ func circle1(pos,size,args):
 	var circle = funcref(influence,"pogger")
 	return influence.forinbox(pos,size,circle,args)
 # Called when the node enters the scene tree for the first time.
-var rng = RandomNumberGenerator.new()
+var rng := RandomNumberGenerator.new()
 
 func info():
 #Plan:
@@ -126,7 +126,6 @@ func info():
 	return true
 
 func _ready():
-	
 	#var bruh =[Vector2(161,222),Vector2(162,221),Vector2(162,220),Vector2(163,219),Vector2(163,218),Vector2(164,217),Vector2(164,216),Vector2(165,215),Vector2(165,214),Vector2(166,213),Vector2(166,211),Vector2(167,210),Vector2(167,209),Vector2(168,208),Vector2(169,208),Vector2(170,209),Vector2(173,209),Vector2(174,210),Vector2(176,210),Vector2(177,211),Vector2(180,211),Vector2(181,212),Vector2(183,212),Vector2(184,213),Vector2(185,213),Vector2(185,221),Vector2(186,222),Vector2(186,230),Vector2(187,231),Vector2(187,236),Vector2(186,236),Vector2(185,237),Vector2(184,237),Vector2(183,238),Vector2(182,238),Vector2(181,239),Vector2(180,239),Vector2(179,238),Vector2(177,238),Vector2(176,237),Vector2(175,237),Vector2(174,236),Vector2(172,236),Vector2(171,235),Vector2(169,235),Vector2(168,234),Vector2(166,234),Vector2(165,233),Vector2(163,233),Vector2(162,232),Vector2(161,232),Vector2(160,231),Vector2(158,231),Vector2(158,229),Vector2(159,228),Vector2(159,227),Vector2(160,226),Vector2(160,225),Vector2(161,224)]
 	#print(colr.Neatify(bruh))
 	
@@ -156,13 +155,55 @@ func _ready():
 	m.invert()
 	#print(colr.IntToHex(colr.Vec2ToInfo(Vector2(148,132),128)))
 	#print(.length(),("└│├")) # TO DO LATER - GOOD ARRAY PRINTER
-	colr.AreaCheck(43, 55, 57,3)
+	
+	#colr.AreaCheck(43, 55, 57,3)
 	#colr.AllCheck(230,138,128,400)
 	#print(colr.ColorInfluence(0xda4980,0)[0][1])
-	print(colr.TraceShape(0x253639,0,0x32a3439))
+	#print(colr.TraceShape(0x253639,0,0x32a3439))
+	#OS.print_all_resources("res://test.txt")
+#	var uhoh=1
+#	if uhoh==1:
+#		for n in 1000000:
+#			var n1=rng.randi_range(0,255)
+#			var n2=rng.randi_range(0,255)
+#			var n3=rng.randi_range(0,255)
+#			var a=colr.AllCheck(n1,n2,n3)
+#			var b=colr.SectorChecker(n1,n2,n3)
+#			if !(b in a):
+#				prints(a,b,n1,n2,n3)
+#				for col in a:
+#					col=colr.InfoToHex(col)
+#				prints(a,colr.InfoToHex(b))
+#				assert(b in a)
+	#print("stuff from godottipsandtricks")
+	#colr.AllCheck(130,200,0,500)
+	#print(colr.InfoToHex(colr.SectorChecker(130,200,0)))
 	
+	
+	
+#	var leng=0
+#	var N=0
+#	var k=Vector3(7,7,6)
+#	for n in colr.colorsector(k.x,k.y,k.z)[0]:
+#		var temp=colr.InfoToVec3(n)
+#		var sum=0
+#		for n1 in colr.colorsector(k.x,k.y,k.z)[0]:
+#			sum+=temp.distance_squared_to(colr.InfoToVec3(n1))
+#		if sum>leng:
+#			leng=sum
+#			N=n
+#	prints(colr.InfoToVec3(N),colr.colorsector(k.x,k.y,k.z).size(),"\n")
+#	var toprint=""
+#	var temp=colr.InfoToVec3(N)
+#	for n in colr.colorsector(k.x,k.y,k.z)[0]:
+#		if (toprint+str(colr.InfoToVec3(n))+" "+str(temp.distance_squared_to(colr.InfoToVec3(n)))+", ").length():
+#			print(toprint)
+#			toprint=""
+#		toprint+=str(colr.InfoToVec3(n))+" "+str(temp.distance_squared_to(colr.InfoToVec3(n)))+", "
+#	print(toprint)
+	#print(instance_from_id())
 	#227,221,57 (157, 172, 57)
-	rng.randomize()
+	
 	#(73,63,92,1) !!!
 	#132, 110,128
 	

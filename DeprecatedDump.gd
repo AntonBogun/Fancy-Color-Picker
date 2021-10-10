@@ -23,7 +23,7 @@ var prevsize:int=0
 var processinfo:Array
 var prevstatus:Array=status
 var sliderdiff:bool=false
-
+var shaderupdate:=0
 
 func _ready():
 	torun=Semaphore.new()
@@ -190,7 +190,7 @@ func _process(_delta:float)->void:
 					#print(poly.color.a8)
 					#print(str(poly.polygon))
 					#print(poly.z_index)
-					poly.set_script(load("res://colorpick.gd")) #change later for dedicated
+					poly.set_script(load("res://Scripts/colorpick.gd")) #change later for dedicated
 					poly.update() #outline script
 			prevsize=currsize
 			if _lastchange:
@@ -210,28 +210,50 @@ func _process(_delta:float)->void:
 	if prevstatus!=status or sliderdiff:
 		UpdateStatus()
 	prevstatus=status
+	if shaderupdate==1:
+		get_node("../../ColorFindPort/Shader").material.set_shader_param("slider",
+		[enterinfo[0].x,enterinfo[0].y,enterinfo[1]][2-enterinfo[2]])
+		get_node("../../ColorFindPort/Shader").material.set_shader_param("type",enterinfo[2])
+		get_node("../../ColorFindPort").render_target_update_mode=Viewport.UPDATE_ONCE
+		get_node("../../OutlinePort/Shader").texture=get_node("../../ColorFindPort").get_texture()
+		get_node("../../OutlinePort").render_target_update_mode=Viewport.UPDATE_ONCE
+		(get_node("../../ColorFindPort") as Viewport).get_texture().get_data().save_png("res://test1.png")
+		get_node("../Sprite2").texture=get_node("../../OutlinePort").get_texture()
+		(get_node("../../OutlinePort") as Viewport).get_texture().get_data().save_png("res://test2.png")
+		shaderupdate=0
 
 
 
 
 #0 - Online, 1 - Running, 2 - Finished, 3 - Visible, 4 - Slider not offset
 func _StartButton() -> void: #starts/pauses
-	mutex.lock()
-	if !status[2]:
-		if !status[0]:
-			ThreadStart()
-			status[0]=true
-			status[1]=false
-		elif status[1]:
-			Pause()
-			status[1]=false
-		else:
-			Unpause()
-			status[1]=true
-	mutex.unlock()
-	UpdateStatus()
+	var debug=1
+	if debug==0:
+		mutex.lock()
+		if !status[2]:
+			if !status[0]:
+				ThreadStart()
+				status[0]=true
+				status[1]=false
+			elif status[1]:
+				Pause()
+				status[1]=false
+			else:
+				Unpause()
+				status[1]=true
+		mutex.unlock()
+		UpdateStatus()
+	else:
 	#DEBUG SECTION
 #	ClearPolys()
+#		if toggle==0:
+#			get_node("../../Viewport").render_target_update_mode=Viewport.UPDATE_ONCE
+#		elif toggle==1:
+#			get_node("../Sprite2").texture=get_node("../../Viewport").get_texture()
+#			get_node("../../Viewport2/Sprite").texture=get_node("../../Viewport").get_texture()
+#			(get_node("../../Viewport") as Viewport).get_texture().get_data().save_png("res://test1.png")
+		if shaderupdate==0:
+			shaderupdate=1
 #	ChangeArgs(Vector2(enterinfo[3].r,enterinfo[3].g),enterinfo[3].b,enterinfo[3].type)
 #	prevsize=0
 #	status[0]=true
@@ -257,6 +279,7 @@ func _ResetButton() -> void: #Reset/Return to slider
 		else:
 			status[4]=true
 			SetSlider(typearr[2],enterinfo[4])
+			RequestUpdate(enterinfo[3])
 	mutex.unlock()
 	UpdateStatus()
 	return
@@ -316,6 +339,11 @@ func UpdateStatus() -> void: #text
 
 func SetSlider(value:int,node)->void:
 	node.SetValue(value)
-
+func RequestUpdate(node)->void:
+	node.RequestUpdate()
 func _exit_tree():
 	KillThread()
+
+
+
+

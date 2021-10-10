@@ -1,0 +1,25 @@
+[gd_scene format=2]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2( 1000, 0 )
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+margin_left = 34.6107
+margin_top = 43.1261
+margin_right = 193.611
+margin_bottom = 118.126
+hint_tooltip = "TEST
+"
+text = "bruh"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2( 32.7036, 5.33937 )
+polygon = PoolVector2Array( -42.8576, 37.7944, 7.19888, 157.263, 263.488, 149.921, 218.104, 19.7741 )

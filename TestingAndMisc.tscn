@@ -1,24 +1,14 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://Testing.gd" type="Script" id=1]
-[ext_resource path="res://HexConv.gd" type="Script" id=2]
-[ext_resource path="res://COLOR.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/Testing.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/HexConv.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/COLOR.gd" type="Script" id=3]
 
 [node name="Node2D" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
 zoom = Vector2( 0.8, 0.8 )
-
-[node name="Left" type="Button" parent="Camera2D"]
-margin_left = -192.703
-margin_top = 13.3636
-margin_right = -42.703
-margin_bottom = 91.3636
-text = "Left"
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Label" type="Label" parent="Camera2D"]
 margin_left = -175.874
@@ -42,6 +32,7 @@ color = Color( 0.121569, 0.619608, 0.607843, 1 )
 polygon = PoolVector2Array( -163.257, 29.9918, -164.54, 59.0884, -354.91, 67.1891, -167.182, 84.198, -168.024, 138.057, 30.0953, 150.241, 40.1602, 47.4729 )
 
 [node name="Right" type="Button" parent="Camera2D"]
+visible = false
 margin_left = 58.8576
 margin_top = 12.5102
 margin_right = 208.858
@@ -51,11 +42,21 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Copy" type="Button" parent="Camera2D"]
-margin_left = -36.1838
-margin_top = 11.8995
-margin_right = 39.8162
-margin_bottom = 89.8995
+[node name="Left" type="Button" parent="Camera2D/Right"]
+margin_left = -251.561
+margin_top = 0.8534
+margin_right = -101.561
+margin_bottom = 78.8534
+text = "Left"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Copy" type="Button" parent="Camera2D/Right"]
+margin_left = -95.0414
+margin_top = -0.6107
+margin_right = -19.0414
+margin_bottom = 77.3893
 text = "Copy"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -74,10 +75,13 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="Camera2D/HexConv"]
+anchor_right = 0.093
+anchor_bottom = 0.28
 margin_left = 29.5
 margin_top = -13.0
-margin_right = 69.5
-margin_bottom = 0.999992
+margin_right = 46.529
+margin_bottom = -18.0401
+rect_rotation = -193.5
 text = "(45, 56, 58)"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -99,8 +103,17 @@ script = ExtResource( 3 )
 
 [node name="Polygon2D" type="Polygon2D" parent="Camera2D/HexConv"]
 position = Vector2( -24.5058, -43.0039 )
-polygon = PoolVector2Array( 255.5, 238, 255.5, 238.5, 255, 238.5, 251, 238.5, 250.5, 238, 250, 237.5, 243.429, 237.176, 242.5, 237, 242, 236.5, 240, 236.5, 239.5, 236.5, 239.5, 236, 240, 235.5, 240.5, 235, 240.5, 229, 241, 228.5, 241.5, 228, 241.5, 226, 241.5, 225.5, 242, 225.5, 242.5, 225, 242.5, 224, 243, 223.5, 243.5, 223, 244, 222.5, 244.5, 222, 245, 221.5, 245.5, 221, 246, 220.5, 246.5, 220, 247, 219.5, 247.5, 219, 247.5, 218, 248, 217.5, 248.5, 217, 249, 216.5, 249.5, 216.5, 249.5, 217, 250, 217.5, 250.5, 218, 251, 218.5, 251.5, 219, 252, 219.5, 252.5, 220, 253, 220.5, 253.5, 221, 254, 221.5, 254.5, 222, 255, 222.5, 255.5, 222.5, 255.5, 223 )
+polygon = PoolVector2Array( 255.5, 238, 255.5, 238.5, 255, 238.5, 251, 238.5, 250.5, 238, 250, 237.5, 243, 237.5, 242.5, 237, 242, 236.5, 240, 236.5, 239.5, 236.5, 239.5, 236, 240, 235.5, 240.5, 235, 240.5, 229, 241, 228.5, 241.5, 228, 241.5, 226, 241.5, 225.5, 242, 225.5, 242.5, 225, 242.5, 224, 243, 223.5, 243.5, 223, 244, 222.5, 244.5, 222, 245, 221.5, 245.5, 221, 246, 220.5, 246.5, 220, 247, 219.5, 247.5, 219, 247.5, 218, 248, 217.5, 248.5, 217, 249, 216.5, 249.5, 216.5, 249.5, 217, 250, 217.5, 250.5, 218, 251, 218.5, 251.5, 219, 252, 219.5, 252.5, 220, 253, 220.5, 253.5, 221, 254, 221.5, 254.5, 222, 255, 222.5, 255.5, 222.5, 255.5, 223 )
 
-[connection signal="pressed" from="Camera2D/Left" to="Camera2D/Label" method="_Left"]
+[node name="ColorPicker" type="ColorPicker" parent="Camera2D"]
+margin_left = -518.958
+margin_top = -227.634
+margin_right = -210.958
+margin_bottom = 234.366
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [connection signal="pressed" from="Camera2D/Right" to="Camera2D/Label" method="_Right"]
-[connection signal="pressed" from="Camera2D/Copy" to="Camera2D/Label" method="_Copy"]
+[connection signal="pressed" from="Camera2D/Right/Left" to="Camera2D/Label" method="_Left"]
+[connection signal="pressed" from="Camera2D/Right/Copy" to="Camera2D/Label" method="_Copy"]

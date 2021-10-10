@@ -1,0 +1,16 @@
+Scripts:
+COLOR.gd
+2dcolor.gd
+ColorAreaManager.gd !Direct loading of colorpick.gd
+ColorInfluence.gd
+colorpick.gd
+GodotTipsAndTricks.gd
+HexConv.gd
+Influence.gd
+polytest.gd
+SLIDER.gd
+Testing.gd
+testloldeletelater.gd
+tooltest.gd
+VSlider.gd
+Colors.txt (maybe not)

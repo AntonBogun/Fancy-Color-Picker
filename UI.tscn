@@ -1,0 +1,394 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://Scripts/Outline.gd" type="Script" id=1]
+[ext_resource path="res://Scripts/UI.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/VSlider.gd" type="Script" id=3]
+[ext_resource path="res://idk.tres" type="Theme" id=6]
+[ext_resource path="res://Scripts/OptionButton.gd" type="Script" id=7]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+void fragment(){
+	COLOR=vec4(0);
+}
+"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+uniform int type = 0;
+uniform float r=0;
+uniform float g=0;
+uniform float b=0;
+float ptf(int n,int size){//Convert int (0:n-1) to corresponding UV given total size (n)
+	return (float(n)+0.5)/float(size);//works with color as well
+}
+int ftp(float n, int size){//inverse of ptf, also works with color
+	return int(n*float(size)-0.5);
+}
+void fragment() {
+	vec4 c=vec4(
+	r*float(type!=2)+(1.0-UV.y)*float(type==2),
+	g*float(type!=1)+(1.0-UV.y)*float(type==1),
+	b*float(type!=0)+(1.0-UV.y)*float(type==0),
+	1.0);
+//	if (UV.x>0.995 || UV.x<0.005){
+//		c=vec4(1);
+//	}
+	COLOR=c;
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 3 )
+shader_param/type = 0
+shader_param/r = 0.0
+shader_param/g = 0.0
+shader_param/b = 0.0
+
+[sub_resource type="ImageTexture" id=5]
+size = Vector2( 1, 1 )
+
+[sub_resource type="ShaderMaterial" id=6]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+script = ExtResource( 2 )
+
+[node name="MinimumSize" type="Control" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -0.00012207
+margin_bottom = -6.10352e-05
+rect_min_size = Vector2( 425, 240 )
+theme = ExtResource( 6 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Panels" type="Control" parent="CanvasLayer/MinimumSize"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="CanvasLayer/MinimumSize/Panels"]
+anchor_right = 0.025
+anchor_bottom = 1.0
+theme = ExtResource( 6 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Panel2" type="Panel" parent="CanvasLayer/MinimumSize/Panels"]
+anchor_right = 1.0
+anchor_bottom = 0.044
+theme = ExtResource( 6 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Panel3" type="Panel" parent="CanvasLayer/MinimumSize/Panels"]
+anchor_left = 0.7
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 6 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Panel4" type="Panel" parent="CanvasLayer/MinimumSize/Panels"]
+anchor_top = 0.85
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 6 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Interact" type="ReferenceRect" parent="CanvasLayer/MinimumSize"]
+anchor_left = 0.025
+anchor_top = 0.044
+anchor_right = 0.7
+anchor_bottom = 0.85
+border_color = Color( 0.027451, 0.0235294, 0.392157, 1 )
+editor_only = false
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="ColorShow" type="ColorRect" parent="CanvasLayer/MinimumSize"]
+anchor_left = 0.283
+anchor_top = 0.869
+anchor_right = 0.331
+anchor_bottom = 0.98
+color = Color( 0.501961, 0.501961, 0.501961, 1 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="VSlider" type="VSlider" parent="CanvasLayer/MinimumSize"]
+material = SubResource( 2 )
+anchor_left = 0.715
+anchor_top = 0.054
+anchor_right = 0.748
+anchor_bottom = 0.405
+hint_tooltip = "Control Axis Slider"
+max_value = 255.0
+value = 128.0
+tick_count = 16
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Shader" type="Polygon2D" parent="CanvasLayer/MinimumSize/VSlider"]
+material = SubResource( 4 )
+position = Vector2( 0, 8 )
+scale = Vector2( 3, 1 )
+color = Color( 0.219608, 0, 1, 1 )
+texture = SubResource( 5 )
+polygon = PoolVector2Array( 0, 0, 16, 0, 16, 256, 0, 256 )
+uv = PoolVector2Array( 0, 0, 1, 0, 1, 1, 0, 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+OutLine = Color( 0.00784314, 0, 1, 1 )
+Width = 1.0
+
+[node name="picksmol" type="Polygon2D" parent="CanvasLayer/MinimumSize/VSlider"]
+position = Vector2( 24, 128 )
+color = Color( 0.501961, 0.501961, 0.501961, 1 )
+polygon = PoolVector2Array( -24, -2, 24, -2, 24, 2, -24, 2 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+Width = 1.0
+
+[node name="ReferenceRect" type="ReferenceRect" parent="CanvasLayer/MinimumSize/VSlider"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+input_pass_on_modal_close_click = false
+border_color = Color( 0, 0.670588, 1, 1 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Button2" type="Button" parent="CanvasLayer/MinimumSize"]
+visible = false
+anchor_left = 0.741
+anchor_top = 0.541
+anchor_right = 0.956
+anchor_bottom = 0.867
+margin_left = -0.551025
+margin_top = 0.256531
+margin_right = 0.489014
+margin_bottom = -0.199524
+rect_min_size = Vector2( 100, 50 )
+hint_tooltip = "TEST
+"
+text = "Bruh"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="OptionButton" type="OptionButton" parent="CanvasLayer/MinimumSize"]
+anchor_left = 0.014
+anchor_top = 0.868
+anchor_right = 0.265
+anchor_bottom = 0.989
+margin_left = 0.0702934
+margin_top = -0.162537
+margin_right = -0.273712
+margin_bottom = 0.36145
+hint_tooltip = "Select Type"
+text = "Type"
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/MinimumSize"]
+visible = false
+anchor_left = 0.728
+anchor_top = 0.556
+anchor_right = 0.964
+anchor_bottom = 0.872
+margin_left = 0.249695
+scroll_horizontal_enabled = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MinimumSize/ScrollContainer"]
+margin_right = 100.0
+margin_bottom = 204.0
+
+[node name="CheckBox" type="Button" parent="CanvasLayer/MinimumSize/ScrollContainer/VBoxContainer"]
+margin_right = 100.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+text = "bruh"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckBox2" type="Button" parent="CanvasLayer/MinimumSize/ScrollContainer/VBoxContainer"]
+margin_top = 104.0
+margin_right = 100.0
+margin_bottom = 204.0
+rect_min_size = Vector2( 100, 100 )
+text = "bruh"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer/MinimumSize"]
+anchor_left = 0.759673
+anchor_top = 0.0634921
+anchor_right = 0.985863
+anchor_bottom = 0.27381
+hint_tooltip = "Toggles"
+columns = 2
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Type" type="Button" parent="CanvasLayer/MinimumSize/GridContainer"]
+material = SubResource( 6 )
+margin_right = 150.0
+margin_bottom = 24.0
+hint_tooltip = "Control Axis"
+size_flags_horizontal = 3
+theme = ExtResource( 6 )
+text = "B"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ClosestColor" type="Button" parent="CanvasLayer/MinimumSize/GridContainer"]
+material = SubResource( 6 )
+margin_left = 154.0
+margin_right = 304.0
+margin_bottom = 24.0
+hint_tooltip = "Closest Color Toggle"
+size_flags_horizontal = 3
+theme = ExtResource( 6 )
+toggle_mode = true
+text = "CC: Off"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Outline" type="Button" parent="CanvasLayer/MinimumSize/GridContainer"]
+material = SubResource( 6 )
+margin_top = 28.0
+margin_right = 150.0
+margin_bottom = 52.0
+hint_tooltip = "Color Outline Toggle"
+size_flags_horizontal = 3
+theme = ExtResource( 6 )
+toggle_mode = true
+text = "OL: Off"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HSplitContainer" type="HSplitContainer" parent="CanvasLayer/MinimumSize"]
+anchor_left = 0.350024
+anchor_top = 0.859741
+anchor_right = 0.989
+anchor_bottom = 0.987936
+split_offset = 8
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="ClosestColorLabel" type="RichTextLabel" parent="CanvasLayer/MinimumSize/HSplitContainer"]
+margin_right = 258.0
+margin_bottom = 96.916
+rect_min_size = Vector2( 250, 50 )
+bbcode_enabled = true
+bbcode_text = "Closest color:
+[url=code]#808080[/url] [url=name]Gray[/url] aaaa sda sdasd wbehwhehqhwehqwhehqwhe"
+text = "Closest color:
+#808080 Gray aaaa sda sdasd wbehwhehqhwehqwhehqwhe"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="ColorLabel" type="RichTextLabel" parent="CanvasLayer/MinimumSize/HSplitContainer"]
+margin_left = 270.0
+margin_right = 858.784
+margin_bottom = 96.916
+grow_horizontal = 0
+grow_vertical = 0
+rect_min_size = Vector2( 150, 40 )
+bbcode_text = "Current color:
+(128,128,128) #808080"
+text = "Current color:
+(128,128,128) #808080"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="TooSmall" type="ColorRect" parent="CanvasLayer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0509804, 0.0627451, 0.156863, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="CanvasLayer/TooSmall"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Too Small"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UI" type="Camera2D" parent="."]
+visible = false
+current = true
+zoom = Vector2( 0.5, 0.5 )
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+visible = false
+polygon = PoolVector2Array( -146.02, -107.871, -204.819, -60.6529, -39.112, 146.036, 64.2323, -98.9615, 194.303, 54.273, 124.813, 92.5817, 74.0322, 51.6003, 96.3046, 140.69, 262.012, 110.4, 101.65, -123.016 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[connection signal="resized" from="CanvasLayer/MinimumSize" to="CanvasLayer" method="_resized"]
+[connection signal="focus_entered" from="CanvasLayer/MinimumSize/Interact" to="CanvasLayer" method="_on_Interact_focus_entered"]
+[connection signal="focus_exited" from="CanvasLayer/MinimumSize/Interact" to="CanvasLayer" method="_on_Interact_focus_exited"]
+[connection signal="gui_input" from="CanvasLayer/MinimumSize/Interact" to="CanvasLayer" method="_on_Interact_gui_input"]
+[connection signal="resized" from="CanvasLayer/MinimumSize/VSlider" to="CanvasLayer/MinimumSize/VSlider" method="_resized"]
+[connection signal="value_changed" from="CanvasLayer/MinimumSize/VSlider" to="CanvasLayer/MinimumSize/VSlider" method="_value_changed"]
+[connection signal="mouse_exited" from="CanvasLayer/MinimumSize/GridContainer/Type" to="CanvasLayer/MinimumSize/GridContainer/Type" method="_mouse_exited"]
+[connection signal="pressed" from="CanvasLayer/MinimumSize/GridContainer/Type" to="CanvasLayer" method="_on_Type_pressed"]
+[connection signal="mouse_exited" from="CanvasLayer/MinimumSize/GridContainer/ClosestColor" to="CanvasLayer/MinimumSize/GridContainer/ClosestColor" method="_mouse_exited"]
+[connection signal="mouse_exited" from="CanvasLayer/MinimumSize/GridContainer/Outline" to="CanvasLayer/MinimumSize/GridContainer/Outline" method="_mouse_exited"]
+[connection signal="meta_clicked" from="CanvasLayer/MinimumSize/HSplitContainer/ClosestColorLabel" to="CanvasLayer" method="_on_ClosestColorLabel_meta_clicked"]

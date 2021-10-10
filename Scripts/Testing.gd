@@ -26,11 +26,15 @@ func filestuff():
 	$PolyRight.color=Color8((cols[0][0][1]>>16)&0xff,(cols[0][0][1]>>8)&0xff,cols[0][0][1]&0xff)
 	text=IntToHex(cols[0][0][0]).substr(2).to_upper()+" and "+IntToHex(cols[0][0][1]).substr(2).to_upper()+" ("+cols[0][1]+")"
 func _ready():
-	for n in 65:
-		printraw(char(n))
 	#filestuff()
 	pass # Replace with function body.
+var justpressed=0
 
+func _process(delta):
+	#if Input.is_action_just_pressed("mouse_left"):
+	#	print(get_viewport().size)
+	#	print_tree_pretty()
+	pass
 func _Right():
 	bad.append(cols[count][0][0])
 	printraw(IntToHex(cols[count][0][0])+",")

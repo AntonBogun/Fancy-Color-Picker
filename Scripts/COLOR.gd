@@ -2011,6 +2011,7 @@ func Vec3IfInBoxExcluded(pos:Vector3, pos1:Vector3, pos2:Vector3)->bool:
 
 #c1-c3 are center vector3
 #p1-p3 are color position vector 3
+
 func SectorChecker(p1:int,p2:int,p3:int)->int:
 	var dist:=0xffffff
 	var info:int=0
@@ -2053,7 +2054,7 @@ func DistToBox(p1:int,p2:int,p3:int,s1:int,s2:int,s3:int,e1:int,e2:int,e3:int)->
 
 #gets distance from point to the closest valid sector (outside border dont count)
 #WARNING: IS NOT SQUARED
-func DistFromInside(p1:int,p2:int,p3:int,c1:int,c2:int,c3:int,size:int):
+func DistFromInside(p1:int,p2:int,p3:int,c1:int,c2:int,c3:int,size:int)->int:
 	#minminminminmin moment
 	#min(p1%32+0xffffff*int(c1-size<=0),31-p1%32+0xffffff*int(c1+size>=7)) x3 times and then +size*32
 	p1%=32 
@@ -2354,7 +2355,21 @@ func AreaCheck(r:int,g:int,b:int,size:int)->void:
 	if cols.size()%2==1:
 		print(toprint)
 
-func AllCheck(r:int,g:int,b:int,leng:int)->void:
+func AllCheck(r:int,g:int,b:int,leng:int=-1):
+	if leng==-1:
+		leng=0xfffffff
+		var foundcols:=[]
+		for n1 in 8:
+			for n2 in 8:
+				for n3 in 8:
+					for col in colorsector(n1,n2,n3)[0]:
+						var dist:int=DistFromInfo(r,g,b,col)
+						if dist==leng:
+							foundcols.append(col)
+						if dist<leng:
+							foundcols=[col]
+							leng=dist
+		return foundcols
 	var found:=Array()
 	for n1 in 8:
 		for n2 in 8:
