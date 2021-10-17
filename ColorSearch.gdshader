@@ -81,7 +81,8 @@ ivec3 SectorCheck(ivec3 p){
 
 void fragment(){
 	float k=ptf(slider,256);
-	vec4 c=vec4(UV.y*float(type==0)+UV.x*float(type==1)+k*float(type==2),
+	vec4 c=vec4(
+	UV.y*float(type==0)+UV.x*float(type==1)+k*float(type==2),
 	UV.y*float(type==2)+UV.x*float(type==0)+k*float(type==1),
 	UV.y*float(type==1)+UV.x*float(type==2)+k*float(type==0),
 	1.0);

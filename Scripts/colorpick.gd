@@ -18,3 +18,4 @@ func set_color(color):
 func set_width(new_width):
 	Width = new_width
 	update()
+

@@ -5,4 +5,4 @@
 [resource]
 shader = ExtResource( 1 )
 shader_param/type = 0
-shader_param/slider = 0.0
+shader_param/slider = 128

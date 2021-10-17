@@ -156,8 +156,11 @@ func _ready():
 	#print(colr.IntToHex(colr.Vec2ToInfo(Vector2(148,132),128)))
 	#print(.length(),("└│├")) # TO DO LATER - GOOD ARRAY PRINTER
 	
+	
 	#colr.AreaCheck(43, 55, 57,3)
 	#colr.AllCheck(230,138,128,400)
+	
+	
 	#print(colr.ColorInfluence(0xda4980,0)[0][1])
 	#print(colr.TraceShape(0x253639,0,0x32a3439))
 	#OS.print_all_resources("res://test.txt")

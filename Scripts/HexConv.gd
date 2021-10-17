@@ -13,6 +13,7 @@ func IntToHex(i:int,minleng:int=0)->String:
 func InfoToVec3(i:int)->Vector3:
 	return Vector3(i>>16&0xff,i>>8&0xff,i&0xff)
 
+
 func _ready():
 	col=$Node2D
 	$Polygon2D.polygon=arr

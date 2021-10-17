@@ -1865,6 +1865,7 @@ func ClosestInfoSearch(r:int,g:int,b:int)->int:
 func InfoClosestSearch(r:int,g:int,b:int)->int:#0-255
 	
 	#fun seeing so much of old stuff being commented away yes?
+	
 #	assert(r>=0&&g>=0&&b>=0)
 #	return "0"
 #	r=r&0xff
@@ -2011,15 +2012,12 @@ func Vec3IfInBoxExcluded(pos:Vector3, pos1:Vector3, pos2:Vector3)->bool:
 
 #c1-c3 are center vector3
 #p1-p3 are color position vector 3
-
-func SectorChecker(p1:int,p2:int,p3:int)->int:
+#p=0:255
+func SectorChecker(p1:int,p2:int,p3:int)->int:#p1-p3 are point coords, idk why its not a vec3
 	var dist:=0xffffff
 	var info:int=0
-# warning-ignore:integer_division
-	var c1=int(p1/32)
-# warning-ignore:integer_division
+	var c1=int(p1/32)#c1-c3 are sector coords
 	var c2=int(p2/32)
-# warning-ignore:integer_division
 	var c3=int(p3/32)
 	for size in 6: #6 means diameter of 9^3=729 sectors (theres no way theres nothing inside)
 		var delete:int=size-1
@@ -2035,11 +2033,12 @@ func SectorChecker(p1:int,p2:int,p3:int)->int:
 					b+=int(b>=c3-delete)*skip*(delete*2+1+int(min(c3-delete,0))+7-int(max(c3+delete,7)))
 					#if array is further than dist, skip
 					var boxdist:=DistToBox(p1,p2,p3,r*32,g*32,b*32,r*32+32,g*32+32,b*32+32)
+					
 					for n in all[r][g][b][0].size()*int(!boxdist>dist):
 						#if point closer, update dist and info
 						var point:int=all[r][g][b][0][n]
 						var tempdist:int=DistFromInfo(p1,p2,p3,point)
-						info=info*int(dist<=tempdist)+point*int(dist>tempdist) #point of previous error (fixed)
+						info=info*int(dist<=tempdist)+point*int(dist>tempdist)
 						dist=int(min(dist,tempdist))			#when they were equal info would become 0
 		if pow(DistFromInside(p1,p2,p3,c1,c2,c3,size),2)>dist:
 			break
@@ -2391,7 +2390,8 @@ func InfoShift(i:int,n:int)->int:
 	|
 	((i>>(posmod(n,3)*8))&0xff))
 	#I still dont trust doing this, so i wont.
-
+func Int3ToInfo(a:int,b:int,c:int)->int:
+	return(((int(a)<<16)&0xff0000)|((int(b)<<8)&0xff00)|(c&0xff))
 func Vec2ToInfo(vec:Vector2,col:int)->int:
 	return (((int(vec.x)<<16)&0xff0000)|((int(vec.y)<<8)&0xff00)|(col&0xff))
 func InfoToVec2(col:int)->Vector2:

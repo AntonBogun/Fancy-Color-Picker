@@ -1,10 +1,10 @@
 extends Polygon2D
 
-func viewtogrid(p:Vector2,vsize:Vector2,z:float)->Vector2:
-	return p*z+vsize/2 #Vector2(vsize.x/2.0+p.x*z,vsize.y/2.0+p.y*z)
+#func viewtogrid(p:Vector2,vsize:Vector2,z:float)->Vector2:
+#	return p*z+vsize/2 #Vector2(vsize.x/2.0+p.x*z,vsize.y/2.0+p.y*z)
+#func ifinbox(pos:Vector2, pos1:Vector2, pos2:Vector2)->bool:
+#	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y)
 
-func ifinbox(pos:Vector2, pos1:Vector2, pos2:Vector2)->bool:
-	return (pos2.x>=pos.x && pos.x>=pos1.x && pos2.y>=pos.y && pos.y>=pos1.y)
 #essentially Vec2(clamp(),clamp())
 func forceinbox(pos:Vector2,pos1:Vector2,pos2:Vector2)->Vector2:
 	return Vector2(min(max(pos.x,pos1.x),pos2.x),min(max(pos.y,pos1.y),pos2.y))
@@ -18,56 +18,74 @@ var prevmouseorigin:=Vector2()
 var prevmouse:=Vector2()
 var mouseraw:=Vector2()
 var mousepos:=Vector2(128,128)
+var performedupdate:=false
+var outline:=false
+var fill_in:=false
 func _TypeButton():
 	#function to update shader (type)
 	type=(type+1)%3
 	PerformUpdate()
 
-
 func _ready():
-	get_node("../Polygon2D").visible=true# made redundant by lock
 	connect("UpdateUI",get_node("../UI"),"UpdateUI")
-#	$VSlider.material.set_shader_param("red",r)
-#	$VSlider.material.set_shader_param("gre",g)
-#	$VSlider.material.set_shader_param("blu",b)
-#TODO: Add the above code into UI update
 
-func SliderChanged(value:float)->void:
+func SliderChange(value:float)->void:
 	slider=int(value)
-	material.set_shader_param("slider",slider)
 	PerformUpdate()
-func UpdateMouse(globalmouse)->void:
-	#check and global mouse calculation is performed by UI,
-	#global mouse is then transformed into usable 0-255 format
-	#UI should not interact with 2dcolor in any way
-	pass
-var performedupdate:=false
-#Current Color, Found Color, Color Info, Color Name
-signal UpdateUI(col,slider,colfound,colinfo,colname)
+
+
+func TypeChange(newtype:int)->void:
+	type=newtype
+	PerformUpdate()
+func OutlineChange(state:bool)->void:
+	outline=state
+	PerformUpdate()
+func FillInChange(state:bool)->void:
+	fill_in=state
+	PerformUpdate()
+
+#Current Color, Found Color, Color Name
+signal UpdateUI(col,colfound,colname)
 func PerformUpdate()->void:
 	if !performedupdate:
 		performedupdate=true
 		set_deferred("performedupdate",false)#Example of how to collapse signals to 1/frame
 		var rg=mousepos+Vector2(128,128)
+		#get rgb depending on mousepos,slider and type
 		r =int(floor(mousepos.x*float(type==1)+mousepos.y*float(type==0)+slider*float(type==2)+0.5))
 		g =int(floor(mousepos.x*float(type==0)+mousepos.y*float(type==2)+slider*float(type==1)+0.5))
 		b =int(floor(mousepos.x*float(type==2)+mousepos.y*float(type==1)+slider*float(type==0)+0.5))
+		
 		var col:Color=Color8(r,g,b)
 		var colinfo:int=colr.InfoClosestSearch(r,g,b)
 		var colfound:Color= colr.InfoToCol(colinfo)
 		var colname:String=colr.InfoToName(colinfo)
-		emit_signal("UpdateUI",slider,col,colfound,colinfo,colname)
-		($Colorpick as Polygon2D).position=mousepos
+		
+		emit_signal("UpdateUI",col,colfound,colname)
+		
+		($Colorpick as Polygon2D).position=Vector2(mousepos.x-128,128-mousepos.y)
 		($Colorpick as Polygon2D).color=col
 		material.set_shader_param("type",type)
-		$VSlider.material.set_shader_param("type",type)
-		get_node("../ColorFindPort/Shader").material.set_shader_param("slider",[r,g,b][2-type])
-		get_node("../ColorFindPort/Shader").material.set_shader_param("type",type)
-		$Shader.texture=get_node("../ColorFindPort").get_texture()
+		material.set_shader_param("slider",slider)
+		get_node("ColorFindPort/Shader").material.set_shader_param("slider",slider)
+		get_node("ColorFindPort/Shader").material.set_shader_param("type",type)
+		$Shader.texture=get_node("ColorFindPort").get_texture()
+		$Shader.material.set_shader_param("fill_in",fill_in)
+		$Shader.material.set_shader_param("online",outline)
 
 func MousePressed(globalmouse:Vector2)->void:
 	if visible==true:
-		mousepos=forceinbox(Vector2(globalmouse.x,255-globalmouse.y),Vector2(),Vector2(255,255))
+		var _newmouse=forceinbox(Vector2(128+globalmouse.x,128-globalmouse.y),Vector2(),Vector2(255,255))
+		var _performupd=mousepos!=_newmouse
+		mousepos=_newmouse
+		if _performupd:
+			PerformUpdate()
+#func _process(_delta):
+#	get_node("ColorFindPort/Shader").material.set_shader_param("slider",[r,g,b][2-type])
+#	get_node("ColorFindPort/Shader").material.set_shader_param("type",type)
+#	$Shader.texture=get_node("ColorFindPort").get_texture()
+
+
 #func _process(_delta): #NOTHING should be in the process
 	
 	#positions on viewport

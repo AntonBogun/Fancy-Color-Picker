@@ -69,15 +69,15 @@ corner_radius_bottom_right = 7
 corner_radius_bottom_left = 7
 shadow_size = 10
 
-[sub_resource type="DynamicFontData" id=10]
+[sub_resource type="DynamicFontData" id=9]
 font_path = "res://Fonts/Hack/Hack-Regular.ttf"
 
-[sub_resource type="DynamicFont" id=11]
+[sub_resource type="DynamicFont" id=10]
 use_mipmaps = true
 use_filter = true
-font_data = SubResource( 10 )
+font_data = SubResource( 9 )
 
-[sub_resource type="StyleBoxFlat" id=9]
+[sub_resource type="StyleBoxFlat" id=11]
 bg_color = Color( 0.027451, 0.141176, 0.196078, 0.168627 )
 border_width_left = 1
 border_width_top = 1
@@ -132,5 +132,5 @@ TooltipLabel/colors/font_color = Color( 1, 1, 1, 1 )
 TooltipLabel/colors/font_color_shadow = Color( 0, 0, 0, 0.172549 )
 TooltipLabel/constants/shadow_offset_x = 1
 TooltipLabel/constants/shadow_offset_y = 1
-TooltipLabel/fonts/font = SubResource( 11 )
-TooltipPanel/styles/panel = SubResource( 9 )
+TooltipLabel/fonts/font = SubResource( 10 )
+TooltipPanel/styles/panel = SubResource( 11 )
