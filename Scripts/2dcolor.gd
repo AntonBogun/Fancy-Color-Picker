@@ -50,11 +50,10 @@ func PerformUpdate()->void:
 	if !performedupdate:
 		performedupdate=true
 		set_deferred("performedupdate",false)#Example of how to collapse signals to 1/frame
-		var rg=mousepos+Vector2(128,128)
 		#get rgb depending on mousepos,slider and type
-		r =int(floor(mousepos.x*float(type==1)+mousepos.y*float(type==0)+slider*float(type==2)+0.5))
-		g =int(floor(mousepos.x*float(type==0)+mousepos.y*float(type==2)+slider*float(type==1)+0.5))
-		b =int(floor(mousepos.x*float(type==2)+mousepos.y*float(type==1)+slider*float(type==0)+0.5))
+		r =int(min(mousepos.x*float(type==1)+mousepos.y*float(type==0)+slider*float(type==2),255))
+		g =int(min(mousepos.x*float(type==0)+mousepos.y*float(type==2)+slider*float(type==1),255))
+		b =int(min(mousepos.x*float(type==2)+mousepos.y*float(type==1)+slider*float(type==0),255))
 		
 		var col:Color=Color8(r,g,b)
 		var colinfo:int=colr.InfoClosestSearch(r,g,b)
@@ -69,13 +68,18 @@ func PerformUpdate()->void:
 		material.set_shader_param("slider",slider)
 		get_node("ColorFindPort/Shader").material.set_shader_param("slider",slider)
 		get_node("ColorFindPort/Shader").material.set_shader_param("type",type)
+		
 		$Shader.texture=get_node("ColorFindPort").get_texture()
+		#get_node("ColorFindPort").get_texture().get_data().save_png("test1.png")
+		#printt(Vector3(r,g,b))
 		$Shader.material.set_shader_param("fill_in",fill_in)
 		$Shader.material.set_shader_param("online",outline)
 
 func MousePressed(globalmouse:Vector2)->void:
 	if visible==true:
-		var _newmouse=forceinbox(Vector2(128+globalmouse.x,128-globalmouse.y),Vector2(),Vector2(255,255))
+		
+		var _newmouse=forceinbox(Vector2(128+globalmouse.x,128-globalmouse.y),Vector2(),Vector2(256,256))
+		#printt(globalmouse,_newmouse)
 		var _performupd=mousepos!=_newmouse
 		mousepos=_newmouse
 		if _performupd:

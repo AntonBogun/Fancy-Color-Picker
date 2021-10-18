@@ -27,7 +27,7 @@ func _viewport_change():
 func _zoom(ratio,where=Vector2()):
 	var vp=get_viewport().size
 	var real=offset-center*vp/2*zoom
-	ratio=clamp(ratio,zoom.x/0.5,zoom.x/0.1)
+	ratio=clamp(ratio,zoom.x/0.5,zoom.x/0.04)
 	real+=ratiosize/2*where*zoom*(ratio-1)
 	zoom/=ratio
 	offset=center*vp/2*zoom+real

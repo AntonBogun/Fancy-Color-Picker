@@ -81,10 +81,12 @@ ivec3 SectorCheck(ivec3 p){
 
 void fragment(){
 	float k=ptf(slider,256);
-	vec4 c=vec4(
-	UV.y*float(type==0)+UV.x*float(type==1)+k*float(type==2),
-	UV.y*float(type==2)+UV.x*float(type==0)+k*float(type==1),
-	UV.y*float(type==1)+UV.x*float(type==2)+k*float(type==0),
-	1.0);
+	//vec4 c=vec4(ptf(137,255),ptf(222,256),ptf(128,256),1.0);
+//	vec4 c=vec4(
+//	UV.y*float(type==0)+UV.x*float(type==1)+k*float(type==2),
+//	UV.y*float(type==2)+UV.x*float(type==0)+k*float(type==1),
+//	UV.y*float(type==1)+UV.x*float(type==2)+k*float(type==0),
+//	1.0);
+	vec4 c=texture(colorinfo,vec2(ptf(2,textsize),ptf(243,512)));
 	COLOR=ivec3ToCol(SectorCheck(ColToivec3(c)));
 }

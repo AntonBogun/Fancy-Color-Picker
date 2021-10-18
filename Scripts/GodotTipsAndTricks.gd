@@ -139,7 +139,7 @@ func _ready():
 	#var info = colr.ColorNameToColor(colr.color(0,0,0)[6])
 	#print(colr.HighestBit(6<<24))#|info.r8<<16|info.g8<<8|info.b8))
 	#print(colr.WhileHighestBit(6<<24))
-	var arr=[1,2,3,4,1,5]
+	#var arr=[1,2,3,4,1,5]
 	#print(colr.ArrToStr(arr))
 	#print(colr.HighestBit(9<<24))
 	#print(colr.IntToHex(8<<24))
@@ -147,19 +147,19 @@ func _ready():
 	#var regex:=RegEx.new()
 	#regex.compile("[#\"][A-Fa-f0-9]{6}")
 	#print(regex.search("ssss \"bb1234 #231321").get_start())
-	var bruh = "	bruhhhhh 	    "
-	bruh =bruh.dedent().rstrip(" 	")
+	#var bruh = "	bruhhhhh 	    "
+	#bruh =bruh.dedent().rstrip(" 	")
 	#colr.editfile("res://Colors.txt")
 	#print(colr.InfoToCol(93027714))
-	var m=[Vector2(133,116),Vector2(133,117),Vector2(134,117),Vector2(135,118),Vector2(135,119),Vector2(136,119),Vector2(137,119),Vector2(136,118),Vector2(137,117),Vector2(136,117),Vector2(136,116),Vector2(135,116),Vector2(134,116)]
-	m.invert()
+	#var m=[Vector2(133,116),Vector2(133,117),Vector2(134,117),Vector2(135,118),Vector2(135,119),Vector2(136,119),Vector2(137,119),Vector2(136,118),Vector2(137,117),Vector2(136,117),Vector2(136,116),Vector2(135,116),Vector2(134,116)]
+	#m.invert()
 	#print(colr.IntToHex(colr.Vec2ToInfo(Vector2(148,132),128)))
 	#print(.length(),("└│├")) # TO DO LATER - GOOD ARRAY PRINTER
 	
-	
-	#colr.AreaCheck(43, 55, 57,3)
-	#colr.AllCheck(230,138,128,400)
-	
+	print(colr.InfoToVec3(colr.SectorChecker(138,222,128)))
+	#colr.AreaCheck(138,222,128,1)
+	print(colr.InfoToVec3(colr.AllCheck(138,222,128)[0]))
+	pass
 	
 	#print(colr.ColorInfluence(0xda4980,0)[0][1])
 	#print(colr.TraceShape(0x253639,0,0x32a3439))
