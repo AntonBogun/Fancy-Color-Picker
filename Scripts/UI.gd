@@ -74,7 +74,6 @@ func _on_Interact_gui_input(event):
 	if Input.is_action_pressed("mouse_left"):
 		if Input.is_action_just_pressed("mouse_left") or event is InputEventMouseMotion:
 			get_node("../2dcolor").MousePressed(get_node("..").get_global_mouse_position())
-			
 			#get_viewport().warp_mouse(Vector2(200,200))
 			#print(get_node("..").get_global_mouse_position())
 	if Input.is_action_pressed("mouse_right"):

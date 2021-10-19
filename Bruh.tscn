@@ -64,6 +64,18 @@ size = Vector2( 1, 1 )
 [sub_resource type="ImageTexture" id=6]
 size = Vector2( 1, 1 )
 
+[sub_resource type="ShaderMaterial" id=7]
+shader = ExtResource( 16 )
+shader_param/slider = 128
+shader_param/textsize = 74
+shader_param/type = 0
+shader_param/colorinfo = ExtResource( 14 )
+
+[sub_resource type="ImageTexture" id=8]
+flags = 4
+flags = 4
+size = Vector2( 256, 256 )
+
 [sub_resource type="Shader" id=9]
 code = "shader_type canvas_item;
 uniform bool online=false;
@@ -75,53 +87,49 @@ int ftp(float n, int size){//inverse of ptf, also works with color
 	return int(n*float(size)-0.5);
 }
 
-
+vec4 pixat(sampler2D tex, vec2 uv,int x,int y){
+	return texture(tex,vec2(
+		ptf(clamp(ftp(uv.x,256)+x,0,255),256),
+		ptf(clamp(ftp(uv.y,256)+y,0,255),256)
+		
+		));
+}
 void fragment(){
 	vec4 col=texture(TEXTURE,UV);
 	bool black=(UV.x==ptf(0,256)) ||(UV.x==ptf(255,256))||(UV.y==ptf(0,256)) ||(UV.y==ptf(255,256));
 	black=black&&online;
 	if (online){
-	bool y=(texture(TEXTURE,vec2(UV.x,ptf(min(ftp(UV.y,256)+1,255),256)))!=col);
-	bool x=(texture(TEXTURE,vec2(ptf(min(ftp(UV.x,256)+1,255),256),UV.y))!=col);
+	bool x=(pixat(TEXTURE,UV,1,0)!=col);
+	bool y=(pixat(TEXTURE,UV,0,1)!=col);
+//	bool x=(texture(TEXTURE,vec2(ptf(clamp(ftp(UV.x,256)+1,0,255),256),ptf(clamp(ftp(UV.y,256)+0,0,255),256)))!=col);
+//	bool y=(texture(TEXTURE,vec2(ptf(clamp(ftp(UV.x,256)+0,0,255),256),ptf(clamp(ftp(UV.y,256)+1,0,255),256)))!=col);
 	black=black
 	||
 	(
-		(x||y)&&(texture(TEXTURE,vec2(ptf(min(ftp(UV.x,256)+1,255),256),ptf(min(ftp(UV.y,256)+1,255),256)))!=col)
+		(x||y)&&(pixat(TEXTURE,UV,1,1)!=col)
 	)
 	||
 	(
 		(
-			(texture(TEXTURE,vec2(ptf(min(ftp(UV.x,256)+1,255),256),ptf(min(ftp(UV.y,256)+2,255),256)))!=col)
-			||(texture(TEXTURE,vec2(ptf(max(ftp(UV.x,256)-1,0),256),ptf(min(ftp(UV.y,256)+2,255),256)))!=col)
+			(pixat(TEXTURE,UV,1,2)!=col)
+			||(pixat(TEXTURE,UV,-1,2)!=col)
 		)
-		&&(texture(TEXTURE,vec2(UV.x,ptf(min(ftp(UV.y,256)+2,255),256)))!=col)
-		&&y
+		&&(pixat(TEXTURE,UV,0,2)!=col)&&y
 	);
+	}
+	COLOR=vec4(col.r*float(!black),col.g*float(!black),col.b*float(!black),float(black ||fill_in));
 //	||
 //	(
 //		(texture(TEXTURE,vec2(ptf(min(ftp(UV.x,256)+2,255),256),UV.y))!=col)
 //		&&(texture(TEXTURE,vec2(ptf(min(ftp(UV.x,256)+2,255),256),ptf(min(ftp(UV.y,256)+1,255),256)))!=col)&&x
 //	);
-	}
-	COLOR=vec4(col.r*float(!black),col.g*float(!black),col.b*float(!black),float(black ||fill_in));
+	
 }"
 
 [sub_resource type="ShaderMaterial" id=10]
 shader = SubResource( 9 )
 shader_param/online = false
 shader_param/fill_in = false
-
-[sub_resource type="ImageTexture" id=8]
-flags = 4
-flags = 4
-size = Vector2( 256, 256 )
-
-[sub_resource type="ShaderMaterial" id=7]
-shader = ExtResource( 16 )
-shader_param/slider = 128
-shader_param/textsize = 74
-shader_param/type = 0
-shader_param/colorinfo = ExtResource( 14 )
 
 [sub_resource type="Shader" id=11]
 code = "shader_type canvas_item;
@@ -484,10 +492,17 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="Shader" type="Sprite" parent="2dcolor"]
-material = SubResource( 10 )
+[node name="ColorFindPort" type="Viewport" parent="2dcolor"]
+size = Vector2( 256, 256 )
+handle_input_locally = false
+usage = 0
+render_target_v_flip = true
+render_target_update_mode = 3
+
+[node name="Shader" type="Sprite" parent="2dcolor/ColorFindPort"]
+material = SubResource( 7 )
+position = Vector2( 128, 128 )
 texture = SubResource( 8 )
-flip_v = true
 
 [node name="Colorpick" type="Polygon2D" parent="2dcolor"]
 scale = Vector2( 0.5, 0.5 )
@@ -506,25 +521,25 @@ __meta__ = {
 }
 
 [node name="ViewportContainer" type="ViewportContainer" parent="2dcolor"]
-margin_left = -292.164
-margin_top = -137.078
-margin_right = -36.1644
-margin_bottom = 118.922
+margin_left = -128.0
+margin_top = -128.0
+margin_right = -128.0
+margin_bottom = -128.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ColorFindPort" type="Viewport" parent="2dcolor/ViewportContainer"]
+[node name="TESTPORT" type="Viewport" parent="2dcolor/ViewportContainer"]
 size = Vector2( 256, 256 )
 handle_input_locally = false
 usage = 0
-render_target_v_flip = true
 render_target_update_mode = 3
 
-[node name="Shader" type="Sprite" parent="2dcolor/ViewportContainer/ColorFindPort"]
-material = SubResource( 7 )
+[node name="Shader" type="Sprite" parent="2dcolor/ViewportContainer/TESTPORT"]
+material = SubResource( 10 )
 position = Vector2( 128, 128 )
 texture = SubResource( 8 )
+flip_v = true
 
 [node name="Cam" type="Camera2D" parent="."]
 current = true
@@ -551,7 +566,7 @@ texture = ExtResource( 9 )
 [node name="tooltest" type="Polygon2D" parent="Bs/Sprite"]
 position = Vector2( 87.2548, 48.9003 )
 scale = Vector2( 0.519479, 1 )
-color = Color( 0.942991, 0, 0.33282, 1 )
+color = Color( 0, 0.833211, 0.552955, 1 )
 polygon = PoolVector2Array( 138, 113.5, 132.5, 112.5, 133, 112.5, 133.5, 112, 133.5, 111.5, 134.5, 111.5, 134.5, 111.5, 135.5, 111.5, 135.5, 112, 136, 112.5, 136.5, 112.5, 136.5, 112.5, 138.5, 112.5, 138.5, 113, 139, 113.5, 139.5, 113.5, 139.5, 113.5, 140.5, 113.5, 140.5, 114, 141, 114.5, 141.5, 114.5, 141.5, 114.5, 142.5, 114.5, 142.5, 115, 143, 115.5, 143.5, 115.5, 144, 116.5, 144.5, 116.5, 144.5, 117.5, 144.5, 119, 145, 119.5, 145.5, 119.5, 145.5, 120.5, 145.5, 128.5, 144.5, 128.5, 144.5, 128, 144, 127.5, 143.5, 127.5, 143.5, 127.5, 142.5, 127.5, 142.5, 127, 142, 126.5, 141.5, 126.5, 141.5, 126.5, 140.5, 126.5, 140.5, 126, 140, 125.5, 139.5, 125.5, 139.5, 125.5, 138.5, 125.5, 138.5, 125, 138, 124.5, 137.5, 124.5, 137.5, 124.5, 136.5, 124.5, 136.5, 124, 136, 123.5, 135.5, 123.5, 135.5, 123.5, 134.5, 123.5, 134.5, 123, 134, 122.5, 133.5, 122.5, 133.5, 122.5, 132.5, 122.5, 132.5, 121, 132, 120.5, 131.5, 120.5, 131.5, 119.5, 131.5, 115.5, 132, 115.5 )
 script = ExtResource( 10 )
 hmm = [ Vector2( 138, 113.5 ), Vector2( 132.5, 112.5 ), Vector2( 133, 112.5 ), Vector2( 133.5, 112 ), Vector2( 133.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 135.5, 111.5 ), Vector2( 135.5, 112 ), Vector2( 136, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 138.5, 112.5 ), Vector2( 138.5, 113 ), Vector2( 139, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 140.5, 113.5 ), Vector2( 140.5, 114 ), Vector2( 141, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 142.5, 114.5 ), Vector2( 142.5, 115 ), Vector2( 143, 115.5 ), Vector2( 143.5, 115.5 ), Vector2( 144, 116.5 ), Vector2( 144.5, 116.5 ), Vector2( 144.5, 117.5 ), Vector2( 144.5, 119 ), Vector2( 145, 119.5 ), Vector2( 145.5, 119.5 ), Vector2( 145.5, 120.5 ), Vector2( 145.5, 128.5 ), Vector2( 144.5, 128.5 ), Vector2( 144.5, 128 ), Vector2( 144, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 142.5, 127.5 ), Vector2( 142.5, 127 ), Vector2( 142, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 140.5, 126.5 ), Vector2( 140.5, 126 ), Vector2( 140, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 138.5, 125.5 ), Vector2( 138.5, 125 ), Vector2( 138, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 136.5, 124.5 ), Vector2( 136.5, 124 ), Vector2( 136, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 134.5, 123.5 ), Vector2( 134.5, 123 ), Vector2( 134, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 132.5, 122.5 ), Vector2( 132.5, 121 ), Vector2( 132, 120.5 ), Vector2( 131.5, 120.5 ), Vector2( 131.5, 119.5 ), Vector2( 131.5, 115.5 ), Vector2( 132, 115.5 ) ]
@@ -563,8 +578,8 @@ hmm = [ Vector2( 138, 113.5 ), Vector2( 132.5, 112.5 ), Vector2( 133, 112.5 ), V
 [connection signal="focus_entered" from="UI/MinimumSize/VSlider" to="UI/MinimumSize/VSlider" method="_on_VSlider_focus_entered"]
 [connection signal="focus_exited" from="UI/MinimumSize/VSlider" to="UI/MinimumSize/VSlider" method="_on_VSlider_focus_exited"]
 [connection signal="resized" from="UI/MinimumSize/VSlider" to="UI/MinimumSize/VSlider" method="_resized"]
-[connection signal="value_changed" from="UI/MinimumSize/VSlider" to="UI" method="_on_VSlider_value_changed"]
 [connection signal="value_changed" from="UI/MinimumSize/VSlider" to="UI/MinimumSize/VSlider" method="_value_changed"]
+[connection signal="value_changed" from="UI/MinimumSize/VSlider" to="UI" method="_on_VSlider_value_changed"]
 [connection signal="pressed" from="UI/MinimumSize/GridContainer/Type" to="UI" method="_on_Type_pressed"]
 [connection signal="toggled" from="UI/MinimumSize/GridContainer/ClosestColor" to="UI" method="_on_ClosestColor_toggled"]
 [connection signal="toggled" from="UI/MinimumSize/GridContainer/Outline" to="UI" method="_on_Outline_toggled"]

@@ -156,9 +156,9 @@ func _ready():
 	#print(colr.IntToHex(colr.Vec2ToInfo(Vector2(148,132),128)))
 	#print(.length(),("└│├")) # TO DO LATER - GOOD ARRAY PRINTER
 	
-	print(colr.InfoToVec3(colr.SectorChecker(138,222,128)))
+	#print(colr.InfoToVec3(colr.SectorChecker(138,222,128)))
 	#colr.AreaCheck(138,222,128,1)
-	print(colr.InfoToVec3(colr.AllCheck(138,222,128)[0]))
+	#print(colr.InfoToVec3(colr.AllCheck(138,222,128)[0]))
 	pass
 	
 	#print(colr.ColorInfluence(0xda4980,0)[0][1])
