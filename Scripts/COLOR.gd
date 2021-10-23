@@ -1637,6 +1637,39 @@ func InfoToHex(i:int)->String:
 func InfoToVec3(i:int)->Vector3:
 	return Vector3(i>>16&0xff,i>>8&0xff,i&0xff)
 
+#func FancyLum(c:Color)->float:
+#	var R:float=c.r8/255.0
+#	var G:float=c.g8/255.0
+#	var B:float=c.b8/255.0
+#	R=R/12.92 if R<=0.03928 else pow((R+0.055)/1.055,2.4)
+#	G=G/12.92 if G<=0.03928 else pow((G+0.055)/1.055,2.4)
+#	B=B/12.92 if B<=0.03928 else pow((B+0.055)/1.055,2.4)
+#	return 0.2126 * R + 0.7152 * G + 0.0722 * B
+
+class colsort:
+	static func FancyLum(c:Color)->float:
+		var R:float=c.r8/255.0
+		var G:float=c.g8/255.0
+		var B:float=c.b8/255.0
+		R=R/12.92 if R<=0.04045 else pow((R+0.055)/1.055,2.4)
+		G=G/12.92 if G<=0.04045 else pow((G+0.055)/1.055,2.4)
+		B=B/12.92 if B<=0.04045 else pow((B+0.055)/1.055,2.4)
+		var Y=0.2126* R + 0.7152*G + 0.0722*B
+		return (Y*903.3 if Y<=0.008856 else pow(Y,1.0/3.0)*116-16)/100
+	static func sort_lum(a:Color,b:Color)->bool:
+		#if FancyLum(a)<FancyLum(b):
+		#return false
+		if FancyLum(a)<FancyLum(b):
+			return true
+		return false
+	static func sort_red(a:Color,b:Color)->bool:
+		if a.r8<b.r8:
+			return true
+		return false
+	static func sort_dumb(a:Color,b:Color)->bool:
+		if (a.r8+a.g8+a.b8)<(b.r8+b.g8+b.b8):
+			return true
+		return false
 #A=65,Z=90,a=97,z=122,[=91,]=93
 #find (,n) = n+
 #1234.substr(1,2)=23
@@ -1857,6 +1890,7 @@ class sort:
 		if a[1]<b[1]:
 			return true
 		return false
+
 
 func ClosestInfoSearch(r:int,g:int,b:int)->int:
 	return SectorChecker(r,g,b)

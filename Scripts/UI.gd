@@ -37,6 +37,8 @@ func _resized():
 func _input(event):
 	if Input.is_action_just_pressed("f11"):
 		OS.window_fullscreen=!OS.window_fullscreen
+	if Input.is_action_pressed("quit"):
+		get_tree().quit()
 
 func _on_ClosestColorLabel_meta_clicked(meta):
 	OS.set_clipboard($MinimumSize/LabelCont/ClosestColorLabel.info[int(meta)])

@@ -72,11 +72,11 @@ func PerformUpdate()->void:
 		
 		#get_node("ColorFindPort").get_texture().get_data().save_png("test1.png")
 		#printt(Vector3(r,g,b))
-		$ViewportContainer/TESTPORT/Shader.texture=get_node("ColorFindPort").get_texture()
-		$ViewportContainer/TESTPORT/Shader.material.set_shader_param("fill_in",fill_in)
-		$ViewportContainer/TESTPORT/Shader.material.set_shader_param("online",outline)
-		var i= get_node("ViewportContainer/TESTPORT").get_texture().get_data()
-		i.resize(512,512)
+		$Shader.material.set_shader_param("textre",get_node("ColorFindPort").get_texture())
+		$Shader.material.set_shader_param("fill_in",fill_in)
+		$Shader.material.set_shader_param("online",outline)
+		var i= get_node("ColorFindPort").get_texture().get_data()
+		#i.resize(512,512)
 		i.save_png("test1.png")
 
 func MousePressed(globalmouse:Vector2)->void:

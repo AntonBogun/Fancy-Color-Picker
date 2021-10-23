@@ -93,6 +93,7 @@ void fragment(){
 	UV.y*float(type==1)+UV.x*float(type==2)+k*float(type==0),
 	1.0);
 	COLOR=ivec3ToCol(SectorCheck(ColToivec3(c)));
+	//COLOR=vec4(UV.x,UV.y,0.0,1.0);
 //	vec4 c=vec4(ptf(137,255),ptf(222,256),ptf(128,256),1.0);
 //	vec4 c=texture(colorinfo,vec2(ptf(2,textsize),ptf(243,512)));
 //	COLOR=ivec3ToCol(ColToivec3(c));
