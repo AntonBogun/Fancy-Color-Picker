@@ -8,6 +8,7 @@ extends Label
 var cols=[]
 var bad=[]
 var count=0
+var rng
 func IntToHex(i:int,minleng:int=0)->String:
 	return "0x%0*x"%[minleng,i]
 # Called when the node enters the scene tree for the first time.
@@ -27,6 +28,8 @@ func filestuff():
 	text=IntToHex(cols[0][0][0]).substr(2).to_upper()+" and "+IntToHex(cols[0][0][1]).substr(2).to_upper()+" ("+cols[0][1]+")"
 func _ready():
 	#filestuff()
+	#draw_circle(Vector2(),2000,Color8(255,0,255,255))
+	rng=RandomNumberGenerator.new()
 	pass # Replace with function body.
 var justpressed=0
 
@@ -43,13 +46,22 @@ func _Right():
 	$PolyLeft.color=Color8((cols[count][0][0]>>16)&0xff,(cols[count][0][0]>>8)&0xff,cols[count][0][0]&0xff)
 	$PolyRight.color=Color8((cols[count][0][1]>>16)&0xff,(cols[count][0][1]>>8)&0xff,cols[count][0][1]&0xff)
 	pass
+var k=10
+func _draw():
+	for n in 1000:
+		draw_circle(Vector2(rng.randi_range(-200,200),rng.randi_range(-200,200)),2,Color(0.5,0.5,1))
+	draw_circle(Vector2(k,50),3,Color(1,0,1))
+	draw_circle(Vector2(100,k),3,Color(1,0,1))
+	draw_primitive(PoolVector2Array([Vector2(k,k)]),PoolColorArray([Color(0,1,0)]),PoolVector2Array([Vector2()]))
 func _Left():
-	bad.append(cols[count][0][1])
-	printraw(IntToHex(cols[count][0][1])+",")
-	count+=1
-	text=IntToHex(cols[count][0][0]).substr(2).to_upper()+" and "+IntToHex(cols[count][0][1]).substr(2).to_upper()+" ("+cols[count][1]+")"
-	$PolyLeft.color=Color8((cols[count][0][0]>>16)&0xff,(cols[count][0][0]>>8)&0xff,cols[count][0][0]&0xff)
-	$PolyRight.color=Color8((cols[count][0][1]>>16)&0xff,(cols[count][0][1]>>8)&0xff,cols[count][0][1]&0xff)
+	k+=10
+	update()
+#	bad.append(cols[count][0][1])
+#	printraw(IntToHex(cols[count][0][1])+",")
+#	count+=1
+#	text=IntToHex(cols[count][0][0]).substr(2).to_upper()+" and "+IntToHex(cols[count][0][1]).substr(2).to_upper()+" ("+cols[count][1]+")"
+#	$PolyLeft.color=Color8((cols[count][0][0]>>16)&0xff,(cols[count][0][0]>>8)&0xff,cols[count][0][0]&0xff)
+#	$PolyRight.color=Color8((cols[count][0][1]>>16)&0xff,(cols[count][0][1]>>8)&0xff,cols[count][0][1]&0xff)
 	pass
 func _Copy():
 	OS.set_clipboard(cols[count][1]+" color hex")

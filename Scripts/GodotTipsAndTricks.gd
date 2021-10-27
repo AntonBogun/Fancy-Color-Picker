@@ -159,24 +159,24 @@ func _ready():
 	#print(colr.InfoToVec3(colr.SectorChecker(138,222,128)))
 	#colr.AreaCheck(138,222,128,1)
 	#print(colr.InfoToVec3(colr.AllCheck(138,222,128)[0]))
-	var cols=[]
-	for n1 in 8:
-		for n2 in 8:
-			for n3 in 8:
-				for col in colr.colorsector(n1,n2,n3)[0]:
-					cols.append(colr.InfoToCol(col))
-	
-	#cols.sort_custom(colr.colsort,"sort_red")
-	#cols.sort_custom(colr.colsort,"sort_lum")
-	cols.sort_custom(colr.colsort,"sort_dumb")
-	var i=Image.new()
-	i.create(len(cols),len(cols),false,4)
-	i.lock()
-	for x in range(len(cols)):
-		for y in range(len(cols)):
-			i.set_pixel(x,y,cols[rng.randi_range(max(x-20,0),min(x+20,len(cols)-1))])
-	i.save_png("test1.png")
-	i.unlock()
+#	var cols=[]
+#	for n1 in 8:
+#		for n2 in 8:
+#			for n3 in 8:
+#				for col in colr.colorsector(n1,n2,n3)[0]:
+#					cols.append(colr.InfoToCol(col))
+#
+#	#cols.sort_custom(colr.colsort,"sort_red")
+#	#cols.sort_custom(colr.colsort,"sort_lum")
+#	cols.sort_custom(colr.colsort,"sort_dumb")
+#	var i=Image.new()
+#	i.create(len(cols),len(cols),false,4)
+#	i.lock()
+#	for x in range(len(cols)):
+#		for y in range(len(cols)):
+#			i.set_pixel(x,y,cols[rng.randi_range(max(x-20,0),min(x+20,len(cols)-1))])
+#	i.save_png("test1.png")
+#	i.unlock()
 	pass
 	
 	#print(colr.ColorInfluence(0xda4980,0)[0][1])
