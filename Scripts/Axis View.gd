@@ -64,10 +64,10 @@ func PerformUpdate()->void:
 		
 		($Colorpick as Polygon2D).position=Vector2(mousepos.x-128,128-mousepos.y)
 		($Colorpick as Polygon2D).color=col
-		material.set_shader_param("type",type)
-		material.set_shader_param("slider",slider)
-		get_node("ColorFindPort/Shader").material.set_shader_param("slider",slider)
-		get_node("ColorFindPort/Shader").material.set_shader_param("type",type)
+		$Plane.material.set_shader_param("type",type)
+		$Plane.material.set_shader_param("slider",slider)
+		$ColorFindPort/Shader.material.set_shader_param("slider",slider)
+		$ColorFindPort/Shader.material.set_shader_param("type",type)
 		
 		
 		#get_node("ColorFindPort").get_texture().get_data().save_png("test1.png")
@@ -75,9 +75,9 @@ func PerformUpdate()->void:
 		$Shader.material.set_shader_param("textre",get_node("ColorFindPort").get_texture())
 		$Shader.material.set_shader_param("fill_in",fill_in)
 		$Shader.material.set_shader_param("online",outline)
-		var i= get_node("ColorFindPort").get_texture().get_data()
+		#var i= $ColorFindPort.get_texture().get_data()
 		#i.resize(512,512)
-		i.save_png("test1.png")
+		#i.save_png("test1.png")
 
 func MousePressed(globalmouse:Vector2)->void:
 	if visible==true:
@@ -88,6 +88,11 @@ func MousePressed(globalmouse:Vector2)->void:
 		mousepos=_newmouse
 		if _performupd:
 			PerformUpdate()
+
+func Active()->void:
+	pass
+func Inactive()->void:
+	pass
 #func _process(_delta):
 #	get_node("ColorFindPort/Shader").material.set_shader_param("slider",[r,g,b][2-type])
 #	get_node("ColorFindPort/Shader").material.set_shader_param("type",type)

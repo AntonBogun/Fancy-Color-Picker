@@ -31,7 +31,7 @@ func _resized():
 	var b=get_viewport().size
 	$TooSmall.visible=a.x>b.x or a.y>b.y
 	if a.x<b.x and a.y<b.y:
-		get_node("../Cam")._viewport_change()
+		get_node("../Axis View/Cam")._viewport_change()
 
 #fullscreen
 func _input(event):
@@ -75,7 +75,8 @@ func _on_Interact_gui_input(event):
 	var off=$MinimumSize/Interact.rect_position
 	if Input.is_action_pressed("mouse_left"):
 		if Input.is_action_just_pressed("mouse_left") or event is InputEventMouseMotion:
-			get_node("../2dcolor").MousePressed(get_node("..").get_global_mouse_position())
+			
+			get_node("../Axis View/Plane").MousePressed(get_node("..").get_global_mouse_position())
 			#get_viewport().warp_mouse(Vector2(200,200))
 			#print(get_node("..").get_global_mouse_position())
 	if Input.is_action_pressed("mouse_right"):
@@ -84,8 +85,7 @@ func _on_Interact_gui_input(event):
 			var pos=event.position
 			var rel=event.relative
 			var rem=remove_inbound(rel,pos,Vector2(),borders)
-			get_node("../Cam")._move(-(rem+add_extra(pos,Vector2(),borders))#-rem
-			,2)
+			get_node("../Axis View/Cam")._move(-(rem+add_extra(pos,Vector2(),borders)),2)
 			var clmp=forceinbox(pos,Vector2(),borders)
 			
 			if !(pos.x>=0 and pos.y>=0 and pos.x<=borders.x and pos.y<=borders.y):
@@ -98,7 +98,7 @@ func _on_Interact_gui_input(event):
 		var i=event.button_index 
 		var pos=(forceinbox(event.position,Vector2(),borders)-borders/2)/borders*2
 		if i==4 or i==5:
-			get_node("../Cam")._zoom(1+0.05*(9-i*2),pos)
+			get_node("../Axis View/Cam")._zoom(1+0.05*(9-i*2),pos)
 	if event is InputEventKey:
 		var arrn=event.scancode-16777231
 		var zoomn=event.scancode-43
@@ -116,9 +116,9 @@ func _process(_delta):
 	var zoomout=Input.is_action_pressed("ui_zoom_out")
 	if (left or right or up or down)and not _justenter and InteractFocus:
 		#print("Aaaa")
-		get_node("../Cam")._move(Vector2(int(right)-int(left),int(down)-int(up))*4,1)
+		get_node("../Axis View/Cam")._move(Vector2(int(right)-int(left),int(down)-int(up))*4,1)
 	if zoomin or zoomout:
-		get_node("../Cam")._zoom(1+0.025*(int(zoomin)-int(zoomout)))
+		get_node("../Axis View/Cam")._zoom(1+0.025*(int(zoomin)-int(zoomout)))
 	
 
 var type=0
@@ -126,18 +126,36 @@ func _on_Type_pressed():
 	type=(type+1)%3
 	($MinimumSize/VSlider/Shader as Polygon2D).material.set_shader_param("type",type)
 	$MinimumSize/GridContainer/Type.text=("R" if type==2 else ("G" if type==1 else "B"))
-	get_node("../2dcolor").TypeChange(type)
+	get_node("../Axis View/Plane").TypeChange(type)
 
 
 func _on_ClosestColor_toggled(button_pressed):
 	$MinimumSize/GridContainer/ClosestColor.text="CC:"+("On" if button_pressed else "Off")
-	get_node("../2dcolor").FillInChange(button_pressed)
+	get_node("../Axis View/Plane").FillInChange(button_pressed)
 
 
 func _on_Outline_toggled(button_pressed):
 	$MinimumSize/GridContainer/Outline.text="OL:"+("On" if button_pressed else "Off")
-	get_node("../2dcolor").OutlineChange(button_pressed)
+	get_node("../Axis View/Plane").OutlineChange(button_pressed)
 
 
 func _on_VSlider_value_changed(value):
-	get_node("../2dcolor").SliderChange(value)
+	get_node("../Axis View/Plane").SliderChange(value)
+var view:=0
+func _on_OptionButton_item_selected(index):
+	get_node("../Axis View").visible=(index==0)
+	get_node("../Cube View").visible=(index==1)
+	view=index
+	#get_node("../Axis View/Cam").set_new_view(index)
+	pass # Replace with function body.
+
+#MAIN EVENTS:
+#Active(), Inactive(), MouseInput(), ArrowInput()
+
+#TODO:
+# -List all events
+# -Change UI to work based on type_index array system ([0]=main view, [1]=all view modifiers
+# -Change Axis View to support events and limit all interactions to be handled by main node
+# -Change Axis View camera to not be retarded
+# -Come up with a good UI switch system based on type_index
+# -Start working on Cube View 

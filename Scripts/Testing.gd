@@ -30,13 +30,16 @@ func _ready():
 	#filestuff()
 	#draw_circle(Vector2(),2000,Color8(255,0,255,255))
 	rng=RandomNumberGenerator.new()
+	for n in range(len(poly)):
+		poly[n]=poly[n]*3
 	pass # Replace with function body.
 var justpressed=0
 
 func _process(delta):
 	#if Input.is_action_just_pressed("mouse_left"):
 	#	print(get_viewport().size)
-	#	print_tree_pretty()
+	text=str(Engine.get_frames_per_second())
+#	print_tree_pretty()
 	pass
 func _Right():
 	bad.append(cols[count][0][0])
@@ -46,16 +49,31 @@ func _Right():
 	$PolyLeft.color=Color8((cols[count][0][0]>>16)&0xff,(cols[count][0][0]>>8)&0xff,cols[count][0][0]&0xff)
 	$PolyRight.color=Color8((cols[count][0][1]>>16)&0xff,(cols[count][0][1]>>8)&0xff,cols[count][0][1]&0xff)
 	pass
-var k=10
+var k=0
+var poly=PoolVector2Array([Vector2(1,0),Vector2(0.7,0.7),Vector2(0,1),
+Vector2(-0.7,0.7),Vector2(-1,0),Vector2(-0.7,-0.7),Vector2(0,-1),Vector2(0.7,-0.7)])
+func polyadd():
+	get_viewport().set_clear_mode(1)
+	for n in get_children():
+		remove_child(n)
+		n.queue_free()
+	for n in 3000:
+		var p=Polygon2D.new()
+		p.polygon=poly
+		p.position=Vector2(rng.randi_range(-200,200),rng.randi_range(-200,200))
+		p.color=Color(randf(),0.5,1)
+		#p.visible=rng.randi_range(0,k)==0
+		add_child(p)
+		#draw_circle(Vector2(rng.randi_range(-200,200),rng.randi_range(-200,200)),2,Color(0.5,0.5,1))
+
 func _draw():
-	for n in 1000:
-		draw_circle(Vector2(rng.randi_range(-200,200),rng.randi_range(-200,200)),2,Color(0.5,0.5,1))
 	draw_circle(Vector2(k,50),3,Color(1,0,1))
 	draw_circle(Vector2(100,k),3,Color(1,0,1))
 	draw_primitive(PoolVector2Array([Vector2(k,k)]),PoolColorArray([Color(0,1,0)]),PoolVector2Array([Vector2()]))
 func _Left():
-	k+=10
 	update()
+	polyadd()
+	k+=10
 #	bad.append(cols[count][0][1])
 #	printraw(IntToHex(cols[count][0][1])+",")
 #	count+=1
