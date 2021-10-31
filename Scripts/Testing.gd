@@ -54,7 +54,7 @@ var poly=PoolVector2Array([Vector2(1,0),Vector2(0.7,0.7),Vector2(0,1),
 Vector2(-0.7,0.7),Vector2(-1,0),Vector2(-0.7,-0.7),Vector2(0,-1),Vector2(0.7,-0.7)])
 func polyadd():
 	get_viewport().set_clear_mode(1)
-	for n in get_children():
+	for n in $YSort.get_children():
 		remove_child(n)
 		n.queue_free()
 	for n in 3000:
@@ -63,7 +63,7 @@ func polyadd():
 		p.position=Vector2(rng.randi_range(-200,200),rng.randi_range(-200,200))
 		p.color=Color(randf(),0.5,1)
 		#p.visible=rng.randi_range(0,k)==0
-		add_child(p)
+		$YSort.add_child(p)
 		#draw_circle(Vector2(rng.randi_range(-200,200),rng.randi_range(-200,200)),2,Color(0.5,0.5,1))
 
 func _draw():

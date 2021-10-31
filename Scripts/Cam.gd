@@ -11,11 +11,15 @@ var prevview:=Vector2(1344,756)
 onready var ratiosize:=Vector2(
 	ProjectSettings.get_setting("display/window/size/width"),
 	ProjectSettings.get_setting("display/window/size/height"))
+
 #offset limit (real) for views
-var offlim:=[Vector2(-128,-128),Vector2(128,128)]
-var defaultzoom:=0.5
-#zoom limit for views
-var zoomlim:=[0.04,0.5]
+var axis_offlim:=[Vector2(-128,-128),Vector2(128,128)]
+
+var axis_defaultzoom:=0.5
+var cube_defaultzoom:=0.72
+#zoom limits for views
+var axis_zoomlim:=[0.04,0.5]
+#??? idk man current system more verbose but understandable
 var view:=0
 
 func forceinbox(pos:Vector2,pos1:Vector2,pos2:Vector2)->Vector2:
@@ -26,43 +30,44 @@ func _ready():
 	#offset=center*prevview/2*zoom
 	#_move(Vector2(-128,-128))
 	pass
-func _offset_reset():
-	zoom=Vector2(defaultzoom,defaultzoom)
+
+func _axis_offset_reset():
+	zoom=Vector2(1,1)*axis_defaultzoom
 	offset=center*prevview/2*zoom
-	if view==0:
-		get_node("../Colorpick").scale=zoom
-func _viewport_change():
+	get_node("../Axis View/Colorpick").scale=zoom
+func ViewportChange():
 	offset=offset-center*prevview/2*zoom
 	prevview=get_viewport().size
 	offset=offset+center*prevview/2*zoom
 
-func _zoom(ratio,where:=Vector2()):
+func _axis_zoom(ratio,where):
 	var real:=offset-center*prevview/2*zoom
-	ratio=clamp(ratio,zoom.x/zoomlim[1],zoom.x/zoomlim[0])
+	ratio=clamp(ratio,zoom.x/axis_zoomlim[1],zoom.x/axis_zoomlim[0])
 	real+=ratiosize/2*where*zoom*(ratio-1)
 	zoom/=ratio
 	offset=center*prevview/2*zoom+real
-	if view==0:
-		get_node("../Colorpick").scale=zoom
-func _move(where,type=0):
+	get_node("../Axis View/Colorpick").scale=zoom
+func _axis_move(where,type):
 	var real =offset-center*prevview/2*zoom
 	
 	if type==0:#direct
 		real+=where
 	elif type==1:#ratio
 		real+=where*zoom
-		if view==0:
-			get_node("../Plane").MousePressed(real)
+		get_node("../Axis View").MousePressed(false,real)
 	elif type==2:#mouserel
 		real+=where*zoom
-	real=forceinbox(real,offlim[0],offlim[1])
+	real=forceinbox(real,axis_offlim[0],axis_offlim[1])
 	offset=center*prevview/2*zoom+real
 
-
-#deprecated
-func set_new_view(_view):
-	view=_view
-	zoom=Vector2(defaultzoom,defaultzoom)
+func _cube_offset_reset():
+	zoom=Vector2(1,1)*cube_defaultzoom
 	offset=center*prevview/2*zoom
-	if view==0:
-		get_node("../Colorpick").scale=zoom
+	pass
+#deprecated
+#func set_new_view(_view):
+#	view=_view
+#	zoom=Vector2(1,1)*axis_defaultzoom
+#	offset=center*prevview/2*zoom
+#	if view==0:
+#		get_node("../Axis View/Colorpick").scale=zoom

@@ -1621,7 +1621,7 @@ func _init():
 	var r7=[g70, g71, g72, g73, g74, g75, g76, g77]
 	all=[r0, r1, r2, r3, r4, r5, r6, r7]
 func colorsector(r,g,b) -> Array:
-	return all[r][g][b]#all[b][r][g]
+	return all[r][g][b]
 func colorname(r,g,b,n)->String:
 	return all[r][g][b][1][n]
 

@@ -1,4 +1,4 @@
-extends Polygon2D
+extends Node2D
 
 #func viewtogrid(p:Vector2,vsize:Vector2,z:float)->Vector2:
 #	return p*z+vsize/2 #Vector2(vsize.x/2.0+p.x*z,vsize.y/2.0+p.y*z)
@@ -27,22 +27,8 @@ func _TypeButton():
 	PerformUpdate()
 
 func _ready():
-	connect("UpdateUI",get_node("../UI"),"UpdateUI")
-
-func SliderChange(value:float)->void:
-	slider=int(value)
-	PerformUpdate()
-
-
-func TypeChange(newtype:int)->void:
-	type=newtype
-	PerformUpdate()
-func OutlineChange(state:bool)->void:
-	outline=state
-	PerformUpdate()
-func FillInChange(state:bool)->void:
-	fill_in=state
-	PerformUpdate()
+	connect("UpdateUI",get_node("../UI"),"UpdateUIAxis")
+	
 
 #Current Color, Found Color, Color Name
 signal UpdateUI(col,colfound,colname)
@@ -79,20 +65,38 @@ func PerformUpdate()->void:
 		#i.resize(512,512)
 		#i.save_png("test1.png")
 
-func MousePressed(globalmouse:Vector2)->void:
-	if visible==true:
-		
-		var _newmouse=forceinbox(Vector2(128+globalmouse.x,128-globalmouse.y),Vector2(),Vector2(256,256))
-		#printt(globalmouse,_newmouse)
-		var _performupd=mousepos!=_newmouse
-		mousepos=_newmouse
-		if _performupd:
-			PerformUpdate()
+func MousePressed(useglobal:=true,globalmouse=Vector2())->void:
+	if useglobal:
+		globalmouse=get_global_mouse_position()
+	var _newmouse=forceinbox(Vector2(128+globalmouse.x,128-globalmouse.y),Vector2(),Vector2(256,256))
+	#printt(globalmouse,_newmouse)
+	var _performupd=mousepos!=_newmouse
+	mousepos=_newmouse
+	if _performupd:
+		PerformUpdate()
 
-func Active()->void:
-	pass
-func Inactive()->void:
-	pass
+func ChangeActive(value:=false)->void:
+	visible=value
+	if value:
+		get_node("../Cam")._axis_offset_reset()
+
+func Move(where,type=0):
+	get_node("../Cam")._axis_move(where,type)
+func Zoom(value,where=Vector2()):
+	get_node("../Cam")._axis_zoom(value,where)
+
+func SliderChange(value:float)->void:
+	slider=int(value)
+	PerformUpdate()
+func TypeChange(newtype:int)->void:
+	type=newtype
+	PerformUpdate()
+func OutlineChange(state:bool)->void:
+	outline=state
+	PerformUpdate()
+func FillInChange(state:bool)->void:
+	fill_in=state
+	PerformUpdate()
 #func _process(_delta):
 #	get_node("ColorFindPort/Shader").material.set_shader_param("slider",[r,g,b][2-type])
 #	get_node("ColorFindPort/Shader").material.set_shader_param("type",type)

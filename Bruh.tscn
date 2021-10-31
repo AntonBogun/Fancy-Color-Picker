@@ -63,19 +63,19 @@ shader_param/b = 0
 [sub_resource type="ImageTexture" id=5]
 size = Vector2( 1, 1 )
 
-[sub_resource type="ShaderMaterial" id=7]
+[sub_resource type="ShaderMaterial" id=6]
 shader = ExtResource( 16 )
 shader_param/slider = 128
 shader_param/textsize = 74
 shader_param/type = 0
 shader_param/colorinfo = ExtResource( 17 )
 
-[sub_resource type="ImageTexture" id=8]
+[sub_resource type="ImageTexture" id=7]
 flags = 0
 flags = 0
 size = Vector2( 256, 256 )
 
-[sub_resource type="ImageTexture" id=6]
+[sub_resource type="ImageTexture" id=8]
 size = Vector2( 1, 1 )
 
 [sub_resource type="ShaderMaterial" id=9]
@@ -189,18 +189,15 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ColorShow" type="ColorRect" parent="UI/MinimumSize"]
-anchor_left = 0.283
-anchor_top = 0.869
-anchor_right = 0.331
-anchor_bottom = 0.98
-color = Color( 0.501961, 0.501961, 0.501961, 1 )
+[node name="AxisView" type="Control" parent="UI/MinimumSize"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
 __meta__ = {
-"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
-[node name="VSlider" type="VSlider" parent="UI/MinimumSize"]
+[node name="VSlider" type="VSlider" parent="UI/MinimumSize/AxisView"]
 material = SubResource( 2 )
 anchor_left = 0.715
 anchor_top = 0.054
@@ -216,7 +213,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Shader" type="Polygon2D" parent="UI/MinimumSize/VSlider"]
+[node name="Shader" type="Polygon2D" parent="UI/MinimumSize/AxisView/VSlider"]
 material = SubResource( 4 )
 position = Vector2( 0, 8 )
 scale = Vector2( 3, 1 )
@@ -230,7 +227,7 @@ __meta__ = {
 }
 Width = 0.0
 
-[node name="picksmol" type="Polygon2D" parent="UI/MinimumSize/VSlider"]
+[node name="picksmol" type="Polygon2D" parent="UI/MinimumSize/AxisView/VSlider"]
 position = Vector2( 24, 128 )
 color = Color( 0.501961, 0.501961, 0.501961, 1 )
 polygon = PoolVector2Array( -24, -2, 24, -2, 24, 2, -24, 2 )
@@ -240,7 +237,7 @@ __meta__ = {
 }
 Width = 1.0
 
-[node name="IsFocused" type="ReferenceRect" parent="UI/MinimumSize/VSlider"]
+[node name="IsFocused" type="ReferenceRect" parent="UI/MinimumSize/AxisView/VSlider"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -256,20 +253,51 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button2" type="Button" parent="UI/MinimumSize"]
-visible = false
-anchor_left = 0.741
-anchor_top = 0.541
-anchor_right = 0.956
-anchor_bottom = 0.867
-margin_left = -0.551025
-margin_top = 0.256531
-margin_right = 0.489014
-margin_bottom = -0.199524
-rect_min_size = Vector2( 100, 50 )
-hint_tooltip = "TEST
-"
-text = "Bruh"
+[node name="GridContainer" type="GridContainer" parent="UI/MinimumSize/AxisView"]
+anchor_left = 0.759673
+anchor_top = 0.0634921
+anchor_right = 0.985863
+anchor_bottom = 0.27381
+hint_tooltip = "Toggles"
+columns = 2
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Type" type="Button" parent="UI/MinimumSize/AxisView/GridContainer"]
+margin_right = 149.0
+margin_bottom = 24.0
+hint_tooltip = "Control Axis"
+size_flags_horizontal = 3
+theme = ExtResource( 11 )
+text = "B"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ClosestColor" type="Button" parent="UI/MinimumSize/AxisView/GridContainer"]
+margin_left = 153.0
+margin_right = 302.0
+margin_bottom = 24.0
+hint_tooltip = "Closest Color Toggle"
+size_flags_horizontal = 3
+theme = ExtResource( 11 )
+toggle_mode = true
+text = "CC: Off"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Outline" type="Button" parent="UI/MinimumSize/AxisView/GridContainer"]
+margin_top = 28.0
+margin_right = 149.0
+margin_bottom = 52.0
+hint_tooltip = "Color Outline Toggle"
+size_flags_horizontal = 3
+theme = ExtResource( 11 )
+toggle_mode = true
+text = "OL: Off"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -285,6 +313,19 @@ margin_right = -0.273712
 margin_bottom = 0.36145
 hint_tooltip = "Select Type"
 script = ExtResource( 7 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="ColorShow" type="ColorRect" parent="UI/MinimumSize"]
+anchor_left = 0.283
+anchor_top = 0.869
+anchor_right = 0.331
+anchor_bottom = 0.98
+margin_left = 3.05176e-05
+margin_right = 3.05176e-05
+color = Color( 0.501961, 0.501961, 0.501961, 1 )
 __meta__ = {
 "_edit_lock_": true,
 "_edit_use_anchors_": false
@@ -325,51 +366,20 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="GridContainer" type="GridContainer" parent="UI/MinimumSize"]
-anchor_left = 0.759673
-anchor_top = 0.0634921
-anchor_right = 0.985863
-anchor_bottom = 0.27381
-hint_tooltip = "Toggles"
-columns = 2
-__meta__ = {
-"_edit_lock_": true,
-"_edit_use_anchors_": false
-}
-
-[node name="Type" type="Button" parent="UI/MinimumSize/GridContainer"]
-margin_right = 149.0
-margin_bottom = 24.0
-hint_tooltip = "Control Axis"
-size_flags_horizontal = 3
-theme = ExtResource( 11 )
-text = "B"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ClosestColor" type="Button" parent="UI/MinimumSize/GridContainer"]
-margin_left = 153.0
-margin_right = 302.0
-margin_bottom = 24.0
-hint_tooltip = "Closest Color Toggle"
-size_flags_horizontal = 3
-theme = ExtResource( 11 )
-toggle_mode = true
-text = "CC: Off"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Outline" type="Button" parent="UI/MinimumSize/GridContainer"]
-margin_top = 28.0
-margin_right = 149.0
-margin_bottom = 52.0
-hint_tooltip = "Color Outline Toggle"
-size_flags_horizontal = 3
-theme = ExtResource( 11 )
-toggle_mode = true
-text = "OL: Off"
+[node name="Button2" type="Button" parent="UI/MinimumSize"]
+visible = false
+anchor_left = 0.741
+anchor_top = 0.541
+anchor_right = 0.956
+anchor_bottom = 0.867
+margin_left = -0.551025
+margin_top = 0.256531
+margin_right = 0.489136
+margin_bottom = -0.199524
+rect_min_size = Vector2( 100, 50 )
+hint_tooltip = "TEST
+"
+text = "Bruh"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -449,9 +459,9 @@ render_target_v_flip = true
 render_target_update_mode = 3
 
 [node name="Shader" type="Sprite" parent="Axis View/ColorFindPort"]
-material = SubResource( 7 )
+material = SubResource( 6 )
 position = Vector2( 128, 128 )
-texture = SubResource( 8 )
+texture = SubResource( 7 )
 
 [node name="Background" type="Polygon2D" parent="Axis View"]
 position = Vector2( 128, 0 )
@@ -465,7 +475,7 @@ __meta__ = {
 [node name="Plane" type="Polygon2D" parent="Axis View"]
 material = ExtResource( 2 )
 color = Color( 0, 0, 0, 1 )
-texture = SubResource( 6 )
+texture = SubResource( 8 )
 polygon = PoolVector2Array( -128, -128, 128, -128, 128, 128, -128, 128 )
 uv = PoolVector2Array( 0, 0, 1, 0, 1, 1, 0, 1 )
 
@@ -482,20 +492,27 @@ polygon = PoolVector2Array( -16, -2, -2, -2, -2, -16, 2, -16, 2, -2, 16, -2, 16,
 script = ExtResource( 5 )
 Width = 1.5
 
-[node name="Cam" type="Camera2D" parent="Axis View"]
+[node name="Cube View" type="Node2D" parent="."]
+visible = false
+script = ExtResource( 18 )
+
+[node name="YSort" type="YSort" parent="Cube View"]
+
+[node name="Polygon2D" type="Polygon2D" parent="Cube View"]
+z_index = -1
+color = Color( 0, 0, 0, 1 )
+polygon = PoolVector2Array( -535.394, -278.644, -559.934, 399.057, 757.714, 361.302, 738.837, -382.47, -599.577, -359.818 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Cam" type="Camera2D" parent="."]
 current = true
 zoom = Vector2( 0.5, 0.5 )
 script = ExtResource( 12 )
 __meta__ = {
 "_edit_lock_": true
 }
-
-[node name="Cube View" type="Node2D" parent="."]
-visible = false
-script = ExtResource( 18 )
-
-[node name="Polygon2D" type="Polygon2D" parent="Cube View"]
-polygon = PoolVector2Array( 0, -72, -257, 3, -174, 231, 172, 199, 170, -68 )
 
 [node name="Bs" type="Node2D" parent="."]
 visible = false
@@ -514,14 +531,13 @@ texture = ExtResource( 9 )
 [node name="tooltest" type="Polygon2D" parent="Bs/Sprite"]
 position = Vector2( 87.2548, 48.9003 )
 scale = Vector2( 0.519479, 1 )
-color = Color( 0.304532, 0, 0.952502, 1 )
+color = Color( 0.631353, 0.775496, 0, 1 )
 polygon = PoolVector2Array( 138, 113.5, 132.5, 112.5, 133, 112.5, 133.5, 112, 133.5, 111.5, 134.5, 111.5, 134.5, 111.5, 135.5, 111.5, 135.5, 112, 136, 112.5, 136.5, 112.5, 136.5, 112.5, 138.5, 112.5, 138.5, 113, 139, 113.5, 139.5, 113.5, 139.5, 113.5, 140.5, 113.5, 140.5, 114, 141, 114.5, 141.5, 114.5, 141.5, 114.5, 142.5, 114.5, 142.5, 115, 143, 115.5, 143.5, 115.5, 144, 116.5, 144.5, 116.5, 144.5, 117.5, 144.5, 119, 145, 119.5, 145.5, 119.5, 145.5, 120.5, 145.5, 128.5, 144.5, 128.5, 144.5, 128, 144, 127.5, 143.5, 127.5, 143.5, 127.5, 142.5, 127.5, 142.5, 127, 142, 126.5, 141.5, 126.5, 141.5, 126.5, 140.5, 126.5, 140.5, 126, 140, 125.5, 139.5, 125.5, 139.5, 125.5, 138.5, 125.5, 138.5, 125, 138, 124.5, 137.5, 124.5, 137.5, 124.5, 136.5, 124.5, 136.5, 124, 136, 123.5, 135.5, 123.5, 135.5, 123.5, 134.5, 123.5, 134.5, 123, 134, 122.5, 133.5, 122.5, 133.5, 122.5, 132.5, 122.5, 132.5, 121, 132, 120.5, 131.5, 120.5, 131.5, 119.5, 131.5, 115.5, 132, 115.5 )
 script = ExtResource( 10 )
 hmm = [ Vector2( 138, 113.5 ), Vector2( 132.5, 112.5 ), Vector2( 133, 112.5 ), Vector2( 133.5, 112 ), Vector2( 133.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 135.5, 111.5 ), Vector2( 135.5, 112 ), Vector2( 136, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 138.5, 112.5 ), Vector2( 138.5, 113 ), Vector2( 139, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 140.5, 113.5 ), Vector2( 140.5, 114 ), Vector2( 141, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 142.5, 114.5 ), Vector2( 142.5, 115 ), Vector2( 143, 115.5 ), Vector2( 143.5, 115.5 ), Vector2( 144, 116.5 ), Vector2( 144.5, 116.5 ), Vector2( 144.5, 117.5 ), Vector2( 144.5, 119 ), Vector2( 145, 119.5 ), Vector2( 145.5, 119.5 ), Vector2( 145.5, 120.5 ), Vector2( 145.5, 128.5 ), Vector2( 144.5, 128.5 ), Vector2( 144.5, 128 ), Vector2( 144, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 142.5, 127.5 ), Vector2( 142.5, 127 ), Vector2( 142, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 140.5, 126.5 ), Vector2( 140.5, 126 ), Vector2( 140, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 138.5, 125.5 ), Vector2( 138.5, 125 ), Vector2( 138, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 136.5, 124.5 ), Vector2( 136.5, 124 ), Vector2( 136, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 134.5, 123.5 ), Vector2( 134.5, 123 ), Vector2( 134, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 132.5, 122.5 ), Vector2( 132.5, 121 ), Vector2( 132, 120.5 ), Vector2( 131.5, 120.5 ), Vector2( 131.5, 119.5 ), Vector2( 131.5, 115.5 ), Vector2( 132, 115.5 ) ]
 
-[node name="YSort" type="YSort" parent="."]
-
 [node name="TodoLabel" type="Label" parent="."]
+visible = false
 margin_left = -252.53
 margin_top = -158.264
 margin_right = -77.5297
@@ -535,14 +551,14 @@ __meta__ = {
 [connection signal="focus_entered" from="UI/MinimumSize/Interact" to="UI" method="_on_Interact_focus_entered"]
 [connection signal="focus_exited" from="UI/MinimumSize/Interact" to="UI" method="_on_Interact_focus_exited"]
 [connection signal="gui_input" from="UI/MinimumSize/Interact" to="UI" method="_on_Interact_gui_input"]
-[connection signal="focus_entered" from="UI/MinimumSize/VSlider" to="UI/MinimumSize/VSlider" method="_on_VSlider_focus_entered"]
-[connection signal="focus_exited" from="UI/MinimumSize/VSlider" to="UI/MinimumSize/VSlider" method="_on_VSlider_focus_exited"]
-[connection signal="resized" from="UI/MinimumSize/VSlider" to="UI/MinimumSize/VSlider" method="_resized"]
-[connection signal="value_changed" from="UI/MinimumSize/VSlider" to="UI/MinimumSize/VSlider" method="_value_changed"]
-[connection signal="value_changed" from="UI/MinimumSize/VSlider" to="UI" method="_on_VSlider_value_changed"]
+[connection signal="focus_entered" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_on_VSlider_focus_entered"]
+[connection signal="focus_exited" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_on_VSlider_focus_exited"]
+[connection signal="resized" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_resized"]
+[connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_value_changed"]
+[connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI" method="_on_VSlider_value_changed"]
+[connection signal="pressed" from="UI/MinimumSize/AxisView/GridContainer/Type" to="UI" method="_on_Type_pressed"]
+[connection signal="toggled" from="UI/MinimumSize/AxisView/GridContainer/ClosestColor" to="UI" method="_on_ClosestColor_toggled"]
+[connection signal="toggled" from="UI/MinimumSize/AxisView/GridContainer/Outline" to="UI" method="_on_Outline_toggled"]
 [connection signal="item_selected" from="UI/MinimumSize/OptionButton" to="UI" method="_on_OptionButton_item_selected"]
-[connection signal="pressed" from="UI/MinimumSize/GridContainer/Type" to="UI" method="_on_Type_pressed"]
-[connection signal="toggled" from="UI/MinimumSize/GridContainer/ClosestColor" to="UI" method="_on_ClosestColor_toggled"]
-[connection signal="toggled" from="UI/MinimumSize/GridContainer/Outline" to="UI" method="_on_Outline_toggled"]
 [connection signal="meta_clicked" from="UI/MinimumSize/LabelCont/ClosestColorLabel" to="UI" method="_on_ClosestColorLabel_meta_clicked"]
 [connection signal="meta_clicked" from="UI/MinimumSize/LabelCont/ColorLabel" to="UI" method="_on_ColorLabel_meta_clicked"]
