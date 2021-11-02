@@ -16,7 +16,7 @@ onready var ratiosize:=Vector2(
 var axis_offlim:=[Vector2(-128,-128),Vector2(128,128)]
 
 var axis_defaultzoom:=0.5
-var cube_defaultzoom:=0.72
+var cube_defaultzoom:=1
 #zoom limits for views
 var axis_zoomlim:=[0.04,0.5]
 #??? idk man current system more verbose but understandable

@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://Scripts/Axis View.gd" type="Script" id=1]
 [ext_resource path="res://Material.tres" type="Material" id=2]
@@ -18,6 +18,7 @@
 [ext_resource path="res://ColorSearch.shader" type="Shader" id=16]
 [ext_resource path="res://colorinfo.png" type="Texture" id=17]
 [ext_resource path="res://Scripts/Cube View.gd" type="Script" id=18]
+[ext_resource path="res://Scripts/Spatial.gd" type="Script" id=19]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -87,6 +88,15 @@ shader_param/fill_in = false
 flags = 0
 flags = 0
 size = Vector2( 512, 512 )
+
+[sub_resource type="Environment" id=14]
+
+[sub_resource type="World" id=15]
+environment = SubResource( 14 )
+
+[sub_resource type="SpatialMaterial" id=13]
+flags_unshaded = true
+vertex_color_use_as_albedo = true
 
 [sub_resource type="Shader" id=11]
 code = "shader_type canvas_item;
@@ -194,6 +204,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 __meta__ = {
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -496,11 +507,40 @@ Width = 1.5
 visible = false
 script = ExtResource( 18 )
 
+[node name="ViewportContainer" type="ViewportContainer" parent="Cube View"]
+margin_left = -672.0
+margin_top = -378.0
+margin_right = 672.0
+margin_bottom = 378.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Viewport" type="Viewport" parent="Cube View/ViewportContainer"]
+size = Vector2( 1344, 756 )
+world = SubResource( 15 )
+handle_input_locally = false
+render_target_update_mode = 0
+
+[node name="MultiMesh" type="MultiMeshInstance" parent="Cube View/ViewportContainer/Viewport"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+material_override = SubResource( 13 )
+generate_lightmap = false
+script = ExtResource( 19 )
+
+[node name="Camera" type="Camera" parent="Cube View/ViewportContainer/Viewport"]
+transform = Transform( 1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, -150, 150 )
+projection = 1
+size = 256.0
+far = 10000.0
+
 [node name="YSort" type="YSort" parent="Cube View"]
+visible = false
 
 [node name="Polygon2D" type="Polygon2D" parent="Cube View"]
+visible = false
 z_index = -1
-color = Color( 0, 0, 0, 1 )
+color = Color( 0.211765, 0.211765, 0.211765, 1 )
 polygon = PoolVector2Array( -535.394, -278.644, -559.934, 399.057, 757.714, 361.302, 738.837, -382.47, -599.577, -359.818 )
 __meta__ = {
 "_edit_lock_": true
@@ -531,7 +571,7 @@ texture = ExtResource( 9 )
 [node name="tooltest" type="Polygon2D" parent="Bs/Sprite"]
 position = Vector2( 87.2548, 48.9003 )
 scale = Vector2( 0.519479, 1 )
-color = Color( 0.631353, 0.775496, 0, 1 )
+color = Color( 0.978256, 0, 0.2074, 1 )
 polygon = PoolVector2Array( 138, 113.5, 132.5, 112.5, 133, 112.5, 133.5, 112, 133.5, 111.5, 134.5, 111.5, 134.5, 111.5, 135.5, 111.5, 135.5, 112, 136, 112.5, 136.5, 112.5, 136.5, 112.5, 138.5, 112.5, 138.5, 113, 139, 113.5, 139.5, 113.5, 139.5, 113.5, 140.5, 113.5, 140.5, 114, 141, 114.5, 141.5, 114.5, 141.5, 114.5, 142.5, 114.5, 142.5, 115, 143, 115.5, 143.5, 115.5, 144, 116.5, 144.5, 116.5, 144.5, 117.5, 144.5, 119, 145, 119.5, 145.5, 119.5, 145.5, 120.5, 145.5, 128.5, 144.5, 128.5, 144.5, 128, 144, 127.5, 143.5, 127.5, 143.5, 127.5, 142.5, 127.5, 142.5, 127, 142, 126.5, 141.5, 126.5, 141.5, 126.5, 140.5, 126.5, 140.5, 126, 140, 125.5, 139.5, 125.5, 139.5, 125.5, 138.5, 125.5, 138.5, 125, 138, 124.5, 137.5, 124.5, 137.5, 124.5, 136.5, 124.5, 136.5, 124, 136, 123.5, 135.5, 123.5, 135.5, 123.5, 134.5, 123.5, 134.5, 123, 134, 122.5, 133.5, 122.5, 133.5, 122.5, 132.5, 122.5, 132.5, 121, 132, 120.5, 131.5, 120.5, 131.5, 119.5, 131.5, 115.5, 132, 115.5 )
 script = ExtResource( 10 )
 hmm = [ Vector2( 138, 113.5 ), Vector2( 132.5, 112.5 ), Vector2( 133, 112.5 ), Vector2( 133.5, 112 ), Vector2( 133.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 135.5, 111.5 ), Vector2( 135.5, 112 ), Vector2( 136, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 138.5, 112.5 ), Vector2( 138.5, 113 ), Vector2( 139, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 140.5, 113.5 ), Vector2( 140.5, 114 ), Vector2( 141, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 142.5, 114.5 ), Vector2( 142.5, 115 ), Vector2( 143, 115.5 ), Vector2( 143.5, 115.5 ), Vector2( 144, 116.5 ), Vector2( 144.5, 116.5 ), Vector2( 144.5, 117.5 ), Vector2( 144.5, 119 ), Vector2( 145, 119.5 ), Vector2( 145.5, 119.5 ), Vector2( 145.5, 120.5 ), Vector2( 145.5, 128.5 ), Vector2( 144.5, 128.5 ), Vector2( 144.5, 128 ), Vector2( 144, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 142.5, 127.5 ), Vector2( 142.5, 127 ), Vector2( 142, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 140.5, 126.5 ), Vector2( 140.5, 126 ), Vector2( 140, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 138.5, 125.5 ), Vector2( 138.5, 125 ), Vector2( 138, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 136.5, 124.5 ), Vector2( 136.5, 124 ), Vector2( 136, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 134.5, 123.5 ), Vector2( 134.5, 123 ), Vector2( 134, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 132.5, 122.5 ), Vector2( 132.5, 121 ), Vector2( 132, 120.5 ), Vector2( 131.5, 120.5 ), Vector2( 131.5, 119.5 ), Vector2( 131.5, 115.5 ), Vector2( 132, 115.5 ) ]
