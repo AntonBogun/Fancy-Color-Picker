@@ -97,6 +97,8 @@ func _add_points(arr:Array):
 	# Maybe not all of them should be visible at first.
    # multimesh.visible_instance_count = 1000
 	var spher=SphereMesh.new()
+	spher.radius=2
+	spher.height=4
 	spher.rings=1
 	spher.radial_segments=1
 	multimesh.mesh=spher

@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://Scripts/Axis View.gd" type="Script" id=1]
 [ext_resource path="res://Material.tres" type="Material" id=2]
@@ -89,16 +89,15 @@ flags = 0
 flags = 0
 size = Vector2( 512, 512 )
 
-[sub_resource type="Environment" id=14]
-
-[sub_resource type="World" id=15]
-environment = SubResource( 14 )
-
-[sub_resource type="SpatialMaterial" id=13]
+[sub_resource type="SpatialMaterial" id=11]
 flags_unshaded = true
 vertex_color_use_as_albedo = true
 
-[sub_resource type="Shader" id=11]
+[sub_resource type="Environment" id=12]
+background_mode = 1
+background_color = Color( 0.188235, 0.188235, 0.188235, 1 )
+
+[sub_resource type="Shader" id=13]
 code = "shader_type canvas_item;
 uniform float saturation = -1;
 uniform float lightness = 0;
@@ -113,8 +112,8 @@ void fragment(){
 	COLOR.b=COLOR.b*(1.0+min(lightness,0))+(1.0-COLOR.b)*max(lightness,0);
 }"
 
-[sub_resource type="ShaderMaterial" id=12]
-shader = SubResource( 11 )
+[sub_resource type="ShaderMaterial" id=14]
+shader = SubResource( 13 )
 shader_param/saturation = -1.0
 shader_param/lightness = 0.0
 
@@ -200,6 +199,7 @@ __meta__ = {
 }
 
 [node name="AxisView" type="Control" parent="UI/MinimumSize"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -313,6 +313,28 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="CubeView" type="Control" parent="UI/MinimumSize"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="CubeModeButton" type="Button" parent="UI/MinimumSize/CubeView"]
+anchor_left = 0.72692
+anchor_top = 0.0550012
+anchor_right = 0.815751
+anchor_bottom = 0.0883743
+margin_top = 0.230003
+margin_right = 0.611206
+rect_min_size = Vector2( 100, 25 )
+text = "Orbit Mode"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
 [node name="OptionButton" type="OptionButton" parent="UI/MinimumSize"]
 anchor_left = 0.014
 anchor_top = 0.868
@@ -417,6 +439,7 @@ text = "Closest color:
 #808080 Gray"
 script = ExtResource( 13 )
 __meta__ = {
+"_edit_lock_": true,
 "_edit_use_anchors_": true
 }
 info = [ "#808080", "Gray" ]
@@ -436,6 +459,7 @@ text = "Current color:
 RGB=(128,128,128) #808080"
 script = ExtResource( 13 )
 __meta__ = {
+"_edit_lock_": true,
 "_edit_use_anchors_": true
 }
 info = [ "128,128,128", "#808080" ]
@@ -489,12 +513,18 @@ color = Color( 0, 0, 0, 1 )
 texture = SubResource( 8 )
 polygon = PoolVector2Array( -128, -128, 128, -128, 128, 128, -128, 128 )
 uv = PoolVector2Array( 0, 0, 1, 0, 1, 1, 0, 1 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Shader" type="Sprite" parent="Axis View"]
 material = SubResource( 9 )
 scale = Vector2( 0.5, 0.5 )
 texture = SubResource( 10 )
 flip_v = true
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Colorpick" type="Polygon2D" parent="Axis View"]
 scale = Vector2( 0.5, 0.5 )
@@ -518,21 +548,23 @@ __meta__ = {
 
 [node name="Viewport" type="Viewport" parent="Cube View/ViewportContainer"]
 size = Vector2( 1344, 756 )
-world = SubResource( 15 )
 handle_input_locally = false
 render_target_update_mode = 0
 
 [node name="MultiMesh" type="MultiMeshInstance" parent="Cube View/ViewportContainer/Viewport"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
-material_override = SubResource( 13 )
+material_override = SubResource( 11 )
 generate_lightmap = false
 script = ExtResource( 19 )
 
 [node name="Camera" type="Camera" parent="Cube View/ViewportContainer/Viewport"]
-transform = Transform( 1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, -150, 150 )
-projection = 1
-size = 256.0
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 400 )
+environment = SubResource( 12 )
+size = 10.0
 far = 10000.0
+
+[node name="CSGPolygon" type="CSGPolygon" parent="Cube View/ViewportContainer/Viewport"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.89142, 0.394527, -1.12402 )
+polygon = PoolVector2Array( 0, 0, 0, 1, 4.09692, 1.67095, 1, 0 )
 
 [node name="YSort" type="YSort" parent="Cube View"]
 visible = false
@@ -564,14 +596,14 @@ polygon = PoolVector2Array( 37.4711, -24.1838, 42.0745, -23.6282, 46.7363, -25.8
 script = ExtResource( 8 )
 
 [node name="Sprite" type="Sprite" parent="Bs"]
-material = SubResource( 12 )
+material = SubResource( 14 )
 position = Vector2( 1047.69, -424.249 )
 texture = ExtResource( 9 )
 
 [node name="tooltest" type="Polygon2D" parent="Bs/Sprite"]
 position = Vector2( 87.2548, 48.9003 )
 scale = Vector2( 0.519479, 1 )
-color = Color( 0.978256, 0, 0.2074, 1 )
+color = Color( 0.807166, 0, 0.590324, 1 )
 polygon = PoolVector2Array( 138, 113.5, 132.5, 112.5, 133, 112.5, 133.5, 112, 133.5, 111.5, 134.5, 111.5, 134.5, 111.5, 135.5, 111.5, 135.5, 112, 136, 112.5, 136.5, 112.5, 136.5, 112.5, 138.5, 112.5, 138.5, 113, 139, 113.5, 139.5, 113.5, 139.5, 113.5, 140.5, 113.5, 140.5, 114, 141, 114.5, 141.5, 114.5, 141.5, 114.5, 142.5, 114.5, 142.5, 115, 143, 115.5, 143.5, 115.5, 144, 116.5, 144.5, 116.5, 144.5, 117.5, 144.5, 119, 145, 119.5, 145.5, 119.5, 145.5, 120.5, 145.5, 128.5, 144.5, 128.5, 144.5, 128, 144, 127.5, 143.5, 127.5, 143.5, 127.5, 142.5, 127.5, 142.5, 127, 142, 126.5, 141.5, 126.5, 141.5, 126.5, 140.5, 126.5, 140.5, 126, 140, 125.5, 139.5, 125.5, 139.5, 125.5, 138.5, 125.5, 138.5, 125, 138, 124.5, 137.5, 124.5, 137.5, 124.5, 136.5, 124.5, 136.5, 124, 136, 123.5, 135.5, 123.5, 135.5, 123.5, 134.5, 123.5, 134.5, 123, 134, 122.5, 133.5, 122.5, 133.5, 122.5, 132.5, 122.5, 132.5, 121, 132, 120.5, 131.5, 120.5, 131.5, 119.5, 131.5, 115.5, 132, 115.5 )
 script = ExtResource( 10 )
 hmm = [ Vector2( 138, 113.5 ), Vector2( 132.5, 112.5 ), Vector2( 133, 112.5 ), Vector2( 133.5, 112 ), Vector2( 133.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 135.5, 111.5 ), Vector2( 135.5, 112 ), Vector2( 136, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 138.5, 112.5 ), Vector2( 138.5, 113 ), Vector2( 139, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 140.5, 113.5 ), Vector2( 140.5, 114 ), Vector2( 141, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 142.5, 114.5 ), Vector2( 142.5, 115 ), Vector2( 143, 115.5 ), Vector2( 143.5, 115.5 ), Vector2( 144, 116.5 ), Vector2( 144.5, 116.5 ), Vector2( 144.5, 117.5 ), Vector2( 144.5, 119 ), Vector2( 145, 119.5 ), Vector2( 145.5, 119.5 ), Vector2( 145.5, 120.5 ), Vector2( 145.5, 128.5 ), Vector2( 144.5, 128.5 ), Vector2( 144.5, 128 ), Vector2( 144, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 142.5, 127.5 ), Vector2( 142.5, 127 ), Vector2( 142, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 140.5, 126.5 ), Vector2( 140.5, 126 ), Vector2( 140, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 138.5, 125.5 ), Vector2( 138.5, 125 ), Vector2( 138, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 136.5, 124.5 ), Vector2( 136.5, 124 ), Vector2( 136, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 134.5, 123.5 ), Vector2( 134.5, 123 ), Vector2( 134, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 132.5, 122.5 ), Vector2( 132.5, 121 ), Vector2( 132, 120.5 ), Vector2( 131.5, 120.5 ), Vector2( 131.5, 119.5 ), Vector2( 131.5, 115.5 ), Vector2( 132, 115.5 ) ]
@@ -594,11 +626,12 @@ __meta__ = {
 [connection signal="focus_entered" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_on_VSlider_focus_entered"]
 [connection signal="focus_exited" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_on_VSlider_focus_exited"]
 [connection signal="resized" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_resized"]
-[connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_value_changed"]
 [connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI" method="_on_VSlider_value_changed"]
+[connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_value_changed"]
 [connection signal="pressed" from="UI/MinimumSize/AxisView/GridContainer/Type" to="UI" method="_on_Type_pressed"]
 [connection signal="toggled" from="UI/MinimumSize/AxisView/GridContainer/ClosestColor" to="UI" method="_on_ClosestColor_toggled"]
 [connection signal="toggled" from="UI/MinimumSize/AxisView/GridContainer/Outline" to="UI" method="_on_Outline_toggled"]
+[connection signal="pressed" from="UI/MinimumSize/CubeView/CubeModeButton" to="UI" method="_on_CubeModeButton_pressed"]
 [connection signal="item_selected" from="UI/MinimumSize/OptionButton" to="UI" method="_on_OptionButton_item_selected"]
 [connection signal="meta_clicked" from="UI/MinimumSize/LabelCont/ClosestColorLabel" to="UI" method="_on_ClosestColorLabel_meta_clicked"]
 [connection signal="meta_clicked" from="UI/MinimumSize/LabelCont/ColorLabel" to="UI" method="_on_ColorLabel_meta_clicked"]

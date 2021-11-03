@@ -344,6 +344,51 @@ func RequestUpdate(node)->void:
 func _exit_tree():
 	KillThread()
 
+######
+#	c1=cos(xrot)
+#	c2=cos(zrot)
+#	s1=sin(xrot)
+#	s2=sin(zrot)
+#	for p in custom_shapes.values():
+#		_line_rot(p[0],p[1][0],p[1][1])
+#		#print(p[0].polygon)
+#	var p=0
+#	for l in points:
+#		p=_point_3_rot(l[1])
+#		l[0].position=Vector2(p.y,p.x)
+#		l[0].offset=Vector2(0,-p.x+p.z)/psize
+#var _circle:=PoolVector2Array([
+#	Vector2(0.0,1.0),Vector2(0.5,0.866025),Vector2(0.866025,0.5),
+#	Vector2(1.0,0.0),Vector2(0.866025,-0.5),Vector2(0.5,-0.866025),
+#	Vector2(0.0,-1.0),Vector2(-0.5,-0.866025),Vector2(-0.866025,-0.5),
+#	Vector2(-1.0,0.0),Vector2(-0.866025,0.5),Vector2(-0.5,0.866025)
+#	])
+#	return Vector3(
+#		p.x*c1*c2-p.y*s1*c2-p.z*s2,
+#		p.x*s1+p.y*c1,
+#		p.x*c1*s2-p.y*s1*s2+p.z*c2
+#	)
+#	return Vector3(
+#		p.x*cos(_xrot)*cos(_zrot)-p.y*sin(_xrot)+p.z*cos(_xrot)*sin(_zrot),
+#		p.x*sin(_xrot)*cos(_zrot)+p.y*cos(_xrot)+p.z*sin(_xrot)*sin(_zrot),
+#		p.x*-sin(_zrot)+cos(_zrot)*p.z
+#	)
+#func _info_to_poly_point(info:int)->Polygon2D:
+#	var p=_point_3_rot(_cent_conv(colr.InfoToVec3(info)))
+#	var poly:=Polygon2D.new()
+#	poly.polygon=_circle
+#	poly.scale=Vector2(psize,psize)
+#	poly.color=colr.InfoToCol(info)
+#	poly.position=Vector2(p.y,p.x)
+#	poly.offset=Vector2(0,-p.x+p.z)/psize
+#	return poly
+#	for n in range(len(lines)):
+#		custom_shapes[n]=[_line_make(lines[n][0],lines[n][1],1,lines[n][2]),lines[n].slice(0,1)]
+#		add_child(custom_shapes[n][0])
+#	lines.clear()
 
-
+#	for N in range(8):
+#		for n in colr.colorsector((N&1)*7,((N>>1)&1)*7,((N>>2)&1)*7)[0]:
+#			$YSort.add_child(_info_to_poly_point(n))
+		# Replace with function body.
 

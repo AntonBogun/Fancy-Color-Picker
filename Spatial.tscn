@@ -21,3 +21,5 @@ script = ExtResource( 1 )
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 300 )
 far = 10000.0
+
+[node name="CSGPolygon2" type="CSGPolygon" parent="."]

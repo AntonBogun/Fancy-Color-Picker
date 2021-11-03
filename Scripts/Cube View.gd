@@ -1,17 +1,13 @@
 extends Node2D
 
 var xrot:=0.0
-var zrot:=0.0
-var c1=cos(xrot)
-var c2=cos(zrot)
-var s1=sin(xrot)
-var s2=sin(zrot)
-var _circle:=PoolVector2Array([
-	Vector2(0.0,1.0),Vector2(0.5,0.866025),Vector2(0.866025,0.5),
-	Vector2(1.0,0.0),Vector2(0.866025,-0.5),Vector2(0.5,-0.866025),
-	Vector2(0.0,-1.0),Vector2(-0.5,-0.866025),Vector2(-0.866025,-0.5),
-	Vector2(-1.0,0.0),Vector2(-0.866025,0.5),Vector2(-0.5,0.866025)
-	])
+var yrot:=0.0
+var xrotbasis=Basis(Vector3(cos(xrot),0,-sin(xrot)),
+	Vector3(0,1,0),
+	Vector3(sin(xrot),0,cos(xrot)))
+var yrotbasis=Basis(Vector3(1,0,0),
+	Vector3(0,cos(yrot),-sin(yrot)),
+	Vector3(0,sin(yrot),cos(yrot)))
 var psize:=3
 func col_to_vec3(col:Color)->Vector3:
 	return Vector3(col.r8,col.g8,col.b8)
@@ -20,25 +16,17 @@ func _cent_conv(p:Vector3)->Vector3:#convert rgb 0-255 to actual coords
 	return p*Vector3(1,1,-1)+Vector3(-255/2,-255/2,255/2)
 #Matrix Magic
 func _point_3_rot(p:Vector3)->Vector3:
-	return Vector3(
-		p.x*c1*c2-p.y*s1*c2-p.z*s2,
-		p.x*s1+p.y*c1,
-		p.x*c1*s2-p.y*s1*s2+p.z*c2
-	)
-#	return Vector3(
-#		p.x*cos(_xrot)*cos(_zrot)-p.y*sin(_xrot)+p.z*cos(_xrot)*sin(_zrot),
-#		p.x*sin(_xrot)*cos(_zrot)+p.y*cos(_xrot)+p.z*sin(_xrot)*sin(_zrot),
-#		p.x*-sin(_zrot)+cos(_zrot)*p.z
-#	)
-func _info_to_poly_point(info:int)->Polygon2D:
-	var p=_point_3_rot(_cent_conv(colr.InfoToVec3(info)))
-	var poly:=Polygon2D.new()
-	poly.polygon=_circle
-	poly.scale=Vector2(psize,psize)
-	poly.color=colr.InfoToCol(info)
-	poly.position=Vector2(p.y,p.x)
-	poly.offset=Vector2(0,-p.x+p.z)/psize
-	return poly
+#	var xrotbasis=Basis(Vector3(cos(xrot),-sin(xrot),0),
+#	Vector3(sin(xrot),cos(xrot),0),
+#	Vector3(0,0,1))
+	var xrotbasis=Basis(Vector3(cos(xrot),0,-sin(xrot)),
+	Vector3(0,1,0),
+	Vector3(sin(xrot),0,cos(xrot)))
+	var yrotbasis=Basis(Vector3(0,0,0),
+	Vector3(0,cos(yrot),-sin(yrot)),
+	Vector3(0,sin(yrot),cos(yrot)))
+	return xrotbasis*(yrotbasis*p)
+
 func bts(b:bool=false)->int:#bool to sign
 	return 2*int(b)-1
 func _line_make(P1:Vector3,P2:Vector3,_wide:=1,col:Color=Color(1,1,1))->Polygon2D:
@@ -78,47 +66,44 @@ var lines=[
 var custom_shapes={}
 var points=[]
 func _ready():
-#	for n in range(len(lines)):
-#		custom_shapes[n]=[_line_make(lines[n][0],lines[n][1],1,lines[n][2]),lines[n].slice(0,1)]
-#		add_child(custom_shapes[n][0])
-#	lines.clear()
 	for n1 in range(8):
 		for n2 in range(8):
 			for n3 in range(8):
 				for n in colr.colorsector(n1,n2,n3)[0]:
-					#var point=_info_to_poly_point(n)
-					#$YSort.add_child(point)
 					points.append([_cent_conv(colr.InfoToVec3(n)),colr.InfoToCol(n)])
 	$ViewportContainer/Viewport/MultiMesh._add_points(points)
-#	for N in range(8):
-#		for n in colr.colorsector((N&1)*7,((N>>1)&1)*7,((N>>2)&1)*7)[0]:
-#			$YSort.add_child(_info_to_poly_point(n))
-	pass # Replace with function body.
 
+
+onready var cam3d=$ViewportContainer/Viewport/Camera
 func Move(where:Vector2,type:=0):
+	xrot=wrapf(xrot+where.x,0,2*PI)
+	yrot=clamp(yrot-where.y,-PI/2,PI/2)
+	xrotbasis=Basis(Vector3(cos(xrot),0,-sin(xrot)),
+	Vector3(0,1,0),
+	Vector3(sin(xrot),0,cos(xrot)))
+	yrotbasis=Basis(Vector3(1,0,0),
+	Vector3(0,cos(yrot),-sin(yrot)),
+	Vector3(0,sin(yrot),cos(yrot)))
+	cam3d.transform.origin=xrotbasis*(yrotbasis*Vector3(0,0,400))
+	#print(cam3d.transform.basis)
+	cam3d.transform.basis=xrotbasis*(yrotbasis)
+	#print(yrotbasis*(xrotbasis*Basis(Vector3(1,1,1))))
 	pass
-#	xrot=wrapf(xrot-where.x,0,2*PI)
-#	zrot=clamp(zrot-where.y,-PI/2,PI/2)
-#	c1=cos(xrot)
-#	c2=cos(zrot)
-#	s1=sin(xrot)
-#	s2=sin(zrot)
-#	for p in custom_shapes.values():
-#		_line_rot(p[0],p[1][0],p[1][1])
-#		#print(p[0].polygon)
-#	var p=0
-#	for l in points:
-#		p=_point_3_rot(l[1])
-#		l[0].position=Vector2(p.y,p.x)
-#		l[0].offset=Vector2(0,-p.x+p.z)/psize
 
 func ChangeActive(value:=false):
 	visible=value
 	if value:
+		cam3d.transform.origin=Vector3(0,0,400)
+		cam3d.transform.basis=Basis()
+		xrot=0.0
+		yrot=0.0
 		get_node("../Cam")._cube_offset_reset()
-func _process(d):
-#	var fps=Engine.get_frames_per_second()
-#	if fps<60:
-#		#print(fps)
-		pass
+
+
+#func _process(d):
+##	var fps=Engine.get_frames_per_second()
+##	if fps<60:
+##		#print(fps)
+#		pass
+
 

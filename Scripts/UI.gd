@@ -30,7 +30,7 @@ var _justenter=false
 var view:=0
 #Axis Variables
 var type=0
-
+var cubemode=0
 #General Events
 #fullscreen
 func _input(event):
@@ -182,3 +182,14 @@ func UpdateUIAxis(col:Color,colfound:Color,colname:String)->void:
 # -Change Axis View camera to not be retarded
 # -Come up with a good UI switch system based on type_index
 # -Start working on Cube View 
+
+
+func _on_CubeModeButton_pressed():
+	cubemode=(cubemode+1)%2
+	if cubemode==0:
+		$MinimumSize/CubeView/CubeModeButton.text="Orbit Mode"
+	else:
+		$MinimumSize/CubeView/CubeModeButton.text="Free Mode"
+	get_node("../Cube View").ChangeMode(cubemode)
+	
+	pass # Replace with function body.
