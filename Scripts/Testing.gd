@@ -26,7 +26,54 @@ func filestuff():
 	$PolyLeft.color=Color8((cols[0][0][0]>>16)&0xff,(cols[0][0][0]>>8)&0xff,cols[0][0][0]&0xff)
 	$PolyRight.color=Color8((cols[0][0][1]>>16)&0xff,(cols[0][0][1]>>8)&0xff,cols[0][0][1]&0xff)
 	text=IntToHex(cols[0][0][0]).substr(2).to_upper()+" and "+IntToHex(cols[0][0][1]).substr(2).to_upper()+" ("+cols[0][1]+")"
+
+
+class Line:
+	extends Reference
+	var dir:=Vector3()
+	var dir_inv:=Vector3()
+	var pos:=Vector3()
+	func _init(dir:=Vector3(),pos:=Vector3()):
+		self.dir=dir
+		self.dir_inv=Vector3(1,1,1)/dir
+		self.pos=pos
+#	func _get(property):
+#		if len(property)==1 and ord(property)>=120 and ord(property)<=122:
+#			return self.dir[ord(property)-120]
+#		elif len(property)==2 and ord(property[0])>=120 and ord(property[0])<=122:
+#			return self.pos[ord(property[0])-120]
+#		elif property in self:
+#			return self.property
+#		else:
+#			return null
+	func _to_string():
+		return "["+str(self.dir)+" , "+str(self.dir_inv)+"]+"+str(self.pos)
+func LinePlaneIntersect(l:=Line.new(),p:=Plane())->Vector3:
+	var d:=p.d-p.normal.dot(l.pos)
+	var L:=l.dir_inv
+#	K=afg+beg+cef
+#	a,b,c=p.xyz
+#	e,f,g=l.xyz
+#	fg; eg; ef * d / K
+	var K:float=p.x*L.y*L.z+p.y*L.x*L.z+p.z*L.x*L.y
+	if K==0:
+		return Vector3(1<<63,1<<63,1<<63)
+	else:
+		return Vector3(
+			L.y*L.z,
+			L.x*L.z,
+			L.x*L.y
+		)*d/K+l.pos
+	
 func _ready():
+	var l=Line.new(Vector3(-1,4,-7),Vector3(13,-4,-5))
+	#print(l.x)
+	#print(l.x0)
+	#print(l.dir)
+	var p=Plane(Vector3(-3,-4,2).normalized(),8)
+	print(l)
+	print(p)
+	print(LinePlaneIntersect(l,p))
 	#filestuff()
 	#draw_circle(Vector2(),2000,Color8(255,0,255,255))
 	rng=RandomNumberGenerator.new()

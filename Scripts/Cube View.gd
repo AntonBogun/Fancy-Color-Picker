@@ -74,31 +74,114 @@ func _ready():
 	$ViewportContainer/Viewport/MultiMesh._add_points(points)
 
 
+
 onready var cam3d=$ViewportContainer/Viewport/Camera
-func Move(where:Vector2,type:=0):
+func Rotate(where:=Vector2(),type:=0)->void:
 	xrot=wrapf(xrot+where.x,0,2*PI)
-	yrot=clamp(yrot-where.y,-PI/2,PI/2)
-	xrotbasis=Basis(Vector3(cos(xrot),0,-sin(xrot)),
-	Vector3(0,1,0),
-	Vector3(sin(xrot),0,cos(xrot)))
-	yrotbasis=Basis(Vector3(1,0,0),
-	Vector3(0,cos(yrot),-sin(yrot)),
-	Vector3(0,sin(yrot),cos(yrot)))
-	cam3d.transform.origin=xrotbasis*(yrotbasis*Vector3(0,0,400))
+	yrot=clamp(yrot+where.y,-PI/2,PI/2)
+	yrotbasis=Basis(
+		Vector3(cos(xrot),0,-sin(xrot)),
+		Vector3(0,1,0),
+		Vector3(sin(xrot),0,cos(xrot)))
+	xrotbasis=Basis(
+		Vector3(1,0,0),
+		Vector3(0,cos(yrot),-sin(yrot)),
+		Vector3(0,sin(yrot),cos(yrot)))
+	cam3d.transform.basis=yrotbasis*(xrotbasis)
+	if movetype==0:
+		cam3d.transform.origin=yrotbasis*(xrotbasis*Vector3(0,0,400))
 	#print(cam3d.transform.basis)
-	cam3d.transform.basis=xrotbasis*(yrotbasis)
 	#print(yrotbasis*(xrotbasis*Basis(Vector3(1,1,1))))
 	pass
+var prevpos
+var movetype=0
+func ChangeMode(value)->void:
+	movetype=value
+	if value==0:
+		xrot=prevpos.x
+		yrot=prevpos.y
+		Rotate()
+		pass
+	elif value==1:
+		prevpos=Vector2(xrot,yrot)
+func Move(where:=Vector3(),type:=0)->void:
+	where*=Vector3(1,1,-1)
+	if movetype==1:
+		if type==0:
+			var move=yrotbasis*(xrotbasis*where)
+			
+			cam3d.transform.origin+=move
+		else:
+			cam3d.transform.origin=where
 
-func ChangeActive(value:=false):
+
+
+func ChangeActive(value:=false)->void:
 	visible=value
 	if value:
-		cam3d.transform.origin=Vector3(0,0,400)
-		cam3d.transform.basis=Basis()
-		xrot=0.0
-		yrot=0.0
+		#cam3d.transform.origin=Vector3(0,0,400)
+		#cam3d.transform.basis=Basis()
+		#xrot=0.0
+		#yrot=0.0
 		get_node("../Cam")._cube_offset_reset()
 
+func BloomToggle(toggle)->void:
+	cam3d.environment.glow_enabled=toggle
+func BloomValue(value)->void:
+	cam3d.environment.glow_bloom=value
+
+class Line:
+	extends Reference
+	var dir:=Vector3()
+	var pos:=Vector3()
+	func _init(dir:=Vector3(),pos:=Vector3()):
+		self.dir=dir
+		self.pos=pos
+	func _get(property):
+		if len(property)==1 and ord(property)>=120 and ord(property)<=122:
+			return self.dir[ord(property)-120]
+		elif len(property)==2 and ord(property[0])>=120 and ord(property[0])<=122:
+			return self.pos[ord(property[0])-120]
+		elif property in self:
+			return self.property
+		else:
+			return null
+
+func LineFromCam(cam:=Camera.new(),point:=Vector2())->Line:
+
+	var fov:=point*cam.fov/2
+	var fovx=Basis(
+		Vector3(cos(fov.x),0,-sin(fov.x)),
+		Vector3(0,1,0),
+		Vector3(sin(fov.x),0,cos(fov.x)))
+	var fovy=Basis(
+		Vector3(1,0,0),
+		Vector3(0,cos(fov.y),-sin(fov.y)),
+		Vector3(0,sin(fov.y),cos(fov.y)))
+	return Line.new(cam.transform.basis*fovy*fovx*Vector3(0,0,1),cam.transform.origin)
+
+func LinePlaneIntersect(l:=Line.new(),p:=Plane())->Vector3:
+	var n:=l.pos*p.normal.abs()
+	if n==p.normal*p.d:
+		p.d=0
+	else:
+		p.normal-=n/p.d
+		var norm=p.normal.normalized()
+		p.d=p.normal/norm
+		p.normal=norm
+#	afg+beg+cef
+#	a,b,c=p.xyz
+#	e,f,g=l.xyz
+#	fg; eg; ef
+	var K=p.x*l.y*l.z+p.y*l.x*l.z+p.z*l.x*l.z
+	if K==0:
+		return Vector3(-0xfffffffffffffff,-0xfffffffffffffff,-0xfffffffffffffff)
+	else:
+		return Vector3(
+			l.y*l.z,
+			l.x*l.z,
+			l.x*l.y
+		)/K*p.d
 
 #func _process(d):
 ##	var fps=Engine.get_frames_per_second()
@@ -107,3 +190,17 @@ func ChangeActive(value:=false):
 #		pass
 
 
+#	#funni version:
+#	#afg+beg+cef
+#	#a,b,c=p.xyz
+#	#e,f,g=l.xyz
+#	#h,i,j=l.x0y0z0
+#	var K=p.x*l.y*l.z+p.y*l.x*l.z+p.z*l.x*l.z
+#	if K==0:
+#		return null
+#	else:
+#		return Vector3(
+#
+#
+#
+#		)

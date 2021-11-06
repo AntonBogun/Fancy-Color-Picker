@@ -76,6 +76,7 @@ func _on_Interact_gui_input(event):
 			if view==0:
 				get_node("../Axis View").MousePressed()
 	if Input.is_action_pressed("mouse_right"):
+		_on_Interact_focus_entered()
 		if event is InputEventMouseMotion:
 			var pos=event.position
 			var rel=event.relative
@@ -83,7 +84,7 @@ func _on_Interact_gui_input(event):
 			if view==0:
 				get_node("../Axis View").Move(-(rem+get_extra(pos,Vector2(),borders)),2)
 			if view==1:
-				get_node("../Cube View").Move(-(rem+get_extra(pos,Vector2(),borders))*0.005)
+				get_node("../Cube View").Rotate(Vector2(-1,1)*(rem+get_extra(pos,Vector2(),borders))*0.005)
 			var clmp=forceinbox(pos,Vector2(),borders)
 			if !(pos.x>=0 and pos.y>=0 and pos.x<=borders.x and pos.y<=borders.y):
 				get_viewport().warp_mouse(clmp+off)
@@ -108,15 +109,29 @@ func _process(_delta):
 	var down=Input.is_action_pressed("ui_down")
 	var zoomin=Input.is_action_pressed("ui_zoom_in")
 	var zoomout=Input.is_action_pressed("ui_zoom_out")
+	var move_up=Input.is_action_pressed("ui_move_up")
+	var move_down=Input.is_action_pressed("ui_move_down")
+	var move_left=Input.is_action_pressed("ui_move_left")
+	var move_right=Input.is_action_pressed("ui_move_right")
+	var move_forward=Input.is_action_pressed("ui_move_forward")
+	var move_backward=Input.is_action_pressed("ui_move_backward")
+	var shift = Input.is_action_pressed("shift")
 	if (left or right or up or down)and not _justenter and InteractFocus:
 		#print("Aaaa")
 		if view==0:
 			get_node("../Axis View").Move(Vector2(int(right)-int(left),int(down)-int(up))*4,1)
 		if view==1:
-			get_node("../Cube View").Move(Vector2(int(right)-int(left),int(down)-int(up))*0.015)
-	if zoomin or zoomout:
+			get_node("../Cube View").Rotate(Vector2(int(right)-int(left),int(up)-int(down))*0.015)
+	if zoomin or zoomout and InteractFocus:
 		if view==0:
 			get_node("../Axis View").Zoom(1+0.025*(int(zoomin)-int(zoomout)))
+	if (move_up or move_down or move_left or move_right or move_forward or move_backward)and InteractFocus:
+		if view==1:
+			get_node("../Cube View").Move(
+				Vector3(int(move_right)-int(move_left),
+				int(move_up)-int(move_down),
+				int(move_forward)-int(move_backward))*(5 if shift else 1)
+				)
 
 
 
@@ -144,6 +159,7 @@ func _on_OptionButton_item_selected(index):
 	get_node("../Axis View").ChangeActive(index==0)
 	$MinimumSize/AxisView.visible=index==0
 	get_node("../Cube View").ChangeActive(index==1)
+	$MinimumSize/CubeView.visible=index==1
 	view=index
 
 #CAM EVENTS:
@@ -191,5 +207,15 @@ func _on_CubeModeButton_pressed():
 	else:
 		$MinimumSize/CubeView/CubeModeButton.text="Free Mode"
 	get_node("../Cube View").ChangeMode(cubemode)
-	
-	pass # Replace with function body.
+
+
+func _on_Bloom_toggled(toggle):
+	$MinimumSize/CubeView/BloomSlider.editable=toggle
+	$MinimumSize/CubeView/Bloom.text="Bloom:"+("On" if toggle else "Off")
+	get_node("../Cube View").BloomToggle(toggle)
+
+
+func _on_BloomSlider_value_changed(value):
+	get_node("../Cube View").BloomValue(value/100)
+
+

@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://Scripts/Axis View.gd" type="Script" id=1]
 [ext_resource path="res://Material.tres" type="Material" id=2]
@@ -19,6 +19,7 @@
 [ext_resource path="res://colorinfo.png" type="Texture" id=17]
 [ext_resource path="res://Scripts/Cube View.gd" type="Script" id=18]
 [ext_resource path="res://Scripts/Spatial.gd" type="Script" id=19]
+[ext_resource path="res://Scripts/BloomSlider.gd" type="Script" id=20]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -95,7 +96,10 @@ vertex_color_use_as_albedo = true
 
 [sub_resource type="Environment" id=12]
 background_mode = 1
-background_color = Color( 0.188235, 0.188235, 0.188235, 1 )
+background_energy = 0.0
+glow_intensity = 1.0
+glow_bloom = 0.5
+glow_blend_mode = 1
 
 [sub_resource type="Shader" id=13]
 code = "shader_type canvas_item;
@@ -323,16 +327,57 @@ __meta__ = {
 }
 
 [node name="CubeModeButton" type="Button" parent="UI/MinimumSize/CubeView"]
-anchor_left = 0.72692
-anchor_top = 0.0550012
-anchor_right = 0.815751
-anchor_bottom = 0.0883743
+anchor_left = 0.729278
+anchor_top = 0.066084
+anchor_right = 0.846632
+anchor_bottom = 0.151993
 margin_top = 0.230003
-margin_right = 0.611206
+margin_right = 0.276489
+margin_bottom = 0.282967
 rect_min_size = Vector2( 100, 25 )
 text = "Orbit Mode"
 __meta__ = {
 "_edit_use_anchors_": true
+}
+
+[node name="Bloom" type="Button" parent="UI/MinimumSize/CubeView"]
+anchor_left = 0.729167
+anchor_top = 0.162698
+anchor_right = 0.846726
+anchor_bottom = 0.231482
+toggle_mode = true
+text = "Bloom:Off"
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="BloomSlider" type="VSlider" parent="UI/MinimumSize/CubeView"]
+anchor_left = 0.731245
+anchor_top = 0.240741
+anchor_right = 0.787793
+anchor_bottom = 0.59127
+hint_tooltip = "Control Axis Slider"
+max_value = 200.0
+value = 50.0
+editable = false
+tick_count = 11
+script = ExtResource( 20 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="IsFocused" type="ReferenceRect" parent="UI/MinimumSize/CubeView/BloomSlider"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+input_pass_on_modal_close_click = false
+border_color = Color( 0, 0.670588, 1, 1 )
+border_width = 2.0
+editor_only = false
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
 }
 
 [node name="OptionButton" type="OptionButton" parent="UI/MinimumSize"]
@@ -542,6 +587,7 @@ margin_left = -672.0
 margin_top = -378.0
 margin_right = 672.0
 margin_bottom = 378.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -557,7 +603,7 @@ generate_lightmap = false
 script = ExtResource( 19 )
 
 [node name="Camera" type="Camera" parent="Cube View/ViewportContainer/Viewport"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 400 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00119805, -0.0267775, 400.002 )
 environment = SubResource( 12 )
 size = 10.0
 far = 10000.0
@@ -603,7 +649,7 @@ texture = ExtResource( 9 )
 [node name="tooltest" type="Polygon2D" parent="Bs/Sprite"]
 position = Vector2( 87.2548, 48.9003 )
 scale = Vector2( 0.519479, 1 )
-color = Color( 0.807166, 0, 0.590324, 1 )
+color = Color( 0.762443, 0, 0.647056, 1 )
 polygon = PoolVector2Array( 138, 113.5, 132.5, 112.5, 133, 112.5, 133.5, 112, 133.5, 111.5, 134.5, 111.5, 134.5, 111.5, 135.5, 111.5, 135.5, 112, 136, 112.5, 136.5, 112.5, 136.5, 112.5, 138.5, 112.5, 138.5, 113, 139, 113.5, 139.5, 113.5, 139.5, 113.5, 140.5, 113.5, 140.5, 114, 141, 114.5, 141.5, 114.5, 141.5, 114.5, 142.5, 114.5, 142.5, 115, 143, 115.5, 143.5, 115.5, 144, 116.5, 144.5, 116.5, 144.5, 117.5, 144.5, 119, 145, 119.5, 145.5, 119.5, 145.5, 120.5, 145.5, 128.5, 144.5, 128.5, 144.5, 128, 144, 127.5, 143.5, 127.5, 143.5, 127.5, 142.5, 127.5, 142.5, 127, 142, 126.5, 141.5, 126.5, 141.5, 126.5, 140.5, 126.5, 140.5, 126, 140, 125.5, 139.5, 125.5, 139.5, 125.5, 138.5, 125.5, 138.5, 125, 138, 124.5, 137.5, 124.5, 137.5, 124.5, 136.5, 124.5, 136.5, 124, 136, 123.5, 135.5, 123.5, 135.5, 123.5, 134.5, 123.5, 134.5, 123, 134, 122.5, 133.5, 122.5, 133.5, 122.5, 132.5, 122.5, 132.5, 121, 132, 120.5, 131.5, 120.5, 131.5, 119.5, 131.5, 115.5, 132, 115.5 )
 script = ExtResource( 10 )
 hmm = [ Vector2( 138, 113.5 ), Vector2( 132.5, 112.5 ), Vector2( 133, 112.5 ), Vector2( 133.5, 112 ), Vector2( 133.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 135.5, 111.5 ), Vector2( 135.5, 112 ), Vector2( 136, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 138.5, 112.5 ), Vector2( 138.5, 113 ), Vector2( 139, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 140.5, 113.5 ), Vector2( 140.5, 114 ), Vector2( 141, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 142.5, 114.5 ), Vector2( 142.5, 115 ), Vector2( 143, 115.5 ), Vector2( 143.5, 115.5 ), Vector2( 144, 116.5 ), Vector2( 144.5, 116.5 ), Vector2( 144.5, 117.5 ), Vector2( 144.5, 119 ), Vector2( 145, 119.5 ), Vector2( 145.5, 119.5 ), Vector2( 145.5, 120.5 ), Vector2( 145.5, 128.5 ), Vector2( 144.5, 128.5 ), Vector2( 144.5, 128 ), Vector2( 144, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 142.5, 127.5 ), Vector2( 142.5, 127 ), Vector2( 142, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 140.5, 126.5 ), Vector2( 140.5, 126 ), Vector2( 140, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 138.5, 125.5 ), Vector2( 138.5, 125 ), Vector2( 138, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 136.5, 124.5 ), Vector2( 136.5, 124 ), Vector2( 136, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 134.5, 123.5 ), Vector2( 134.5, 123 ), Vector2( 134, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 132.5, 122.5 ), Vector2( 132.5, 121 ), Vector2( 132, 120.5 ), Vector2( 131.5, 120.5 ), Vector2( 131.5, 119.5 ), Vector2( 131.5, 115.5 ), Vector2( 132, 115.5 ) ]
@@ -626,12 +672,17 @@ __meta__ = {
 [connection signal="focus_entered" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_on_VSlider_focus_entered"]
 [connection signal="focus_exited" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_on_VSlider_focus_exited"]
 [connection signal="resized" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_resized"]
-[connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI" method="_on_VSlider_value_changed"]
 [connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_value_changed"]
+[connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI" method="_on_VSlider_value_changed"]
 [connection signal="pressed" from="UI/MinimumSize/AxisView/GridContainer/Type" to="UI" method="_on_Type_pressed"]
 [connection signal="toggled" from="UI/MinimumSize/AxisView/GridContainer/ClosestColor" to="UI" method="_on_ClosestColor_toggled"]
 [connection signal="toggled" from="UI/MinimumSize/AxisView/GridContainer/Outline" to="UI" method="_on_Outline_toggled"]
 [connection signal="pressed" from="UI/MinimumSize/CubeView/CubeModeButton" to="UI" method="_on_CubeModeButton_pressed"]
+[connection signal="toggled" from="UI/MinimumSize/CubeView/Bloom" to="UI" method="_on_Bloom_toggled"]
+[connection signal="focus_entered" from="UI/MinimumSize/CubeView/BloomSlider" to="UI/MinimumSize/CubeView/BloomSlider" method="_on_BloomSlider_focus_entered"]
+[connection signal="focus_exited" from="UI/MinimumSize/CubeView/BloomSlider" to="UI/MinimumSize/CubeView/BloomSlider" method="_on_BloomSlider_focus_exited"]
+[connection signal="gui_input" from="UI/MinimumSize/CubeView/BloomSlider" to="UI/MinimumSize/CubeView/BloomSlider" method="_on_BloomSlider_gui_input"]
+[connection signal="value_changed" from="UI/MinimumSize/CubeView/BloomSlider" to="UI" method="_on_BloomSlider_value_changed"]
 [connection signal="item_selected" from="UI/MinimumSize/OptionButton" to="UI" method="_on_OptionButton_item_selected"]
 [connection signal="meta_clicked" from="UI/MinimumSize/LabelCont/ClosestColorLabel" to="UI" method="_on_ClosestColorLabel_meta_clicked"]
 [connection signal="meta_clicked" from="UI/MinimumSize/LabelCont/ColorLabel" to="UI" method="_on_ColorLabel_meta_clicked"]

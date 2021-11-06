@@ -109,10 +109,10 @@ polygon = PoolVector2Array( 255.5, 238, 255.5, 238.5, 255, 238.5, 251, 238.5, 25
 
 [node name="ColorPicker" type="ColorPicker" parent="Camera2D"]
 visible = false
-margin_left = -478.958
-margin_top = -187.634
-margin_right = -170.958
-margin_bottom = 274.366
+margin_left = -470.958
+margin_top = -179.634
+margin_right = -162.958
+margin_bottom = 282.366
 __meta__ = {
 "_edit_use_anchors_": false
 }
