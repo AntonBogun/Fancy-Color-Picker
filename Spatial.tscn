@@ -1,10 +1,14 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Scripts/Spatial.gd" type="Script" id=1]
 
 [sub_resource type="SpatialMaterial" id=1]
 flags_unshaded = true
 vertex_color_use_as_albedo = true
+
+[sub_resource type="SpatialMaterial" id=2]
+flags_unshaded = true
+albedo_color = Color( 0.960784, 0, 0, 1 )
 
 [node name="Spatial" type="Spatial"]
 
@@ -19,7 +23,18 @@ generate_lightmap = false
 script = ExtResource( 1 )
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 300 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 100 )
+near = 0.01
 far = 10000.0
 
 [node name="CSGPolygon2" type="CSGPolygon" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 70, 0 )
+
+[node name="CSGPolygon3" type="CSGPolygon" parent="."]
+transform = Transform( 0.861924, 0.3829, -0.332377, -0.249662, 0.891053, 0.37907, 0.441311, -0.243747, 0.863616, 3.47882, 0.222928, 102.16 )
+polygon = PoolVector2Array( 0.441893, 0.415387, 0.311471, 0.966844, 1, 1, 1, 0, 0, 0 )
+
+[node name="CSGPolygon4" type="CSGPolygon" parent="."]
+transform = Transform( 0.645818, -0.581918, -0.494257, 0.623027, 0.77586, -0.0993904, 0.441311, -0.243747, 0.863616, 124, 0, 0 )
+polygon = PoolVector2Array( 0.441893, 0.415387, 0.311471, 0.966844, 1, 1, 1, 0, 0, 0 )
+material = SubResource( 2 )

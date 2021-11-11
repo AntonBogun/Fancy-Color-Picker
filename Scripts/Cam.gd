@@ -34,6 +34,7 @@ func _ready():
 func _axis_offset_reset():
 	zoom=Vector2(1,1)*axis_defaultzoom
 	offset=center*prevview/2*zoom
+	
 	get_node("../Axis View/Colorpick").scale=zoom
 func ViewportChange():
 	offset=offset-center*prevview/2*zoom
@@ -61,7 +62,7 @@ func _axis_move(where,type):
 	offset=center*prevview/2*zoom+real
 
 func _cube_offset_reset():
-	zoom=Vector2(1,1)*cube_defaultzoom
+	zoom=Vector2(1,1)*cube_defaultzoom#*(1/(border[1].y-border[0].y))
 	offset=center*prevview/2*zoom
 	pass
 #deprecated

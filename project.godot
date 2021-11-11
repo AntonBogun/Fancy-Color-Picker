@@ -25,7 +25,7 @@ influence="*res://Scripts/Influence.gd"
 
 [display]
 
-window/size/width=1344
+window/size/width=1100
 window/size/height=756
 
 [global]
@@ -33,6 +33,7 @@ window/size/height=756
 vsync=false
 resolution=false
 scene=false
+window=false
 
 [input]
 

@@ -75,6 +75,8 @@ func _on_Interact_gui_input(event):
 		if Input.is_action_just_pressed("mouse_left") or event is InputEventMouseMotion:
 			if view==0:
 				get_node("../Axis View").MousePressed()
+			elif view==1:
+				get_node("../Cube View").MousePressed()
 	if Input.is_action_pressed("mouse_right"):
 		_on_Interact_focus_entered()
 		if event is InputEventMouseMotion:

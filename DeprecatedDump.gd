@@ -1,5 +1,37 @@
 extends Node2D
+#	var fov:=tan((cam.fov/(2*180))*PI)
+#	var rot:=Vector2(-atan(point.x*fov),atan(point.y*fov))
+#	var roll:=Basis(
+#		Vector3(cos(rot.x),-sin(rot.x),0),
+#		Vector3(sin(rot.x),cos(rot.x),0),
+#		Vector3(0,0,1))
+#	var rotx:=Basis(
+#		Vector3(cos(rot.x),0,-sin(rot.x)),
+#		Vector3(0,1,0),
+#		Vector3(sin(rot.x),0,cos(rot.x)))
+#	var roty:=Basis(
+#		Vector3(1,0,0),
+#		Vector3(0,cos(rot.y),-sin(rot.y)),
+#		Vector3(0,sin(rot.y),cos(rot.y)))
+#	var rott=roty*rotx
+#	return Line.new(cam.transform.basis*rott*Vector3(0,0,-1),cam.transform.origin)
 
+#	#funni version:
+#	#afg+beg+cef
+#	#a,b,c=p.xyz
+#	#e,f,g=l.xyz
+#	#h,i,j=l.x0y0z0
+#	var K=p.x*l.y*l.z+p.y*l.x*l.z+p.z*l.x*l.z
+
+#	func _get(property):
+#		if len(property)==1 and ord(property)>=120 and ord(property)<=122:
+#			return self.dir[ord(property)-120]
+#		elif len(property)==2 and ord(property[0])>=120 and ord(property[0])<=122:
+#			return self.pos[ord(property[0])-120]
+#		elif property in self:
+#			return self.property
+#		else:
+#			return null
 var thread:Thread
 #export var debug:bool=false
 
