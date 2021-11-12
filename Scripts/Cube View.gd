@@ -19,10 +19,10 @@ func _point_3_rot(p:Vector3)->Vector3:
 #	var xrotbasis=Basis(Vector3(cos(xrot),-sin(xrot),0),
 #	Vector3(sin(xrot),cos(xrot),0),
 #	Vector3(0,0,1))
-	var xrotbasis=Basis(Vector3(cos(xrot),0,-sin(xrot)),
+	xrotbasis=Basis(Vector3(cos(xrot),0,-sin(xrot)),
 	Vector3(0,1,0),
 	Vector3(sin(xrot),0,cos(xrot)))
-	var yrotbasis=Basis(Vector3(0,0,0),
+	yrotbasis=Basis(Vector3(0,0,0),
 	Vector3(0,cos(yrot),-sin(yrot)),
 	Vector3(0,sin(yrot),cos(yrot)))
 	return xrotbasis*(yrotbasis*p)
@@ -192,15 +192,6 @@ class Line:
 		#Vector3(2,4,5).project(Vector3(2,0,0))
 		#return (p-self.pos).project(self.dir)+self.pos
 		#return (p-self.pos)
-#TODO:
-#Axis plane - transformation of xz into some plane in 3d, keeps coordinates
-
-#Function to detect if point is inside a polygon defined by PoolVector2Array
-#(cast ray and see amount of intersects with sides)
-
-#2D Line with offset, should support intersect
-
-#Combine to see if an intersection is within shape bounds
 
 class AxisPlane:
 	extends Reference
@@ -213,8 +204,13 @@ class AxisPlane:
 		self.pos=_pos
 		_plane.d=0
 		self.z0=_plane.project(_z0).normalized()
-		if self.z0==Vector3(0,0,0):
-			self.z0=_plane.project(_z0.rotated(Vector3(1,0,0),PI/2)).normalized()
+		if self.z0==Vector3():
+			var tmp=_plane.project(Vector3(0,0,1))
+			if tmp==Vector3():
+				self.z0=_plane.project(Vector3(1,0,0))
+			else:
+				self.z0=tmp
+			#self.z0=_plane.project(_z0.rotated(Vector3(1,0,0),PI/2)).normalized()
 	func ToPlane()->Plane:
 		var tmp:=self.plane
 		tmp.d+=tmp.normal.dot(self.pos)
@@ -267,10 +263,19 @@ func LineFromCam(cam:=Camera.new(),point:=Vector2())->Line:
 	return Line.new(cam.project_ray_normal(point),cam.transform.origin)
 
 func test():
+	#TODO:
+	#Axis plane - transformation of xz into some plane in 3d, keeps coordinates
+
+	#Function to detect if point is inside a polygon defined by PoolVector2Array
+	#(cast ray and see amount of intersects with sides)
+
+	#2D Line with offset, should support intersect
+
+	#Combine to see if an intersection is within shape bounds
 	print("make sure to remove this after testing (Cube View)")
 	print("ALSO REMOVE TESTING FUNCS")
-	var z=Vector3(-3,3,-4)
-	var p=AxisPlane.new(Plane(3,-1,2,10),Vector3(4,2,-4),z)
+	var z=Vector3(1,0,0)
+	var p=AxisPlane.new(Plane(-1,0,0,0),Vector3(0,0,0),z)
 	var l=p.plane.normal*p.plane.d
 	var L=p.ToPlane().normal*p.ToPlane().d
 	var point=p.ToPlane().project(Vector3(-5,-4,4))
@@ -284,11 +289,11 @@ func test():
 	print("Plane->_z0")
 	ToGeo([p.pos+l,p.pos+l+z],"rel")
 	ToGeo(point)
-	print("BSSSSS")
+	#print("BSSSSS")
 	ToGeo(p.RotateWith(point))
 	#ToGeo(Vector3(1,-2,-3))#p.RotateWith(point))
 	#p.ToPlane().project(Vector3(-1,3,4))
-	get_tree().quit()
+	#get_tree().quit()
 	
 
 func MousePressed()->void:
