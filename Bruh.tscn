@@ -653,7 +653,7 @@ texture = ExtResource( 9 )
 [node name="tooltest" type="Polygon2D" parent="Bs/Sprite"]
 position = Vector2( 87.2548, 48.9003 )
 scale = Vector2( 0.519479, 1 )
-color = Color( 0.122216, 0.992504, 0, 1 )
+color = Color( 0.530511, 0.847678, 0, 1 )
 polygon = PoolVector2Array( 138, 113.5, 132.5, 112.5, 133, 112.5, 133.5, 112, 133.5, 111.5, 134.5, 111.5, 134.5, 111.5, 135.5, 111.5, 135.5, 112, 136, 112.5, 136.5, 112.5, 136.5, 112.5, 138.5, 112.5, 138.5, 113, 139, 113.5, 139.5, 113.5, 139.5, 113.5, 140.5, 113.5, 140.5, 114, 141, 114.5, 141.5, 114.5, 141.5, 114.5, 142.5, 114.5, 142.5, 115, 143, 115.5, 143.5, 115.5, 144, 116.5, 144.5, 116.5, 144.5, 117.5, 144.5, 119, 145, 119.5, 145.5, 119.5, 145.5, 120.5, 145.5, 128.5, 144.5, 128.5, 144.5, 128, 144, 127.5, 143.5, 127.5, 143.5, 127.5, 142.5, 127.5, 142.5, 127, 142, 126.5, 141.5, 126.5, 141.5, 126.5, 140.5, 126.5, 140.5, 126, 140, 125.5, 139.5, 125.5, 139.5, 125.5, 138.5, 125.5, 138.5, 125, 138, 124.5, 137.5, 124.5, 137.5, 124.5, 136.5, 124.5, 136.5, 124, 136, 123.5, 135.5, 123.5, 135.5, 123.5, 134.5, 123.5, 134.5, 123, 134, 122.5, 133.5, 122.5, 133.5, 122.5, 132.5, 122.5, 132.5, 121, 132, 120.5, 131.5, 120.5, 131.5, 119.5, 131.5, 115.5, 132, 115.5 )
 script = ExtResource( 10 )
 hmm = [ Vector2( 138, 113.5 ), Vector2( 132.5, 112.5 ), Vector2( 133, 112.5 ), Vector2( 133.5, 112 ), Vector2( 133.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 134.5, 111.5 ), Vector2( 135.5, 111.5 ), Vector2( 135.5, 112 ), Vector2( 136, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 136.5, 112.5 ), Vector2( 138.5, 112.5 ), Vector2( 138.5, 113 ), Vector2( 139, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 139.5, 113.5 ), Vector2( 140.5, 113.5 ), Vector2( 140.5, 114 ), Vector2( 141, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 141.5, 114.5 ), Vector2( 142.5, 114.5 ), Vector2( 142.5, 115 ), Vector2( 143, 115.5 ), Vector2( 143.5, 115.5 ), Vector2( 144, 116.5 ), Vector2( 144.5, 116.5 ), Vector2( 144.5, 117.5 ), Vector2( 144.5, 119 ), Vector2( 145, 119.5 ), Vector2( 145.5, 119.5 ), Vector2( 145.5, 120.5 ), Vector2( 145.5, 128.5 ), Vector2( 144.5, 128.5 ), Vector2( 144.5, 128 ), Vector2( 144, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 143.5, 127.5 ), Vector2( 142.5, 127.5 ), Vector2( 142.5, 127 ), Vector2( 142, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 141.5, 126.5 ), Vector2( 140.5, 126.5 ), Vector2( 140.5, 126 ), Vector2( 140, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 139.5, 125.5 ), Vector2( 138.5, 125.5 ), Vector2( 138.5, 125 ), Vector2( 138, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 137.5, 124.5 ), Vector2( 136.5, 124.5 ), Vector2( 136.5, 124 ), Vector2( 136, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 135.5, 123.5 ), Vector2( 134.5, 123.5 ), Vector2( 134.5, 123 ), Vector2( 134, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 133.5, 122.5 ), Vector2( 132.5, 122.5 ), Vector2( 132.5, 121 ), Vector2( 132, 120.5 ), Vector2( 131.5, 120.5 ), Vector2( 131.5, 119.5 ), Vector2( 131.5, 115.5 ), Vector2( 132, 115.5 ) ]
@@ -662,6 +662,7 @@ hmm = [ Vector2( 138, 113.5 ), Vector2( 132.5, 112.5 ), Vector2( 133, 112.5 ), V
 polygon = PoolVector2Array( 759.535, -419.046, 819.285, -420.106, 845.802, -485.867, 880.804, -374.144, 843.68, -463.947, 825.649, -398.893 )
 
 [node name="TodoLabel" type="Label" parent="."]
+visible = false
 margin_left = -252.53
 margin_top = -158.264
 margin_right = -77.5297
@@ -678,8 +679,8 @@ __meta__ = {
 [connection signal="focus_entered" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_on_VSlider_focus_entered"]
 [connection signal="focus_exited" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_on_VSlider_focus_exited"]
 [connection signal="resized" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_resized"]
-[connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI" method="_on_VSlider_value_changed"]
 [connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI/MinimumSize/AxisView/VSlider" method="_value_changed"]
+[connection signal="value_changed" from="UI/MinimumSize/AxisView/VSlider" to="UI" method="_on_VSlider_value_changed"]
 [connection signal="pressed" from="UI/MinimumSize/AxisView/GridContainer/Type" to="UI" method="_on_Type_pressed"]
 [connection signal="toggled" from="UI/MinimumSize/AxisView/GridContainer/ClosestColor" to="UI" method="_on_ClosestColor_toggled"]
 [connection signal="toggled" from="UI/MinimumSize/AxisView/GridContainer/Outline" to="UI" method="_on_Outline_toggled"]

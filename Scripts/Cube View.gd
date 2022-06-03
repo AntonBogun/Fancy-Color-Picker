@@ -273,6 +273,7 @@ func test():
 
 	#Combine to see if an intersection is within shape bounds
 	print("make sure to remove this after testing (Cube View)")
+	#print(colr.get_dist_sum())
 	print("ALSO REMOVE TESTING FUNCS")
 	var z=Vector3(1,0,0)
 	var p=AxisPlane.new(Plane(-1,0,0,0),Vector3(0,0,0),z)

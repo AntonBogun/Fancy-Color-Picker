@@ -1,6 +1,7 @@
 extends Node
 tool
 var all:Array
+var individual:Array
 #LMAO at first i had vars inside the func, which means they get initialized every time
 #now its like 10 times faster
 #btw it was done using a cool c# program which i made to output with syntax that
@@ -1624,6 +1625,28 @@ func colorsector(r,g,b) -> Array:
 	return all[r][g][b]
 func colorname(r,g,b,n)->String:
 	return all[r][g][b][1][n]
+
+
+func get_dist_sum() -> float:
+	for x in range(8):
+		for y in range(8):
+			for z in range(8):
+				individual.append_array(all[x][y][z][0])
+				#for c in all[x][y][z][0]:
+				#	individual.append(c)
+				#	individual.append_array()
+				#	
+	var total=0.0
+	for a in individual:
+		var minn=30949520304.0
+		var _a=InfoToVec3(a)
+		for b in individual:
+			if a==b:
+				continue
+			minn=min(minn,_a.distance_to(InfoToVec3(b)))
+		total+=minn#pow(minn,3)
+	return total/len(individual)
+
 
 func InfoToCol(i:int)->Color:
 	return Color8(i>>16&0xff,i>>8&0xff,i&0xff)
