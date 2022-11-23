@@ -296,7 +296,7 @@ func test():
 	#p.ToPlane().project(Vector3(-1,3,4))
 	#get_tree().quit()
 	
-
+#responsible for projection onto plane
 func MousePressed()->void:
 	var pos=get_global_mouse_position()
 	var i=LineFromCam($ViewportContainer/Viewport/Camera,
